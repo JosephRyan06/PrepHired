@@ -243,10 +243,6 @@ const saveInterviewAnswer = async (req, res) => {
 
     const errors = {};
 
-    // -----------------------------
-    // VALIDATION
-    // -----------------------------
-
     if (!id) {
       errors.id = "Mock interview ID is required";
     }
@@ -256,7 +252,8 @@ const saveInterviewAnswer = async (req, res) => {
       questionNumber === null ||
       questionNumber === ""
     ) {
-      errors.questionNumber = "Question number is required";
+      errors.questionNumber =
+        "Question number is required";
     }
 
     if (answer === undefined || answer === null) {
@@ -271,35 +268,44 @@ const saveInterviewAnswer = async (req, res) => {
       });
     }
 
-    // -----------------------------
-    // ONLY IN-PROGRESS INTERVIEWS
-    // CAN RECEIVE NEW ANSWERS
-    // -----------------------------
-
-    const mockInterview = await MockInterview.findOne({
-      _id: id,
-      userId: req.user.id,
-      status: "in-progress",
-    });
+    const mockInterview =
+      await MockInterview.findOne({
+        _id: id,
+        userId: req.user.id,
+      });
 
     if (!mockInterview) {
       return res.status(404).json({
         success: false,
-        message: "Active mock interview not found",
+        message: "Mock interview not found",
         errors: {},
       });
     }
 
-    // -----------------------------
-    // FIND QUESTION
-    // -----------------------------
+    // Once completed, don't allow a new answer.
+    if (mockInterview.status !== "in-progress") {
+      return res.status(409).json({
+        success: false,
+        message: "Mock interview has already been completed",
+        errors: {},
+      });
+    }
 
     const number = Number(questionNumber);
 
-    const question = mockInterview.questions.find(
-      (item) =>
-        Number(item.questionNumber) === number,
-    );
+    if (!Number.isInteger(number) || number < 1) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid question number",
+        errors: {},
+      });
+    }
+
+    const question =
+      mockInterview.questions.find(
+        (item) =>
+          Number(item.questionNumber) === number,
+      );
 
     if (!question) {
       return res.status(404).json({
@@ -308,10 +314,6 @@ const saveInterviewAnswer = async (req, res) => {
         errors: {},
       });
     }
-
-    // -----------------------------
-    // SAVE ANSWER
-    // -----------------------------
 
     question.answer =
       typeof answer === "string"
@@ -334,12 +336,7 @@ const saveInterviewAnswer = async (req, res) => {
     }
 
     question.status = "answered";
-
     question.answeredAt = new Date();
-
-    // -----------------------------
-    // UPDATE CURRENT QUESTION
-    // -----------------------------
 
     if (
       number >= mockInterview.currentQuestion
@@ -372,6 +369,7 @@ const saveInterviewAnswer = async (req, res) => {
   }
 };
 
+
 // ============================================================
 // ANALYZE ONE INTERVIEW ANSWER
 // ============================================================
@@ -384,9 +382,6 @@ const analyzeAnswer = async (req, res) => {
 
     const errors = {};
 
-    // -----------------------------
-    // VALIDATION
-    // -----------------------------
 
     if (!id) {
       errors.id = "Mock interview ID is required";
@@ -699,13 +694,6 @@ const analyzeSession = async (req, res) => {
       });
     }
 
-    // -----------------------------
-    // FIND INTERVIEW
-    //
-    // Can be either in-progress or
-    // completed.
-    // -----------------------------
-
     const mockInterview =
       await MockInterview.findOne({
         _id: id,
@@ -866,71 +854,52 @@ const analyzeSession = async (req, res) => {
 // It does NOT call analyzeSession().
 // ============================================================
 
-const completeMockInterview = async (
-  req,
-  res,
-) => {
+const completeMockInterview = async (req, res) => {
   try {
     const { id } = req.params;
 
     if (!id) {
       return res.status(400).json({
         success: false,
-        message:
-          "Mock interview ID is required",
+        message: "Mock interview ID is required",
         errors: {},
       });
     }
-
-    // -----------------------------
-    // ONLY IN-PROGRESS INTERVIEW
-    // CAN BE COMPLETED
-    // -----------------------------
 
     const mockInterview =
       await MockInterview.findOne({
         _id: id,
         userId: req.user.id,
-        status: "in-progress",
       });
 
     if (!mockInterview) {
       return res.status(404).json({
         success: false,
-        message:
-          "Active mock interview not found",
+        message: "Mock interview not found",
         errors: {},
       });
     }
 
-    // -----------------------------
-    // COMPLETE ONLY
-    // -----------------------------
+    // Already completed.
+    // Do NOT treat this as an error.
+    if (mockInterview.status === "completed") {
+      return res.status(200).json({
+        success: true,
+        message: "Mock interview already completed",
+        mockInterview,
+        errors: {},
+      });
+    }
 
     mockInterview.status = "completed";
-
-    mockInterview.completedAt =
-      new Date();
+    mockInterview.completedAt = new Date();
 
     await mockInterview.save();
 
-    // -----------------------------
-    // DO NOT CALL:
-    //
-    // await analyzeSession(...)
-    //
-    // Session analysis is intentionally
-    // separate.
-    // -----------------------------
-
     return res.status(200).json({
       success: true,
-
-      message:
-        "Mock interview completed successfully",
-
+      message: "Mock interview completed successfully",
       mockInterview,
-
       errors: {},
     });
   } catch (error) {
@@ -941,8 +910,7 @@ const completeMockInterview = async (
 
     return res.status(500).json({
       success: false,
-      message:
-        "Failed to complete mock interview",
+      message: "Failed to complete mock interview",
       errors: {},
     });
   }

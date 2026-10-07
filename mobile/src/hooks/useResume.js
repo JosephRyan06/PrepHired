@@ -1,6 +1,7 @@
 import { useState } from "react";
 
 import {
+  importResume,
   createResume,
   getDraftResume,
   getResume,
@@ -92,6 +93,44 @@ const useResume = () => {
       setLoading(false);
     }
   };
+
+  const importResumeFile = async (file) => {
+  try {
+    setLoading(true);
+
+    console.log(
+      "useResume - importing file:",
+      file
+    );
+
+    const result =
+      await importResume(file);
+
+    return {
+      success: true,
+      resume: result?.resume,
+      message: result?.message,
+    };
+  } catch (error) {
+    console.log(
+      "Import resume error:",
+      error?.message || error
+    );
+
+    return {
+      success: false,
+
+      message:
+        error?.message ||
+        "Failed to import resume",
+
+      errors:
+        error?.errors || {},
+    };
+  } finally {
+    setLoading(false);
+  }
+};
 
   // STEP 1 - BASIC INFO
   const saveBasic = async (id, basicInfo) => {
@@ -413,6 +452,8 @@ const useResume = () => {
   };
 
   return {
+
+    importResumeFile,
     create,
     getDraft,
     getById,

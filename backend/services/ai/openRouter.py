@@ -29,6 +29,166 @@ app = FastAPI(
     version="1.0.0"
 )
 
+class ImportResumeRequest(BaseModel):
+    extractedText: str
+
+
+@app.post("/parse-resume")
+async def parse_resume(data: ImportResumeRequest):
+    try:
+        extracted_text = data.extractedText.strip()
+
+        if not extracted_text:
+            raise HTTPException(
+                status_code=400,
+                detail="Resume text is required",
+            )
+
+        prompt = f"""
+You are an expert resume information extraction system.
+
+Extract resume information ONLY from the supplied resume text.
+
+Do not invent missing information, skills, dates, qualifications,
+work experience, achievements, metrics, projects, or certifications.
+
+Return ONLY valid JSON using exactly this structure:
+
+{{
+    "basicInfo": {{
+        "fullName": "",
+        "contactNumber": "",
+        "address": "",
+        "email": "",
+        "linkedInURL": "",
+        "portfolioLink": ""
+    }},
+    "targetJob": {{
+        "jobTitle": "",
+        "industry": "",
+        "jobDescription": ""
+    }},
+    "workExperiences": [
+        {{
+            "jobTitle": "",
+            "company": "",
+            "location": "",
+            "periodOfEmployment": "",
+            "currentlyWorking": false,
+            "description": ""
+        }}
+    ],
+    "educations": [
+        {{
+            "school": "",
+            "degreeField": "",
+            "location": "",
+            "schoolYear": "",
+            "description": ""
+        }}
+    ],
+    "professionalSummary": "",
+    "skills": "",
+    "projects": [
+        {{
+            "projectName": "",
+            "projectDescription": ""
+        }}
+    ],
+    "certificates": ""
+}}
+
+Rules:
+- Use empty strings for unknown text fields.
+- Use empty arrays when no entries exist.
+- Use false for currentlyWorking unless current employment
+  is explicitly supported by the resume.
+- Do not infer a target job from work experience.
+- Preserve the meaning of dates and qualifications.
+- Do not invent IDs; the backend will generate them.
+- Extract skills as a readable, comma-separated string.
+- Extract certificates as a readable string.
+- Do not include analysis or optimization.
+- Do not include Markdown or code fences.
+
+RESUME TEXT:
+{json.dumps(extracted_text, ensure_ascii=False)}
+"""
+
+        response = client.chat.completions.create(
+            model=OPENROUTER_MODEL,
+            messages=[
+                {
+                    "role": "user",
+                    "content": prompt,
+                }
+            ],
+        )
+
+        if not response.choices[0].message.content:
+            raise HTTPException(
+                status_code=500,
+                detail="OpenRouter returned an empty response",
+            )
+
+        result_text = response.choices[0].message.content.strip()
+
+        if result_text.startswith("```json"):
+            result_text = result_text[7:]
+        elif result_text.startswith("```"):
+            result_text = result_text[3:]
+
+        if result_text.endswith("```"):
+            result_text = result_text[:-3]
+
+        result_text = result_text.strip()
+
+        try:
+            parsed_resume = json.loads(result_text)
+        except json.JSONDecodeError:
+            raise HTTPException(
+                status_code=500,
+                detail="OpenRouter returned invalid resume JSON",
+            )
+
+        if not isinstance(parsed_resume, dict):
+            raise HTTPException(
+                status_code=500,
+                detail="Invalid resume data format",
+            )
+
+        required_fields = [
+            "basicInfo",
+            "targetJob",
+            "workExperiences",
+            "educations",
+            "professionalSummary",
+            "skills",
+            "projects",
+            "certificates",
+        ]
+
+        if any(key not in parsed_resume for key in required_fields):
+            raise HTTPException(
+                status_code=500,
+                detail="Parsed resume is missing required fields",
+            )
+
+        return {
+            "success": True,
+            "resume": parsed_resume,
+        }
+
+    except HTTPException:
+        raise
+
+    except Exception as error:
+        print("Resume parsing error:", error)
+
+        raise HTTPException(
+            status_code=500,
+            detail="Failed to parse uploaded resume",
+        )
 
 class ResumeRequest(BaseModel):
 

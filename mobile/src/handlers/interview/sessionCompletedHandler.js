@@ -7,26 +7,25 @@ export const sessionCompletedHandler = ({
   setLoading,
 }) => {
   const loadInterview = async () => {
-    if (!mockInterviewId) {
-      setInterview(
-        mockInterview || null,
-      );
+    
+    if (mockInterview) {
+      setInterview(mockInterview);
+      return;
+    }
 
+    // No ID and no interview data.
+    if (!mockInterviewId) {
+      setInterview(null);
       return;
     }
 
     try {
       setLoading(true);
 
-      const result =
-        await getById(
-          mockInterviewId,
-        );
+      const result = await getById(mockInterviewId);
 
       setInterview(
-        result?.mockInterview ||
-          mockInterview ||
-          null,
+        result?.mockInterview || null
       );
     } catch (error) {
       console.error(
@@ -34,9 +33,7 @@ export const sessionCompletedHandler = ({
         error,
       );
 
-      setInterview(
-        mockInterview || null,
-      );
+      setInterview(null);
     } finally {
       setLoading(false);
     }

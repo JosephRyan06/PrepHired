@@ -1,10 +1,18 @@
 const Resume = require("../models/resume");
+const User = require("../models/user");
+const { PDFParse } = require("pdf-parse");
+const mammoth = require("mammoth");
+const fs = require("fs");
+const path = require("path");
+
 const {
+  parseImportedResume,
   generateProfessionalSummary,
   generateResumeAnalysis,
   optimizeResume: optimizeResumeAI,
 } = require("../services/ai/aiService");
 
+const validateResume = require("../services/resume/validateResume");
 const { generateResumePDF } = require("../services/pdf/generateResumePDF");
 
 // CREATE DRAFT
@@ -159,6 +167,994 @@ const getResume = async (req, res) => {
     });
   }
 };
+
+const importResume = async (req, res) => {
+  try {
+    const userId = req.user?.id;
+
+    const errors = {};
+
+    // =========================
+    // AUTHENTICATION
+    // =========================
+
+    if (!userId) {
+      errors.userId =
+        "User authentication is required";
+    }
+
+    // =========================
+    // FILE
+    // =========================
+
+    if (!req.file) {
+      errors.resume =
+        "Resume file is required";
+    }
+
+    if (Object.keys(errors).length > 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Validation failed",
+        errors,
+      });
+    }
+
+    const file = req.file;
+
+    console.log(
+      "========== RESUME FILE =========="
+    );
+
+    console.log(
+      "Original name:",
+      file.originalname
+    );
+
+    console.log(
+      "Mimetype:",
+      file.mimetype
+    );
+
+    console.log(
+      "Size:",
+      file.size
+    );
+
+    console.log(
+      "Field:",
+      file.fieldname
+    );
+
+    // =========================
+    // FILE BUFFER
+    // =========================
+
+    if (
+      !file.buffer ||
+      file.buffer.length === 0
+    ) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Uploaded resume file is empty.",
+        errors: {
+          resume:
+            "The uploaded file contains no data.",
+        },
+      });
+    }
+
+    // =========================
+    // EXTENSION
+    // =========================
+
+    const extension =
+      path
+        .extname(
+          file.originalname || ""
+        )
+        .toLowerCase();
+
+    console.log(
+      "Extension:",
+      extension
+    );
+
+    // =========================
+    // EXTRACT TEXT
+    // =========================
+
+    let extractedText = "";
+
+    // =========================
+    // PDF
+    // =========================
+
+    if (extension === ".pdf") {
+      console.log(
+        "Processing PDF..."
+      );
+
+      const parser =
+        new PDFParse({
+          data: file.buffer,
+        });
+
+      try {
+        const pdfData =
+          await parser.getText();
+
+        extractedText =
+          pdfData.text || "";
+
+        console.log(
+          "PDF text extracted successfully"
+        );
+
+        console.log(
+          "PDF text length:",
+          extractedText.length
+        );
+      } finally {
+        await parser.destroy();
+      }
+    }
+
+    // =========================
+    // DOCX
+    // =========================
+
+    else if (
+      extension === ".docx"
+    ) {
+      console.log(
+        "Processing DOCX..."
+      );
+
+      const result =
+        await mammoth.extractRawText({
+          buffer: file.buffer,
+        });
+
+      extractedText =
+        result.value || "";
+
+      console.log(
+        "DOCX text extracted successfully"
+      );
+    }
+
+    // =========================
+    // DOC
+    // =========================
+
+    else if (
+      extension === ".doc"
+    ) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Legacy .doc files are not currently supported. Please upload PDF or DOCX.",
+        errors: {},
+      });
+    }
+
+    // =========================
+    // INVALID FILE TYPE
+    // =========================
+
+    else {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Unsupported resume file type.",
+        errors: {
+          resume:
+            "Only PDF and DOCX files are supported.",
+        },
+      });
+    }
+
+    // =========================
+    // CLEAN TEXT
+    // =========================
+
+    extractedText =
+      extractedText.trim();
+
+    console.log(
+      "========== EXTRACTED TEXT =========="
+    );
+
+    console.log(
+      extractedText
+    );
+
+    if (!extractedText) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Could not extract text from the uploaded resume.",
+        errors: {
+          resume:
+            "The resume may be scanned or image-based.",
+        },
+      });
+    }
+
+    // =========================================================
+    // VALIDATE EXTRACTED TEXT BEFORE AI PARSING
+    // =========================================================
+
+    console.log(
+      "========== VALIDATING EXTRACTED TEXT =========="
+    );
+
+    // =========================
+    // GET USER
+    // =========================
+
+    const user =
+      await User.findById(userId);
+
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message:
+          "Authenticated user could not be found.",
+        errors: {
+          userId:
+            "User account not found.",
+        },
+      });
+    }
+
+    // =========================
+    // GET USER FULL NAME
+    // =========================
+
+    const userFullName =
+      user.fullName ||
+      [
+        user.firstName,
+        user.lastName,
+      ]
+        .filter(Boolean)
+        .join(" ")
+        .trim();
+
+    if (!userFullName) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Your account does not have a valid full name.",
+        errors: {
+          userId:
+            "Please update your account with your full name.",
+        },
+      });
+    }
+
+    // =========================================================
+    // NORMALIZE TEXT
+    // =========================================================
+
+    const normalizeText = (
+      text = ""
+    ) => {
+      return text
+        .toLowerCase()
+        .normalize("NFKD")
+        .replace(
+          /[\u0300-\u036f]/g,
+          ""
+        )
+        .replace(
+          /[^a-z0-9\s]/g,
+          " "
+        )
+        .replace(
+          /\s+/g,
+          " "
+        )
+        .trim();
+    };
+
+    const normalizedExtractedText =
+      normalizeText(
+        extractedText
+      );
+
+    const normalizedUserName =
+      normalizeText(
+        userFullName
+      );
+
+    // =========================================================
+    // CHECK USER NAME IN EXTRACTED RESUME TEXT
+    // =========================================================
+
+    const userNameParts =
+      normalizedUserName.split(" ");
+
+    const hasUserName =
+      userNameParts.length >= 2 &&
+      userNameParts.every(
+        (part) =>
+          normalizedExtractedText.includes(
+            part
+          )
+      );
+
+    // =========================================================
+    // NAME DOES NOT MATCH
+    // =========================================================
+
+  if (!hasUserName) {
+    console.log(
+      "========== RESUME VALIDATION FAILED =========="
+    );
+
+    console.log(
+      "User Name:",
+      userFullName
+    );
+
+    console.log(
+      "Name Found In Resume:",
+      false
+    );
+
+    return res.status(400).json({
+      success: false,
+      message:
+        "The name on the resume does not match your account name.",
+    });
+  }
+
+
+    // =========================================================
+    // NAME VALIDATION PASSED
+    // =========================================================
+
+    console.log(
+      "========== EXTRACTED TEXT VALIDATION PASSED =========="
+    );
+
+    console.log(
+      "User Name:",
+      userFullName
+    );
+
+    console.log(
+      "Name Found In Resume:",
+      true
+    );
+
+    // =========================================================
+    // AI PARSE
+    // =========================================================
+
+    console.log(
+      "========== AI PARSING =========="
+    );
+
+    const parsedResume =
+      await parseImportedResume(
+        extractedText
+      );
+
+    if (!parsedResume) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Could not parse the uploaded resume.",
+        errors: {},
+      });
+    }
+
+    console.log(
+      "========== PARSED RESUME =========="
+    );
+
+    console.log(
+      JSON.stringify(
+        parsedResume,
+        null,
+        2
+      )
+    );
+
+    if (
+      parsedResume.isResume === false
+    ) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "The uploaded file is not a valid resume.",
+        errors: {
+          resume:
+            "Please upload a valid resume.",
+        },
+      });
+    }
+
+    const resume =
+      await Resume.create({
+        userId,
+
+        basicInfo:
+          parsedResume.basicInfo || {
+            fullName: "",
+            contactNumber: "",
+            address: "",
+            email: "",
+            linkedInURL: "",
+            portfolioLink: "",
+          },
+
+        targetJob:
+          parsedResume.targetJob || {
+            jobTitle: "",
+            industry: "",
+            jobDescription: "",
+          },
+
+        workExperiences:
+          parsedResume.workExperiences ||
+          [],
+
+        educations:
+          parsedResume.educations ||
+          [],
+
+        professionalSummary:
+          parsedResume.professionalSummary ||
+          "",
+
+        skills:
+          parsedResume.skills ||
+          "",
+
+        projects:
+          parsedResume.projects ||
+          [],
+
+        certificates:
+          parsedResume.certificates ||
+          "",
+
+        template:
+          "classic",
+
+        currentStep:
+          1,
+
+        status:
+          "draft",
+      });
+
+    console.log(
+      "========== IMPORTED RESUME CREATED =========="
+    );
+
+    console.log(
+      "Resume ID:",
+      resume._id
+    );
+
+    // =========================================================
+    // AI ANALYSIS - ORIGINAL IMPORTED RESUME
+    // =========================================================
+
+    console.log(
+      "========== AI ANALYZING IMPORTED RESUME =========="
+    );
+
+    const originalAnalysis =
+      await generateResumeAnalysis(
+        resume
+      );
+
+    if (
+      !originalAnalysis ||
+      typeof originalAnalysis.atsScore !==
+        "number"
+    ) {
+      return res.status(500).json({
+        success: false,
+        message:
+          "AI did not return a valid original ATS score",
+        errors: {},
+      });
+    }
+
+    console.log(
+      "Original ATS Score:",
+      originalAnalysis.atsScore
+    );
+
+    // =========================
+    // SAVE ORIGINAL ANALYSIS
+    // =========================
+
+    resume.aiAnalysis = {
+      ...originalAnalysis,
+      generatedAt:
+        new Date(),
+    };
+
+    await resume.save();
+
+    // =========================================================
+    // AI OPTIMIZATION
+    // =========================================================
+
+    console.log(
+      "========== AI OPTIMIZING IMPORTED RESUME =========="
+    );
+
+    const optimization =
+      await optimizeResumeAI(
+        resume
+      );
+
+    if (
+      !optimization ||
+      typeof optimization !==
+        "object"
+    ) {
+      return res.status(500).json({
+        success: false,
+        message:
+          "AI returned invalid resume optimization",
+        errors: {},
+      });
+    }
+
+    console.log(
+      "========== AI OPTIMIZATION RESULT =========="
+    );
+
+    console.log(
+      JSON.stringify(
+        optimization,
+        null,
+        2
+      )
+    );
+
+    // =========================================================
+    // STORE OPTIMIZATION
+    // =========================================================
+
+    resume.aiOptimization = {
+      address:
+        optimization.address || {
+          original:
+            resume.basicInfo?.address ||
+            "",
+
+          optimized:
+            resume.basicInfo?.address ||
+            "",
+
+          reason:
+            "No address change was necessary.",
+        },
+
+      professionalSummary:
+        optimization.professionalSummary || {
+          original:
+            resume.professionalSummary ||
+            "",
+
+          optimized:
+            resume.professionalSummary ||
+            "",
+
+          reason:
+            "No professional summary change was necessary.",
+        },
+
+      workExperiences:
+        optimization.workExperiences ||
+        [],
+
+      educations:
+        optimization.educations ||
+        [],
+
+      skills:
+        optimization.skills || {
+          original:
+            resume.skills || "",
+
+          optimized:
+            resume.skills || "",
+
+          reason:
+            "No skills change was necessary.",
+        },
+
+      projects:
+        optimization.projects ||
+        [],
+
+      certificates:
+        optimization.certificates || {
+          original:
+            resume.certificates ||
+            "",
+
+          optimized:
+            resume.certificates ||
+            "",
+
+          reason:
+            "No certificate change was necessary.",
+        },
+
+      changes:
+        optimization.changes ||
+        [],
+
+      generatedAt:
+        new Date(),
+    };
+
+    // =========================================================
+    // CREATE TEMPORARY OPTIMIZED RESUME
+    // =========================================================
+
+    const optimizedResumeData =
+      resume.toObject();
+
+    // =========================
+    // ADDRESS
+    // =========================
+
+    if (
+      optimization.address?.optimized !==
+      undefined
+    ) {
+      optimizedResumeData.basicInfo =
+        optimizedResumeData.basicInfo ||
+        {};
+
+      optimizedResumeData.basicInfo.address =
+        optimization.address.optimized;
+    }
+
+    // =========================
+    // PROFESSIONAL SUMMARY
+    // =========================
+
+    if (
+      optimization.professionalSummary
+        ?.optimized !== undefined
+    ) {
+      optimizedResumeData.professionalSummary =
+        optimization.professionalSummary.optimized;
+    }
+
+    // =========================
+    // SKILLS
+    // =========================
+
+    if (
+      optimization.skills?.optimized !==
+      undefined
+    ) {
+      optimizedResumeData.skills =
+        optimization.skills.optimized;
+    }
+
+    // =========================
+    // CERTIFICATES
+    // =========================
+
+    if (
+      optimization.certificates?.optimized !==
+      undefined
+    ) {
+      optimizedResumeData.certificates =
+        optimization.certificates.optimized;
+    }
+
+    // =========================
+    // WORK EXPERIENCES
+    // =========================
+
+    if (
+      Array.isArray(
+        optimization.workExperiences
+      )
+    ) {
+      optimizedResumeData.workExperiences =
+        optimizedResumeData.workExperiences ||
+        [];
+
+      optimization.workExperiences.forEach(
+        (optimizedExperience) => {
+          const index =
+            optimizedResumeData.workExperiences.findIndex(
+              (experience) =>
+                String(
+                  experience._id
+                ) ===
+                String(
+                  optimizedExperience.id
+                )
+            );
+
+          if (index === -1) {
+            return;
+          }
+
+          const original =
+            optimizedResumeData
+              .workExperiences[index];
+
+          const originalDescription =
+            original.description
+              ?.trim() || "";
+
+          // Only optimize description
+          // if the original had one.
+          if (
+            originalDescription &&
+            optimizedExperience.description !==
+              undefined
+          ) {
+            original.description =
+              optimizedExperience.description;
+          }
+
+          // Preserve original user data.
+          original.jobTitle =
+            original.jobTitle;
+
+          original.company =
+            original.company;
+
+          original.location =
+            original.location;
+
+          original.periodOfEmployment =
+            original.periodOfEmployment;
+
+          original.currentlyWorking =
+            original.currentlyWorking;
+        }
+      );
+    }
+
+    // =========================
+    // EDUCATION
+    // =========================
+
+    if (
+      Array.isArray(
+        optimization.educations
+      )
+    ) {
+      optimizedResumeData.educations =
+        optimizedResumeData.educations ||
+        [];
+
+      optimization.educations.forEach(
+        (optimizedEducation) => {
+          const index =
+            optimizedResumeData.educations.findIndex(
+              (education) =>
+                String(
+                  education._id
+                ) ===
+                String(
+                  optimizedEducation.id
+                )
+            );
+
+          if (index === -1) {
+            return;
+          }
+
+          const original =
+            optimizedResumeData
+              .educations[index];
+
+          const originalDescription =
+            original.description
+              ?.trim() || "";
+
+          // Only optimize description
+          // if the original had one.
+          if (
+            originalDescription &&
+            optimizedEducation.description !==
+              undefined
+          ) {
+            original.description =
+              optimizedEducation.description;
+          }
+
+          // Never allow AI to change
+          // the user's school year.
+          original.schoolYear =
+            original.schoolYear;
+        }
+      );
+    }
+
+    // =========================
+    // PROJECTS
+    // =========================
+
+    if (
+      Array.isArray(
+        optimization.projects
+      )
+    ) {
+      optimizedResumeData.projects =
+        optimizedResumeData.projects ||
+        [];
+
+      optimization.projects.forEach(
+        (optimizedProject) => {
+          const index =
+            optimizedResumeData.projects.findIndex(
+              (project) =>
+                String(
+                  project._id
+                ) ===
+                String(
+                  optimizedProject.id
+                )
+            );
+
+          if (index === -1) {
+            return;
+          }
+
+          const optimizedDescription =
+            optimizedProject.optimized
+              ?.trim();
+
+          if (
+            optimizedDescription
+          ) {
+            optimizedResumeData
+              .projects[index]
+              .projectDescription =
+              optimizedDescription;
+          }
+        }
+      );
+    }
+
+    // =========================================================
+    // AI ANALYSIS - OPTIMIZED VERSION
+    // =========================================================
+
+    console.log(
+      "========== AI ANALYZING OPTIMIZED RESUME =========="
+    );
+
+    const optimizedAnalysis =
+      await generateResumeAnalysis(
+        optimizedResumeData
+      );
+
+    if (
+      !optimizedAnalysis ||
+      typeof optimizedAnalysis.atsScore !==
+        "number"
+    ) {
+      return res.status(500).json({
+        success: false,
+        message:
+          "AI did not return a valid optimized ATS score",
+        errors: {},
+      });
+    }
+
+    console.log(
+      "Optimized ATS Score:",
+      optimizedAnalysis.atsScore
+    );
+
+    // =========================================================
+    // SCORE IMPROVEMENT
+    // =========================================================
+
+    const originalScore =
+      originalAnalysis.atsScore;
+
+    const optimizedScore =
+      optimizedAnalysis.atsScore;
+
+    const scoreImprovement =
+      optimizedScore -
+      originalScore;
+
+    // =========================================================
+    // STORE OPTIMIZED ANALYSIS
+    // =========================================================
+
+    resume.aiOptimization.optimizedAnalysis =
+      {
+        ...optimizedAnalysis,
+        generatedAt:
+          new Date(),
+      };
+
+    await resume.save();
+
+    // =========================================================
+    // SUCCESS
+    // =========================================================
+
+    console.log(
+      "========== IMPORT COMPLETE =========="
+    );
+
+    console.log(
+      "Original ATS:",
+      originalScore
+    );
+
+    console.log(
+      "Optimized ATS:",
+      optimizedScore
+    );
+
+    console.log(
+      "Improvement:",
+      scoreImprovement
+    );
+
+    return res.status(201).json({
+      success: true,
+
+      message:
+        "Resume imported, analyzed, and optimized successfully",
+
+      resume,
+
+      originalScore,
+
+      optimizedScore,
+
+      scoreImprovement,
+
+      originalAnalysis,
+
+      optimizedAnalysis,
+
+      optimization:
+        resume.aiOptimization,
+
+      errors: {},
+    });
+
+  } catch (error) {
+    console.error(
+      "Import resume error:",
+      error
+    );
+
+    return res.status(500).json({
+      success: false,
+      message:
+        error?.message ||
+        "Failed to import resume",
+      errors: {},
+    });
+  }
+};
+
 
 // STEP 1 - BASIC INFO
 const saveBasicInfo = async (req, res) => {
@@ -1525,6 +2521,7 @@ const exportResumePDF = async (req, res) => {
 };
 
 module.exports = {
+  importResume,
   createResume,
   getDraftResume,
   getResume,

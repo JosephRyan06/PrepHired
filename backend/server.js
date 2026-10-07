@@ -7,6 +7,7 @@ const connectDB = require("./config/db");
 const mobileAuthRoutes = require("./routes/mobileAuthRoutes");
 const resumeRoutes = require("./routes/resumeRoutes");
 const mockInterviewRoutes = require("./routes/mockInterviewRoutes");
+const progressRoutes = require("./routes/progressRoutes");
 
 const app = express();
 
@@ -16,6 +17,7 @@ app.use(express.json());
 app.use("/api/mobile/auth", mobileAuthRoutes);
 app.use("/api/mobile/resume", resumeRoutes);
 app.use("/api/mobile/mockInterview", mockInterviewRoutes);
+app.use("/api/mobile/progress", progressRoutes);
 
 
 const PORT = process.env.PORT || 5000;

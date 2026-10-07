@@ -83,31 +83,44 @@ const MyResumes = () => {
               ))}
             </>
           ) : resumes.length === 0 ? (
-            // NO RESUMES paddingVertical: 70
-            <View
-              style={{
-                width: "100%",
-                alignItems: "center",
-                justifyContent: "center",
-                paddingVertical: 30,
-              }}
-            >
-              <Ionicons
-                name="document-text-outline"
-                size={30}
-                color="#A1A1AA"
-              />
-              <Text
+              <View
                 style={{
-                  color: "#A1A1AA",
-                  fontSize: 14,
-                  fontWeight: "600",
-                  marginTop: 5,
+                  flex: 1,
+                  alignItems: "center",
+                  justifyContent: "center",
+                  paddingVertical: 50,
                 }}
               >
-                No resumes created yet
-              </Text>
-            </View>
+                <Ionicons
+                  name="document-text-outline"
+                  size={42}
+                  color="#71717A"
+                />
+    
+                <Text
+                  style={{
+                    color: "#F8FAFC",
+                    fontSize: 14,
+                    fontWeight: "700",
+                    marginTop: 12,
+                    textAlign: "center",
+                  }}
+                >
+                  No resume created yet
+                </Text>
+    
+                <Text
+                  style={{
+                    color: "#71717A",
+                    fontSize: 12,
+                    marginTop: 6,
+                    textAlign: "center",
+                  }}
+                >
+                  Complete a mock interview to see it
+                  here.
+                </Text>
+              </View>
           ) : (
             // RESUMES
             resumes.map((resume) => (

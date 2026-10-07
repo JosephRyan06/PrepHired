@@ -29,11 +29,15 @@ import AnswerTextFeedback from "../screens/Interview/AnswerTextFeedback";
 import SessionCompleted from "../screens/Interview/SessionCompleted";
 import ReviewAnswer from "../screens/Interview/ReviewAnswer";
 
+import UploadedAiGeneratedResume from "../screens/Resume/UploadResume/UploadedAiGeneratedResume";
 import CompletedResumePreview from "../screens/Resume/CompletedResumePreview";
 
 import InterviewHistory from "../screens/Profile/Preferences/InteviewHistory";
 import MyResumes from "../screens/Profile/Preferences/MyResumes";
 import CompletedResumePreviewProfile from "../screens/Profile/Preferences/CompletedResumePreviewProfile";
+
+import HelpFAQs from "../screens/Profile/Support/HelpsFAQs";
+import TermsPrivacy from "../screens/Profile/Support/TermsPrivacy";
 
 const Stack = createNativeStackNavigator();
 
@@ -41,7 +45,7 @@ export default function AppRoutes() {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="Home"
+        initialRouteName="Resume"
         screenOptions={{
           headerShown: false,
           animation: "none",
@@ -61,6 +65,7 @@ export default function AppRoutes() {
         <Stack.Screen name="Profile" component={ProfileScreen} />
 
         <Stack.Screen name="CompletedResumePreview" component={CompletedResumePreview} />
+        <Stack.Screen name="UploadedAiGeneratedResume" component={UploadedAiGeneratedResume} />
 
         <Stack.Screen name="BasicInfo" component={BasicInfo} />
         <Stack.Screen name="TargetJobPosition" component={TargetJobPosition} />
@@ -80,6 +85,9 @@ export default function AppRoutes() {
         <Stack.Screen name="MyResumes" component={MyResumes} />
         <Stack.Screen name="CompletedResumePreviewProfile" component={CompletedResumePreviewProfile} />
         <Stack.Screen name="InterviewHistory" component={InterviewHistory} />
+        <Stack.Screen name="HelpFAQs" component={HelpFAQs} />
+        <Stack.Screen name="TermsPrivacy" component={TermsPrivacy} />
+
 
       </Stack.Navigator>
     </NavigationContainer>

@@ -14,6 +14,7 @@ const { authenticateUser } = require("../middleware/mobileAuthMiddleware");
 
 const router = express.Router();
 
+
 router.post("/", authenticateUser, createMockInterview);
 router.get("/completed", authenticateUser, getCompletedMockInterviews);
 router.get("/:id", authenticateUser, getMockInterview);

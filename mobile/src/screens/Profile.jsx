@@ -132,7 +132,7 @@ const Profile = () => {
         <View style={styles.card}>
           <Text style={styles.sectionTitle}>SUPPORT</Text>
 
-          <TouchableOpacity style={styles.menuItem}>
+          <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate("HelpFAQs")}>
             <Ionicons name="help-circle-outline" size={22} color="#A1A1AA" />
 
             <Text style={styles.menuText}>Helps & FAQs</Text>
@@ -140,7 +140,7 @@ const Profile = () => {
             <Ionicons name="chevron-forward" size={20} color="#999" />
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.menuItem}>
+          <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate("TermsPrivacy")}>
             <Ionicons name="document-lock-outline" size={22} color="#A1A1AA" />
 
             <Text style={styles.menuText}>Terms & Privacy Policy</Text>

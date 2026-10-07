@@ -23,6 +23,7 @@ import * as Speech from "expo-speech";
 import InterviewHeader from "../../components/InterviewHeader";
 import Button from "../../components/Button";
 import LoadingModal from "../../components/LoadingModal";
+import AppModal from "../../components/AppModal";
 import styles from "../../styles/global";
 
 import useMockInterview from "../../hooks/useMockInterview";
@@ -54,24 +55,18 @@ const QuestionAndAnswer = () => {
     loading,
   } = useMockInterview();
 
-  const [currentQuestion, setCurrentQuestion] =
-    useState(1);
+  const [currentQuestion, setCurrentQuestion] = useState(1);
 
-  const [response, setResponse] =
-    useState("");
+  const [response, setResponse] = useState("");
 
-  const [timeLeft, setTimeLeft] =
-    useState(60);
+  const [timeLeft, setTimeLeft] = useState(60);
 
-  const [answerError, setAnswerError] =
-    useState("");
+  const [answerError, setAnswerError] = useState("");
 
-  const [isSpeaking, setIsSpeaking] =
-    useState(false);
+  const [isSpeaking, setIsSpeaking] = useState(false);
 
-  // --------------------------------
-  // REFS
-  // --------------------------------
+  const [ modalVisible, setModalVisible ] = useState(false);
+  const [ modalMessage, setModalMessage ] = useState("");
 
   // Prevent double submission / timeout
   const processingRef = useRef(false);
@@ -79,9 +74,6 @@ const QuestionAndAnswer = () => {
   // Prevent timeout from firing multiple times
   const timeoutHandledRef = useRef(false);
 
-  // --------------------------------
-  // QUESTION HANDLER
-  // --------------------------------
 
   const {
     questions,

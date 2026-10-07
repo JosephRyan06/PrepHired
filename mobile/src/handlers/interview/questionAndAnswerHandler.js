@@ -13,6 +13,7 @@ export const questionAndAnswerHandler = ({
 
   saveAnswer,
   analyzeAnswer,
+  analyzeSession,
   complete,
 
   processingRef,
@@ -29,13 +30,8 @@ export const questionAndAnswerHandler = ({
   const currentQuestionText =
     currentQuestionData?.question || "";
 
-  // --------------------------------
-  // SAVE / ANALYZE / NEXT / COMPLETE
-  // --------------------------------
-
   const handleSaveAndContinue =
     async () => {
-      // Prevent duplicate calls
       if (processingRef?.current) {
         return;
       }
@@ -70,6 +66,9 @@ export const questionAndAnswerHandler = ({
       }
 
       try {
+        // --------------------------------
+        // SAVE ANSWER
+        // --------------------------------
 
         const savedResult =
           await saveAnswer({
@@ -91,6 +90,9 @@ export const questionAndAnswerHandler = ({
               ),
           });
 
+        // --------------------------------
+        // ANALYZE ANSWER
+        // --------------------------------
 
         const answerAnalysis =
           await analyzeAnswer({
@@ -101,13 +103,26 @@ export const questionAndAnswerHandler = ({
               currentQuestion,
           });
 
+        // --------------------------------
+        // FINAL QUESTION
+        // --------------------------------
 
         if (
           currentQuestion >=
           totalQuestions
         ) {
+          // Complete interview only
+          // AFTER saving and analyzing
+          // the final answer.
           const completedResult =
             await complete(
+              mockInterview._id,
+            );
+
+          // Analyze the complete session
+          // AFTER the interview is completed.
+          const sessionAnalysis =
+            await analyzeSession(
               mockInterview._id,
             );
 
@@ -118,6 +133,7 @@ export const questionAndAnswerHandler = ({
                 mockInterview._id,
 
               mockInterview:
+                sessionAnalysis?.mockInterview ||
                 completedResult?.mockInterview ||
                 answerAnalysis?.mockInterview ||
                 savedResult?.mockInterview ||
@@ -127,6 +143,10 @@ export const questionAndAnswerHandler = ({
 
           return;
         }
+
+        // --------------------------------
+        // NEXT QUESTION
+        // --------------------------------
 
         const nextQuestion =
           currentQuestion + 1;
@@ -156,13 +176,11 @@ export const questionAndAnswerHandler = ({
             "Something went wrong while saving or analyzing your answer.",
         );
       } finally {
-
         if (processingRef) {
           processingRef.current = false;
         }
       }
     };
-
 
   const handleTimeOut = async () => {
     if (timeLeft > 0) {
@@ -176,7 +194,6 @@ export const questionAndAnswerHandler = ({
       return;
     }
 
-    // Prevent duplicate processing
     if (processingRef?.current) {
       return;
     }
@@ -186,10 +203,64 @@ export const questionAndAnswerHandler = ({
     }
 
     try {
+      const trimmedAnswer =
+        response?.trim() || "";
 
-      if (currentQuestion >= totalQuestions) {
+      // --------------------------------
+      // FINAL QUESTION TIMEOUT
+      // --------------------------------
+
+      if (
+        currentQuestion >=
+        totalQuestions
+      ) {
+        let savedResult = null;
+        let answerAnalysis = null;
+
+        // If an answer exists, save it
+        // before completing the interview.
+        if (trimmedAnswer) {
+          savedResult =
+            await saveAnswer({
+              interviewId:
+                mockInterview._id,
+
+              questionNumber:
+                currentQuestion,
+
+              answer:
+                trimmedAnswer,
+
+              audioUrl: "",
+
+              timeUsed: 60,
+            });
+
+          // Analyze the final answer
+          // before completing the interview.
+          answerAnalysis =
+            await analyzeAnswer({
+              interviewId:
+                mockInterview._id,
+
+              questionNumber:
+                currentQuestion,
+            });
+        }
+
+        // Complete only after the final
+        // answer has been handled.
         const completedResult =
-          await complete(mockInterview._id);
+          await complete(
+            mockInterview._id,
+          );
+
+        // Analyze the complete session
+        // after completion.
+        const sessionAnalysis =
+          await analyzeSession(
+            mockInterview._id,
+          );
 
         navigation.navigate(
           "SessionCompleted",
@@ -198,7 +269,10 @@ export const questionAndAnswerHandler = ({
               mockInterview._id,
 
             mockInterview:
+              sessionAnalysis?.mockInterview ||
               completedResult?.mockInterview ||
+              answerAnalysis?.mockInterview ||
+              savedResult?.mockInterview ||
               mockInterview,
           },
         );
@@ -206,15 +280,47 @@ export const questionAndAnswerHandler = ({
         return;
       }
 
+      // --------------------------------
+      // NEXT QUESTION
+      // --------------------------------
+
+      if (trimmedAnswer) {
+        await saveAnswer({
+          interviewId:
+            mockInterview._id,
+
+          questionNumber:
+            currentQuestion,
+
+          answer:
+            trimmedAnswer,
+
+          audioUrl: "",
+
+          timeUsed: 60,
+        });
+
+        await analyzeAnswer({
+          interviewId:
+            mockInterview._id,
+
+          questionNumber:
+            currentQuestion,
+        });
+      }
+
       const nextQuestion =
         currentQuestion + 1;
 
       setResponse("");
+
       setAnswerError("");
+
       setTimeLeft(60);
 
-      setCurrentQuestion(nextQuestion);
-
+      setCurrentQuestion(
+        nextQuestion,
+      );
     } catch (error) {
       console.error(
         "Timeout error:",
@@ -231,7 +337,6 @@ export const questionAndAnswerHandler = ({
       }
     }
   };
-
 
   return {
     questions,

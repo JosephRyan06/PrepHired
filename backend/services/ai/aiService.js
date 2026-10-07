@@ -1,5 +1,40 @@
 const PYTHON_AI_URL = process.env.PYTHON_AI_URL;
 
+const parseImportedResume = async (extractedText) => {
+  const response = await fetch(`${PYTHON_AI_URL}/parse-resume`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      extractedText: extractedText || "",
+    }),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    const error = new Error(
+      data?.detail?.message ||
+        data?.message ||
+        data?.detail ||
+        "Failed to parse imported resume",
+    );
+
+    error.status = response.status;
+    error.retryAfter = data?.detail?.retryAfter || null;
+
+    throw error;
+  }
+
+  console.log(
+    "AI Parsed Resume Response:",
+    JSON.stringify(data, null, 2),
+  );
+
+  return data.resume;
+};
+
 const generateProfessionalSummary = async (resume) => {
   try {
     const response = await fetch(`${PYTHON_AI_URL}/generate-summary`, {
@@ -324,6 +359,7 @@ const validateTargetJob = async ({
 
 
 module.exports = {
+  parseImportedResume,
   generateProfessionalSummary,
   generateResumeAnalysis,
   optimizeResume,

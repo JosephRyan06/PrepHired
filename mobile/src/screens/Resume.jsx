@@ -7,23 +7,30 @@ import {
   ScrollView,
   ActivityIndicator,
 } from "react-native";
+import { Blob } from 'expo-blob';
 import * as DocumentPicker from "expo-document-picker";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 
 import { Ionicons } from "@expo/vector-icons";
+
+import LoadingModal from "../components/LoadingModal";
 import Button from "../components/Button";
+import AppModal from "../components/AppModal";
 import BottomNav from "../components/BottomNav";
 import ResumeTemplate from "../template/ResumeTemplate";
 
 import styles from "../styles/global";
 
 import useResume from "../hooks/useResume";
+import { uploadResumeHandler } from "../handlers/resume/uploadResumeHandler";
 
 const Resume = () => {
   const navigation = useNavigation();
-
-  const { getCompletedResumes, loading } = useResume();
-
+  
+  const { getCompletedResumes, importResumeFile, loading } = useResume();
+  const [uploadingResume, setUploadingResume] = useState(false);
+  const [ modalVisible, setModalVisible ] = useState(false);
+  const [ modalMessage, setMessage ] = useState("");
   const [resumes, setResumes] = useState([]);
 
   useFocusEffect(
@@ -31,6 +38,7 @@ const Resume = () => {
       loadCompletedResumes();
     }, []),
   );
+
   const loadCompletedResumes = async () => {
     const result = await getCompletedResumes();
 
@@ -41,32 +49,14 @@ const Resume = () => {
     }
   };
 
-  const handleUploadResume = async () => {
-    try {
-      const result = await DocumentPicker.getDocumentAsync({
-        type: [
-          "application/pdf",
-          "application/msword",
-          "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-        ],
-        copyToCacheDirectory: true,
-        multiple: false,
-      });
+  const { handleUploadResume } = uploadResumeHandler({
+    setUploadingResume,
+    importResumeFile,
+    setModalVisible,
+    setMessage,
+    navigation,
+  });
 
-      if (!result.canceled) {
-        const file = result.assets[0];
-
-        console.log("Selected file:", file);
-
-        // file.uri
-        // file.name
-        // file.mimeType
-        // file.size
-      }
-    } catch (error) {
-      console.error("Document picker error:", error);
-    }
-  };
 
   return (
     <View style={styles.container}>
@@ -253,6 +243,19 @@ const Resume = () => {
       </ScrollView>
 
       <BottomNav active="resume" />
+
+      <AppModal
+        visible={modalVisible}
+        message={modalMessage}
+        onClose={() => setModalVisible(false)}
+      />
+
+      <LoadingModal
+        visible={uploadingResume}
+        title="Processing Your Resume"
+        message="Please wait while we process your resume."
+        icon="sparkles-outline"
+      />
     </View>
   );
 };

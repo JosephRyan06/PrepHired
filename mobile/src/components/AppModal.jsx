@@ -152,6 +152,31 @@ export default function AppModal({ visible, message = "", onClose }) {
       };
     }
 
+    if (message.includes("The uploaded file is not a valid resume.")) {
+      return {
+        icon: "sad-outline",
+        color: "#EF4444",
+        title: "Invalid Resume",
+      };
+    }
+
+    if (message.includes("The name on the resume does not match your account name.")) {
+      return {
+        icon: "sad-outline",
+        color: "#EF4444",
+        title: "Resume Mismatch",
+      };
+    }
+
+    if (message.includes("The uploaded resume does not belong to your account.")) {
+      return {
+        icon: "sad-outline",
+        color: "#EF4444",
+        title: "Resume Mismatch",
+      };
+    }
+
+
     // Default error
     return {
       icon: "alert-circle-outline",

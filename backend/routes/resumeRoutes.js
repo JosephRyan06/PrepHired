@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const {
+  importResume,
   createResume,
   getDraftResume,
   getResume,
@@ -20,7 +21,15 @@ const {
 } = require("../controller/resumeController");
 
 const { authenticateUser } = require("../middleware/mobileAuthMiddleware");
+const uploadResume  = require("../middleware/uploadResume");
 
+router.post(
+  "/upload",
+  authenticateUser,
+  uploadResume.single("resume"),
+  importResume
+);
+          
 router.post("/", authenticateUser, createResume);
 router.get("/draft", authenticateUser, getDraftResume);
 router.get("/:id/export-pdf", authenticateUser, exportResumePDF);
