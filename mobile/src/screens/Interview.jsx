@@ -87,30 +87,28 @@ const Interview = () => {
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        {/* HEADER */}
-        <View style={{ marginBottom: 24 }}>
-          <Text
-            style={{
-              color: "#F8FAFC",
-              fontSize: 28,
-              fontWeight: "800",
-              marginBottom: 8,
-            }}
-          >
-            Mock Interview
-          </Text>
+      
+        <Text
+          style={{
+            color: "#F8FAFC",
+            fontWeight: "800",
+            fontSize: 24,
+          }}
+        >
+          Mock Interview
+        </Text>
 
-          <Text
-            style={{
-              color: "#71717A",
-              fontSize: 14,
-              lineHeight: 21,
-            }}
-          >
-            Practice answering interview questions and get AI-powered
-            feedback on your responses.
-          </Text>
-        </View>
+        <Text
+          style={{
+            color: "#71717A",
+            fontSize: 13,
+            marginTop: 5,
+            marginBottom: 18,
+          }}
+        >
+          Practice answering interview questions and get AI-powered
+          feedback on your responses.
+        </Text>
 
         {/* TARGET JOB */}
         <View>

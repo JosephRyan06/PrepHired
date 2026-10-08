@@ -83,6 +83,23 @@ export default function AppModal({ visible, message = "", onClose }) {
       };
     }
 
+    if (message.includes("Password changed successfully")) {
+      return {
+        icon: "checkmark-circle",
+        color: "#2563EB",
+        title: "Success",
+      };
+    }
+
+    if (message.includes("Account deleted successfully")) {
+      return {
+        icon: "checkmark-circle",
+        color: "#2563EB",
+        title: "Success",
+      };
+    }
+
+
     // Registration rate limit
     if (
       message.includes(

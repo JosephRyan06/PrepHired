@@ -3,6 +3,8 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
 const User = require("../models/user");
+const Resume = require("../models/resume");
+const MockInterview = require("../models/mockInterview");
 
 const { sendPasswordResetOtp } = require("../services/emailService");
 
@@ -661,6 +663,214 @@ const resendOtp = async (req, res) => {
   }
 };
 
+const changePassword = async (req, res) => {
+  try {
+    const {
+      currentPassword,
+      newPassword,
+      confirmPassword,
+    } = req.body;
+
+    const errors = {};
+
+    if (!currentPassword) {
+      errors.currentPassword = "Current password is required";
+    }
+
+    if (!newPassword) {
+      errors.newPassword = "New password is required";
+    }
+
+    if (!confirmPassword) {
+      errors.confirmPassword = "Please confirm your new password";
+    }
+
+    // Password length
+    if (newPassword && newPassword.length < 8) {
+      errors.newPassword =
+        "Password must be at least 8 characters long";
+    }
+
+    // Password cannot contain spaces
+    if (newPassword && /\s/.test(newPassword)) {
+      errors.newPassword = "Password must not contain spaces";
+    }
+
+    // Confirm password
+    if (
+      newPassword &&
+      confirmPassword &&
+      newPassword !== confirmPassword
+    ) {
+      errors.confirmPassword = "Passwords do not match";
+    }
+
+    // Return validation errors
+    if (Object.keys(errors).length > 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Validation failed",
+        errors,
+      });
+    }
+
+    // req.user comes from authenticateUser middleware
+    const user = await User.findById(req.user._id);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+        errors: {},
+      });
+    }
+
+    if (!user.isEnabled) {
+      return res.status(403).json({
+        success: false,
+        message: "Your account has been disabled",
+        errors: {},
+      });
+    }
+
+    const isCurrentPasswordValid = await bcrypt.compare(
+      currentPassword,
+      user.password
+    );
+
+    if (!isCurrentPasswordValid) {
+      return res.status(401).json({
+        success: false,
+        message: "Current password is incorrect",
+        errors: {
+          currentPassword: "Current password is incorrect",
+        },
+      });
+    }
+
+    const isSamePassword = await bcrypt.compare(
+      newPassword,
+      user.password
+    );
+
+    if (isSamePassword) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "New password must be different from your current password",
+        errors: {
+          newPassword:
+            "New password must be different from your current password",
+        },
+      });
+    }
+
+    const hashedPassword = await bcrypt.hash(
+      newPassword,
+      10
+    );
+
+    user.password = hashedPassword;
+
+    // Clear password reset information
+    user.resetOtpHash = null;
+    user.resetOtpExpires = null;
+    user.resetOtpAttempts = 0;
+
+    user.resetTokenHash = null;
+    user.resetTokenExpires = null;
+
+    await user.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Password changed successfully",
+    });
+  } catch (error) {
+    console.error("Change password error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Unable to change password",
+      errors: {},
+    });
+  }
+};
+
+const deleteAccount = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const { currentPassword } = req.body;
+
+    if (!currentPassword) {
+      return res.status(400).json({
+        success: false,
+        message: "Current password is required",
+        errors: {},
+      });
+    }
+
+    // Find user
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+        errors: {},
+      });
+    }
+
+    if (!user.isEnabled) {
+      return res.status(403).json({
+        success: false,
+        message: "Your account has already been disabled",
+        errors: {},
+      });
+    }
+
+    // Verify current password
+    const isPasswordValid = await bcrypt.compare(
+      currentPassword,
+      user.password
+    );
+
+    if (!isPasswordValid) {
+      return res.status(401).json({
+        success: false,
+        message: "Incorrect current password",
+        errors: {},
+      });
+    }
+
+    // Delete user's resumes
+    await Resume.deleteMany({
+      userId: userId,
+    });
+
+    // Delete user's mock interviews
+    await MockInterview.deleteMany({
+      userId: userId,
+    });
+
+    // Delete user
+    await User.findByIdAndDelete(userId);
+
+    return res.status(200).json({
+      success: true,
+      message: "Account deleted successfully.",
+    });
+  } catch (error) {
+    console.error("Delete account error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Unable to delete account",
+      errors: {},
+    });
+  }
+};
+
 module.exports = {
   register,
   login,
@@ -668,4 +878,6 @@ module.exports = {
   verifyOtp,
   resetPassword,
   resendOtp,
+  changePassword,
+  deleteAccount
 };

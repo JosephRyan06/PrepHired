@@ -1,4 +1,5 @@
 import { API_URL } from "../config/api";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const loginUser = async (email, password) => {
   const response = await fetch(`${API_URL}/mobile/auth/login`, {
@@ -125,6 +126,66 @@ export const resendOtp = async (email) => {
     },
     body: JSON.stringify({
       email,
+    }),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw {
+      message: data.message,
+      errors: data.errors || {},
+    };
+  }
+
+  return data;
+};
+
+export const changePassword = async (
+  currentPassword,
+  newPassword,
+  confirmPassword,
+  token
+) => {
+  const response = await fetch(
+    `${API_URL}/mobile/auth/change-password`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        currentPassword,
+        newPassword,
+        confirmPassword,
+      }),
+    }
+  );
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw {
+      message: data.message,
+      errors: data.errors || {},
+    };
+  }
+
+  return data;
+};
+
+export const deleteAccount = async (currentPassword) => {
+  const token = await AsyncStorage.getItem("token");
+
+  const response = await fetch(`${API_URL}/mobile/auth/delete-account`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      currentPassword,
     }),
   });
 

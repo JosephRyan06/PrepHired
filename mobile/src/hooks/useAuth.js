@@ -6,6 +6,8 @@ import {
   verifyOtp as verifyOtpApi,
   resetPassword as resetPasswordApi,
   resendOtp as resendOtpApi,
+  changePassword as changePasswordApi,
+  deleteAccount as deleteAccountApi,
 } from "../api/mobileAuth";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -147,6 +149,75 @@ const useAuth = () => {
     }
   };
 
+  const changePassword = async (
+    currentPassword,
+    newPassword,
+    confirmPassword
+  ) => {
+    setLoading(true);
+
+    try {
+      // Get JWT token saved during login
+      const token = await AsyncStorage.getItem("token");
+
+      if (!token) {
+        return {
+          success: false,
+          message: "You are not logged in",
+          errors: {},
+        };
+      }
+
+      // Call API
+      const data = await changePasswordApi(
+        currentPassword,
+        newPassword,
+        confirmPassword,
+        token
+      );
+
+      return {
+        success: true,
+        message: data.message,
+        errors: {},
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message:
+          error.message || "Unable to change password",
+        errors: error.errors || {},
+      };
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const deleteAccount = async (currentPassword) => {
+    setLoading(true);
+
+    try {
+      const data = await deleteAccountApi(currentPassword);
+
+      await AsyncStorage.removeItem("token");
+      await AsyncStorage.removeItem("user");
+
+      return {
+        success: true,
+        message: data.message,
+        errors: {},
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: error.message || "Unable to delete account",
+        errors: error.errors || {},
+      };
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return {
     login,
     register,
@@ -154,6 +225,8 @@ const useAuth = () => {
     verifyOtp,
     resetPassword,
     resendOtp,
+    changePassword,
+    deleteAccount,
     loading,
   };
 };

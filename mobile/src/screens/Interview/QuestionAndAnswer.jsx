@@ -176,10 +176,6 @@ const QuestionAndAnswer = () => {
     }
   };
 
-  // --------------------------------
-  // RESET QUESTION STATE
-  // --------------------------------
-
   useEffect(() => {
     // Reset timer
     setTimeLeft(60);
@@ -199,9 +195,6 @@ const QuestionAndAnswer = () => {
     setIsSpeaking(false);
   }, [currentQuestion]);
 
-  // --------------------------------
-  // AUTO PLAY QUESTION
-  // --------------------------------
 
   useEffect(() => {
     if (!currentQuestionText) {
@@ -221,10 +214,6 @@ const QuestionAndAnswer = () => {
       setIsSpeaking(false);
     };
   }, [currentQuestionText]);
-
-  // --------------------------------
-  // TIMER
-  // --------------------------------
 
   useEffect(() => {
     if (timeLeft <= 0) {
@@ -246,10 +235,6 @@ const QuestionAndAnswer = () => {
       clearInterval(timer);
     };
   }, [timeLeft]);
-
-  // --------------------------------
-  // AUTO TIMEOUT
-  // --------------------------------
 
   useEffect(() => {
     if (timeLeft !== 0) {
@@ -275,18 +260,6 @@ const QuestionAndAnswer = () => {
       await stopQuestionSpeech();
 
       try {
-        /*
-         * handleTimeOut should handle the timeout
-         * without requiring an answer.
-         *
-         * For a normal unanswered timeout:
-         * Question 1 -> Question 2
-         * Question 2 -> Question 3
-         * etc.
-         *
-         * On the final question, it should finish
-         * the interview according to your handler.
-         */
         await handleTimeOut();
       } catch (error) {
         console.error(
@@ -302,10 +275,6 @@ const QuestionAndAnswer = () => {
     processTimeout();
   }, [timeLeft]);
 
-  // --------------------------------
-  // REPLAY QUESTION
-  // --------------------------------
-
   const handleReplayQuestion = async () => {
     if (!currentQuestionText) {
       return;
@@ -315,18 +284,10 @@ const QuestionAndAnswer = () => {
     await speakQuestion();
   };
 
-  // --------------------------------
-  // END INTERVIEW
-  // --------------------------------
-
   const handleEndInterview = async () => {
     // Stop speech before leaving the screen
     await stopQuestionSpeech();
   };
-
-  // --------------------------------
-  // STOP SPEECH ON UNMOUNT
-  // --------------------------------
 
   useEffect(() => {
     return () => {
@@ -334,9 +295,6 @@ const QuestionAndAnswer = () => {
     };
   }, []);
 
-  // --------------------------------
-  // UI
-  // --------------------------------
 
   return (
     <View style={styles.container}>

@@ -5,7 +5,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
-  ActivityIndicator,
+  RefreshControl,
 } from "react-native";
 
 import { useNavigation } from "@react-navigation/native";
@@ -18,12 +18,14 @@ import styles from "../styles/global";
 import getUserHandler from "../handlers/user/getUserHandler";
 import useResume from "../hooks/useResume";
 import useMockInterview from "../hooks/useMockInterview";
+import useProgress from "../hooks/useProgress";
 
 const Home = () => {
   const navigation = useNavigation();
 
   const [user, setUser] = useState(null);
   const [dashboardLoading, setDashboardLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
 
   const [resumeData, setResumeData] = useState([]);
   const [interviewData, setInterviewData] = useState([]);
@@ -31,97 +33,100 @@ const Home = () => {
   const { getCompletedResumes } = useResume();
   const { getCompleted } = useMockInterview();
 
-  useEffect(() => {
-    const loadUser = async () => {
-      try {
-        const userData = await getUserHandler();
-        setUser(userData);
-      } catch (error) {
-        console.error("Failed to load user:", error);
-      }
-    };
+  const {
+    progress,
+    loading: progressLoading,
+    refetch: refetchProgress,
+  } = useProgress();
 
+  const loadUser = async () => {
+    try {
+      const userData = await getUserHandler();
+      setUser(userData);
+    } catch (error) {
+      console.error("Failed to load user:", error);
+    }
+  };
+
+  const loadDashboardData = async () => {
+    try {
+      setDashboardLoading(true);
+
+      const [resumeResult, interviewResult] = await Promise.all([
+        getCompletedResumes(),
+        getCompleted(),
+      ]);
+
+      setResumeData(resumeResult?.resumes || []);
+
+      setInterviewData(
+        interviewResult?.mockInterviews ||
+          interviewResult?.interviews ||
+          []
+      );
+    } catch (error) {
+      console.error("Failed to load dashboard data:", error);
+    } finally {
+      setDashboardLoading(false);
+    }
+  };
+
+  useEffect(() => {
     loadUser();
-  }, []);
-
-  useEffect(() => {
-    const loadDashboardData = async () => {
-      try {
-        setDashboardLoading(true);
-
-        const [resumeResult, interviewResult] = await Promise.all([
-          getCompletedResumes(),
-          getCompleted(),
-        ]);
-
-        setResumeData(resumeResult?.resumes || []);
-
-        setInterviewData(
-          interviewResult?.mockInterviews ||
-            interviewResult?.interviews ||
-            []
-        );
-      } catch (error) {
-        console.error("Failed to load dashboard data:", error);
-      } finally {
-        setDashboardLoading(false);
-      }
-    };
-
     loadDashboardData();
   }, []);
 
-  // ==========================================
-  // COMPLETED INTERVIEWS
-  // ==========================================
+  const onRefresh = async () => {
+    try {
+      setRefreshing(true);
+
+      await Promise.all([
+        loadUser(),
+        loadDashboardData(),
+        refetchProgress?.(),
+      ]);
+    } catch (error) {
+      console.error("Failed to refresh dashboard:", error);
+    } finally {
+      setRefreshing(false);
+    }
+  };
 
   const completedInterviews = interviewData.filter(
     (interview) => interview?.status === "completed"
   );
 
-  // ==========================================
-  // LATEST RESUME
-  // ==========================================
-
   const latestResume = resumeData?.[0];
 
-  const atsScore = Number(latestResume?.aiAnalysis?.atsScore || 0);
-
-  // ==========================================
-  // INTERVIEW SCORE
-  // ==========================================
+  const atsScore = Number(
+    progress?.resume?.atsScore ??
+      latestResume?.aiAnalysis?.atsScore ??
+      0
+  );
 
   const interviewScores = completedInterviews
     .map((interview) => Number(interview?.overallScore || 0))
     .filter((score) => score > 0);
 
-  const interviewAverage =
+  const calculatedInterviewAverage =
     interviewScores.length > 0
       ? Math.round(
-          interviewScores.reduce((total, score) => total + score, 0) /
-            interviewScores.length
+          interviewScores.reduce(
+            (total, score) => total + score,
+            0
+          ) / interviewScores.length
         )
       : 0;
 
-  // ==========================================
-  // EMPLOYMENT READINESS
-  // ==========================================
+  const interviewAverage = Number(
+    progress?.interviews?.averageScore ??
+      calculatedInterviewAverage ??
+      0
+  );
 
-  let employmentReadiness = 0;
-
-  if (atsScore > 0 && interviewAverage > 0) {
-    employmentReadiness = Math.round(
-      atsScore * 0.5 + interviewAverage * 0.5
-    );
-  } else if (atsScore > 0) {
-    employmentReadiness = Math.round(atsScore * 0.5);
-  } else if (interviewAverage > 0) {
-    employmentReadiness = Math.round(interviewAverage * 0.5);
-  }
-
-  // ==========================================
-  // READINESS MESSAGE
-  // ==========================================
+  const employmentReadiness = Number(
+    progress?.employmentReadiness || 0
+  );
 
   const getReadinessMessage = () => {
     if (employmentReadiness >= 90) {
@@ -143,10 +148,6 @@ const Home = () => {
     return "Start building your resume and practicing interviews.";
   };
 
-  // ==========================================
-  // RECENT ACTIVITY
-  // ==========================================
-
   const recentActivities = [];
 
   if (latestResume) {
@@ -158,7 +159,9 @@ const Home = () => {
         ? `Target role: ${latestResume.targetJob.jobTitle}`
         : "Your resume is ready",
       score:
-        atsScore > 0 ? `ATS Score: ${atsScore}%` : "Resume completed",
+        atsScore > 0
+          ? `ATS Score: ${atsScore}%`
+          : "Resume completed",
     });
   }
 
@@ -179,16 +182,28 @@ const Home = () => {
     });
   }
 
+  const loading = dashboardLoading || progressLoading;
+
   return (
     <View style={styles.container}>
       <ScrollView
-        contentContainerStyle={styles.scrollContent}
+        contentContainerStyle={[
+          styles.scrollContent,
+          {
+            paddingBottom: 110,
+          },
+        ]}
         showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            tintColor="#F8FAFC"
+            colors={["#F8FAFC"]}
+            progressBackgroundColor="#25252F"
+          />
+        }
       >
-        {/* ==========================================
-            HEADER
-        ========================================== */}
-
         <View style={styles.header}>
           <View style={styles.headerText}>
             <Text style={styles.greeting}>Good day,</Text>
@@ -212,10 +227,6 @@ const Home = () => {
           </TouchableOpacity>
         </View>
 
-        {/* ==========================================
-            EMPLOYMENT READINESS
-        ========================================== */}
-
         <View style={styles.employmentReadinessCard}>
           <View
             style={{
@@ -235,7 +246,7 @@ const Home = () => {
               EMPLOYMENT READINESS
             </Text>
 
-            {!dashboardLoading && (
+            {!loading && (
               <Text
                 style={{
                   color: "#F8FAFC",
@@ -248,45 +259,52 @@ const Home = () => {
             )}
           </View>
 
-          <View style={styles.line}>
-            <View
-              style={[
-                styles.percent,
-                {
-                  width: `${employmentReadiness}%`,
-                },
-              ]}
-            />
-          </View>
-
-          {dashboardLoading ? (
-            <View
-              style={{
-                marginTop: 12,
-                alignItems: "flex-start",
-              }}
-            >
-              <ActivityIndicator
-                size="small"
-                color="#F8FAFC"
+          {loading ? (
+            <>
+              <View
+                style={{
+                  height: 8,
+                  backgroundColor: "#3F3F46",
+                  borderRadius: 10,
+                  overflow: "hidden",
+                }}
               />
-            </View>
+
+              <View
+                style={{
+                  width: "70%",
+                  height: 13,
+                  backgroundColor: "#3F3F46",
+                  borderRadius: 6,
+                  marginTop: 12,
+                }}
+              />
+            </>
           ) : (
-            <Text
-              style={{
-                color: "#71717A",
-                fontSize: 13,
-                marginTop: 10,
-              }}
-            >
-              {getReadinessMessage()}
-            </Text>
+            <>
+              <View style={styles.line}>
+                <View
+                  style={[
+                    styles.percent,
+                    {
+                      width: `${employmentReadiness}%`,
+                    },
+                  ]}
+                />
+              </View>
+
+              <Text
+                style={{
+                  color: "#71717A",
+                  fontSize: 13,
+                  marginTop: 10,
+                }}
+              >
+                {getReadinessMessage()}
+              </Text>
+            </>
           )}
         </View>
-
-        {/* ==========================================
-            QUICK ACTIONS
-        ========================================== */}
 
         <Text
           style={{
@@ -403,10 +421,6 @@ const Home = () => {
           </TouchableOpacity>
         </View>
 
-        {/* ==========================================
-            RECENT ACTIVITY
-        ========================================== */}
-
         <Text
           style={{
             color: "#F8FAFC",
@@ -419,17 +433,54 @@ const Home = () => {
         </Text>
 
         <View style={homeStyles.activityContainer}>
-          {dashboardLoading ? (
-            <View style={homeStyles.emptyActivity}>
-              <ActivityIndicator
-                size="small"
-                color="#F8FAFC"
-              />
+          {loading ? (
+            <>
+              {[1, 2].map((item) => (
+                <View
+                  key={item}
+                  style={homeStyles.activityItem}
+                >
+                  <View
+                    style={[
+                      homeStyles.activityIcon,
+                      {
+                        backgroundColor: "#3F3F46",
+                      },
+                    ]}
+                  />
 
-              <Text style={homeStyles.emptyActivityText}>
-                Loading activity...
-              </Text>
-            </View>
+                  <View style={homeStyles.activityContent}>
+                    <View
+                      style={{
+                        width: "65%",
+                        height: 14,
+                        backgroundColor: "#3F3F46",
+                        borderRadius: 6,
+                      }}
+                    />
+
+                    <View
+                      style={{
+                        width: "85%",
+                        height: 11,
+                        backgroundColor: "#3F3F46",
+                        borderRadius: 6,
+                        marginTop: 7,
+                      }}
+                    />
+                  </View>
+
+                  <View
+                    style={{
+                      width: 55,
+                      height: 11,
+                      backgroundColor: "#3F3F46",
+                      borderRadius: 6,
+                    }}
+                  />
+                </View>
+              ))}
+            </>
           ) : recentActivities.length === 0 ? (
             <View style={homeStyles.emptyActivity}>
               <View style={homeStyles.emptyIcon}>

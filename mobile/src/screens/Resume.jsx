@@ -2,13 +2,10 @@ import React, { useEffect, useState, useCallback } from "react";
 import {
   View,
   Text,
-  StyleSheet,
   TouchableOpacity,
   ScrollView,
-  ActivityIndicator,
+  RefreshControl,
 } from "react-native";
-import { Blob } from 'expo-blob';
-import * as DocumentPicker from "expo-document-picker";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 
 import { Ionicons } from "@expo/vector-icons";
@@ -32,6 +29,7 @@ const Resume = () => {
   const [ modalVisible, setModalVisible ] = useState(false);
   const [ modalMessage, setMessage ] = useState("");
   const [resumes, setResumes] = useState([]);
+  const [refreshing, setRefreshing] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
@@ -49,6 +47,15 @@ const Resume = () => {
     }
   };
 
+  const onRefresh = async () => {
+    try {
+      setRefreshing(true);
+      await loadCompletedResumes();
+    } finally {
+      setRefreshing(false);
+    }
+  };
+
   const { handleUploadResume } = uploadResumeHandler({
     setUploadingResume,
     importResumeFile,
@@ -63,12 +70,35 @@ const Resume = () => {
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            tintColor="#F8FAFC"
+            colors={["#F8FAFC"]}
+            progressBackgroundColor="#25252F"
+          />
+        }
       >
-        <Text style={{ color: "#F8FAFC", fontWeight: "700", fontSize: 22 }}>
+      
+        <Text
+          style={{
+            color: "#F8FAFC",
+            fontWeight: "800",
+            fontSize: 24,
+          }}
+        >
           Resume Builder
         </Text>
 
-        <Text style={{ color: "#71717A", fontSize: 15, marginTop: 15 }}>
+        <Text
+          style={{
+            color: "#71717A",
+            fontSize: 13,
+            marginTop: 5,
+            marginBottom: 18,
+          }}
+        >
           Let's build your resume.
         </Text>
 

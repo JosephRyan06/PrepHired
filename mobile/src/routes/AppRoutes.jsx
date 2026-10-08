@@ -32,6 +32,7 @@ import ReviewAnswer from "../screens/Interview/ReviewAnswer";
 import UploadedAiGeneratedResume from "../screens/Resume/UploadResume/UploadedAiGeneratedResume";
 import CompletedResumePreview from "../screens/Resume/CompletedResumePreview";
 
+import ChangePassword from "../screens/Profile/Account/ChangePassword";
 import InterviewHistory from "../screens/Profile/Preferences/InteviewHistory";
 import MyResumes from "../screens/Profile/Preferences/MyResumes";
 import CompletedResumePreviewProfile from "../screens/Profile/Preferences/CompletedResumePreviewProfile";
@@ -45,7 +46,7 @@ export default function AppRoutes() {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="Resume"
+        initialRouteName="Login"
         screenOptions={{
           headerShown: false,
           animation: "none",
@@ -82,6 +83,8 @@ export default function AppRoutes() {
         <Stack.Screen name="SessionCompleted" component={SessionCompleted} />
         <Stack.Screen name="ReviewAnswer" component={ReviewAnswer} />
         
+
+        <Stack.Screen name="ChangePassword" component={ChangePassword} />
         <Stack.Screen name="MyResumes" component={MyResumes} />
         <Stack.Screen name="CompletedResumePreviewProfile" component={CompletedResumePreviewProfile} />
         <Stack.Screen name="InterviewHistory" component={InterviewHistory} />
