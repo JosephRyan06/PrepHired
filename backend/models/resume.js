@@ -375,8 +375,6 @@ const optimizedEducationSchema = new mongoose.Schema(
   { _id: false },
 );
 
-
-
 const optimizedProjectSchema = new mongoose.Schema(
   {
     id: {

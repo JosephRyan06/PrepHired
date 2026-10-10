@@ -86,7 +86,6 @@ const CompletedResumePreview = ({ navigation }) => {
         </View>
       </ScrollView>
 
-
       <AppModal
         visible={modalVisible}
         message={modalMessage}

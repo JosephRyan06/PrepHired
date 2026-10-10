@@ -1,6 +1,5 @@
 import * as DocumentPicker from "expo-document-picker";
 
-
 export const uploadResumeHandler = ({
   setUploadingResume,
   importResumeFile,
@@ -40,28 +39,17 @@ export const uploadResumeHandler = ({
       const importResult = await importResumeFile({
         uri: file.uri,
 
-        name:
-          file.name ||
-          "resume.pdf",
+        name: file.name || "resume.pdf",
 
-        mimeType:
-          file.mimeType ||
-          "application/pdf",
+        mimeType: file.mimeType || "application/pdf",
 
-        size:
-          file.size ||
-          0,
+        size: file.size || 0,
       });
 
-      console.log(
-        "Import result:",
-        importResult
-      );
+      console.log("Import result:", importResult);
 
-      
       if (!importResult.success || !importResult.resume) {
-        const message =
-          importResult.message || "Resume upload failed.";
+        const message = importResult.message || "Resume upload failed.";
 
         console.log("Resume import failed:", message);
 
@@ -71,29 +59,18 @@ export const uploadResumeHandler = ({
         return;
       }
 
-
       const resume = importResult.resume;
 
-      console.log(
-        "Imported resume:",
-        resume
-      );
+      console.log("Imported resume:", resume);
 
-      console.log(
-        "Imported resume ID:",
-        resume._id
-      );
+      console.log("Imported resume ID:", resume._id);
 
-      navigation.navigate(
-        "UploadedAiGeneratedResume",
-        {
-          resumeId: resume._id,
-        }
-      );
+      navigation.navigate("UploadedAiGeneratedResume", {
+        resumeId: resume._id,
+      });
     } catch (error) {
       setMessage(error);
       setModalVisible(true);
-
     } finally {
       setUploadingResume(false);
     }

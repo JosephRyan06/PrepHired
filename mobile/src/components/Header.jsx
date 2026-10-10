@@ -11,13 +11,7 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import styles from "../styles/global";
 
-const Header = ({
-  navigation,
-  resumeLabel,
-  navigateTo,
-  resumeId,
-  style,
-}) => {
+const Header = ({ navigation, resumeLabel, navigateTo, resumeId, style }) => {
   const handleBack = () => {
     navigation.navigate(navigateTo, {
       resumeId,

@@ -27,10 +27,7 @@ const parseImportedResume = async (extractedText) => {
     throw error;
   }
 
-  console.log(
-    "AI Parsed Resume Response:",
-    JSON.stringify(data, null, 2),
-  );
+  console.log("AI Parsed Resume Response:", JSON.stringify(data, null, 2));
 
   return data.resume;
 };
@@ -228,7 +225,7 @@ const analyzeInterviewAnswer = async ({
   interviewCategory,
   question,
   answer,
-  responseMode
+  responseMode,
 }) => {
   try {
     const response = await fetch(`${PYTHON_AI_URL}/analyze-interview-answer`, {
@@ -315,9 +312,7 @@ const analyzeInterviewSession = async ({
     throw new Error("Failed to analyze interview session");
   }
 };
-const validateTargetJob = async ({
-  targetJob,
-}) => {
+const validateTargetJob = async ({ targetJob }) => {
   try {
     const response = await fetch(`${PYTHON_AI_URL}/validate-job`, {
       method: "POST",
@@ -344,10 +339,7 @@ const validateTargetJob = async ({
       throw error;
     }
 
-    console.log(
-      "AI Job Validation Response:",
-      JSON.stringify(data, null, 2),
-    );
+    console.log("AI Job Validation Response:", JSON.stringify(data, null, 2));
 
     return data.isValid;
   } catch (error) {
@@ -357,7 +349,6 @@ const validateTargetJob = async ({
   }
 };
 
-
 module.exports = {
   parseImportedResume,
   generateProfessionalSummary,
@@ -366,5 +357,5 @@ module.exports = {
   generateInterviewQuestions,
   analyzeInterviewAnswer,
   analyzeInterviewSession,
-  validateTargetJob
+  validateTargetJob,
 };

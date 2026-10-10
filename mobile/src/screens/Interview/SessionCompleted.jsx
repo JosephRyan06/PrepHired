@@ -1,19 +1,8 @@
-import React, {
-  useEffect,
-  useState,
-} from "react";
+import React, { useEffect, useState } from "react";
 
-import {
-  View,
-  Text,
-  ScrollView,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, ScrollView, TouchableOpacity } from "react-native";
 
-import {
-  useNavigation,
-  useRoute,
-} from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 
 import { Ionicons } from "@expo/vector-icons";
 
@@ -23,61 +12,44 @@ import styles from "../../styles/global";
 
 import useMockInterview from "../../hooks/useMockInterview";
 
-import {
-  sessionCompletedHandler,
-} from "../../handlers/interview/sessionCompletedHandler";
+import { sessionCompletedHandler } from "../../handlers/interview/sessionCompletedHandler";
 
 const SessionCompleted = () => {
   const navigation = useNavigation();
   const route = useRoute();
 
-  const {
-    mockInterviewId,
-    mockInterview,
-  } = route.params || {};
+  const { mockInterviewId, mockInterview } = route.params || {};
 
-  const {
-    getById,
-  } = useMockInterview();
+  const { getById } = useMockInterview();
 
-  const [interview, setInterview] =
-    useState(mockInterview || null);
+  const [interview, setInterview] = useState(mockInterview || null);
 
-  const [loading, setLoading] =
-    useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const {
-    loadInterview,
-    handleReviewAnswers,
-    handleDone,
-  } = sessionCompletedHandler({
-    mockInterviewId,
-    mockInterview,
-    getById,
-    navigation,
-    setInterview,
-    setLoading,
-  });
+  const { loadInterview, handleReviewAnswers, handleDone } =
+    sessionCompletedHandler({
+      mockInterviewId,
+      mockInterview,
+      getById,
+      navigation,
+      setInterview,
+      setLoading,
+    });
 
   useEffect(() => {
     loadInterview();
   }, [mockInterviewId]);
 
-  const overallScore =
-    Number(interview?.overallScore) || 0;
+  const overallScore = Number(interview?.overallScore) || 0;
 
-  const skillBreakdown =
-    interview?.skillBreakdown || {};
+  const skillBreakdown = interview?.skillBreakdown || {};
 
-  const skillEntries =
-    Array.isArray(skillBreakdown)
-      ? skillBreakdown
-      : Object.entries(skillBreakdown).map(
-          ([name, score]) => ({
-            name,
-            score,
-          }),
-        );
+  const skillEntries = Array.isArray(skillBreakdown)
+    ? skillBreakdown
+    : Object.entries(skillBreakdown).map(([name, score]) => ({
+        name,
+        score,
+      }));
 
   return (
     <View style={styles.container}>
@@ -104,11 +76,7 @@ const SessionCompleted = () => {
               marginBottom: 20,
             }}
           >
-            <Ionicons
-              name="checkmark"
-              size={40}
-              color="#FFFFFF"
-            />
+            <Ionicons name="checkmark" size={40} color="#FFFFFF" />
           </View>
 
           <Text
@@ -178,10 +146,7 @@ const SessionCompleted = () => {
           >
             <View
               style={{
-                width: `${Math.min(
-                  Math.max(overallScore, 0),
-                  100,
-                )}%`,
+                width: `${Math.min(Math.max(overallScore, 0), 100)}%`,
                 height: "100%",
                 backgroundColor: "#2563EB",
               }}
@@ -220,12 +185,7 @@ const SessionCompleted = () => {
             </Text>
           ) : (
             skillEntries.map((skill, index) => {
-              const score =
-                Number(
-                  skill?.score ??
-                    skill?.value ??
-                    0,
-                ) || 0;
+              const score = Number(skill?.score ?? skill?.value ?? 0) || 0;
 
               const skillNames = [
                 "COMMUNICATION",
@@ -245,10 +205,7 @@ const SessionCompleted = () => {
                 <View
                   key={`${name}-${index}`}
                   style={{
-                    marginBottom:
-                      index === skillEntries.length - 1
-                        ? 0
-                        : 16,
+                    marginBottom: index === skillEntries.length - 1 ? 0 : 16,
                   }}
                 >
                   <View
@@ -289,10 +246,7 @@ const SessionCompleted = () => {
                   >
                     <View
                       style={{
-                        width: `${Math.min(
-                          Math.max(score, 0),
-                          100,
-                        )}%`,
+                        width: `${Math.min(Math.max(score, 0), 100)}%`,
                         height: "100%",
                         backgroundColor: "#2563EB",
                       }}

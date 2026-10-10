@@ -4,25 +4,21 @@ const generateResumeHTML = require("./generateResumeHTML");
 
 const generateResumePDF = async (resume) => {
   if (!resume) {
-    throw new Error(
-      "Resume data is required"
-    );
+    throw new Error("Resume data is required");
   }
 
-  const browser =
-    await puppeteer.launch({
-      headless: true,
+  const browser = await puppeteer.launch({
+    headless: true,
 
-      args: [
-        "--no-sandbox",
-        "--disable-setuid-sandbox",
-        "--disable-dev-shm-usage",
-      ],
-    });
+    args: [
+      "--no-sandbox",
+      "--disable-setuid-sandbox",
+      "--disable-dev-shm-usage",
+    ],
+  });
 
   try {
-    const page =
-      await browser.newPage();
+    const page = await browser.newPage();
 
     /*
      * A4 viewport.
@@ -37,8 +33,7 @@ const generateResumePDF = async (resume) => {
       deviceScaleFactor: 1,
     });
 
-    const html =
-      generateResumeHTML(resume);
+    const html = generateResumeHTML(resume);
 
     await page.setContent(html, {
       waitUntil: "networkidle0",
@@ -54,25 +49,24 @@ const generateResumePDF = async (resume) => {
       }
     });
 
-    const pdf =
-      await page.pdf({
-        format: "A4",
+    const pdf = await page.pdf({
+      format: "A4",
 
-        printBackground: true,
+      printBackground: true,
 
-        preferCSSPageSize: true,
+      preferCSSPageSize: true,
 
-        displayHeaderFooter: false,
+      displayHeaderFooter: false,
 
-        margin: {
-          top: "0mm",
-          right: "0mm",
-          bottom: "0mm",
-          left: "0mm",
-        },
+      margin: {
+        top: "0mm",
+        right: "0mm",
+        bottom: "0mm",
+        left: "0mm",
+      },
 
-        pageRanges: "",
-      });
+      pageRanges: "",
+    });
 
     return pdf;
   } finally {

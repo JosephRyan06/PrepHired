@@ -10,7 +10,7 @@ const {
   resetPassword,
   resendOtp,
   changePassword,
-  deleteAccount
+  deleteAccount,
 } = require("../controller/mobileAuthController");
 
 const { authenticateUser } = require("../middleware/mobileAuthMiddleware");
@@ -28,6 +28,5 @@ router.post("/reset-password", resetPassword);
 router.post("/resend-otp", resendOtp);
 router.post("/change-password", authenticateUser, changePassword);
 router.delete("/delete-account", authenticateUser, deleteAccount);
-
 
 module.exports = router;

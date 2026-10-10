@@ -16,10 +16,7 @@ const useProgress = () => {
         setProgress(result.data);
       }
     } catch (error) {
-      console.error(
-        "Progress loading error:",
-        error,
-      );
+      console.error("Progress loading error:", error);
     } finally {
       setLoading(false);
     }

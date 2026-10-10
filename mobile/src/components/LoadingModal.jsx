@@ -1,19 +1,8 @@
 import React, { useEffect, useRef } from "react";
-import {
-  View,
-  Text,
-  Modal,
-  Animated,
-  Easing,
-} from "react-native";
+import { View, Text, Modal, Animated, Easing } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
-const LoadingModal = ({
-  visible,
-  title,
-  message,
-  icon = "sync-outline",
-}) => {
+const LoadingModal = ({ visible, title, message, icon = "sync-outline" }) => {
   const rotateAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -26,7 +15,7 @@ const LoadingModal = ({
           duration: 1200,
           easing: Easing.linear,
           useNativeDriver: true,
-        })
+        }),
       ).start();
     } else {
       rotateAnim.stopAnimation();
@@ -80,11 +69,7 @@ const LoadingModal = ({
               transform: [{ rotate }],
             }}
           >
-            <Ionicons
-              name={icon}
-              size={32}
-              color="#FFFFFF"
-            />
+            <Ionicons name={icon} size={32} color="#FFFFFF" />
           </Animated.View>
 
           <Text

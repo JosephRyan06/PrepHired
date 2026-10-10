@@ -60,9 +60,7 @@ const Home = () => {
       setResumeData(resumeResult?.resumes || []);
 
       setInterviewData(
-        interviewResult?.mockInterviews ||
-          interviewResult?.interviews ||
-          []
+        interviewResult?.mockInterviews || interviewResult?.interviews || [],
       );
     } catch (error) {
       console.error("Failed to load dashboard data:", error);
@@ -80,11 +78,7 @@ const Home = () => {
     try {
       setRefreshing(true);
 
-      await Promise.all([
-        loadUser(),
-        loadDashboardData(),
-        refetchProgress?.(),
-      ]);
+      await Promise.all([loadUser(), loadDashboardData(), refetchProgress?.()]);
     } catch (error) {
       console.error("Failed to refresh dashboard:", error);
     } finally {
@@ -93,15 +87,13 @@ const Home = () => {
   };
 
   const completedInterviews = interviewData.filter(
-    (interview) => interview?.status === "completed"
+    (interview) => interview?.status === "completed",
   );
 
   const latestResume = resumeData?.[0];
 
   const atsScore = Number(
-    progress?.resume?.atsScore ??
-      latestResume?.aiAnalysis?.atsScore ??
-      0
+    progress?.resume?.atsScore ?? latestResume?.aiAnalysis?.atsScore ?? 0,
   );
 
   const interviewScores = completedInterviews
@@ -111,22 +103,16 @@ const Home = () => {
   const calculatedInterviewAverage =
     interviewScores.length > 0
       ? Math.round(
-          interviewScores.reduce(
-            (total, score) => total + score,
-            0
-          ) / interviewScores.length
+          interviewScores.reduce((total, score) => total + score, 0) /
+            interviewScores.length,
         )
       : 0;
 
   const interviewAverage = Number(
-    progress?.interviews?.averageScore ??
-      calculatedInterviewAverage ??
-      0
+    progress?.interviews?.averageScore ?? calculatedInterviewAverage ?? 0,
   );
 
-  const employmentReadiness = Number(
-    progress?.employmentReadiness || 0
-  );
+  const employmentReadiness = Number(progress?.employmentReadiness || 0);
 
   const getReadinessMessage = () => {
     if (employmentReadiness >= 90) {
@@ -158,10 +144,7 @@ const Home = () => {
       subtitle: latestResume?.targetJob?.jobTitle
         ? `Target role: ${latestResume.targetJob.jobTitle}`
         : "Your resume is ready",
-      score:
-        atsScore > 0
-          ? `ATS Score: ${atsScore}%`
-          : "Resume completed",
+      score: atsScore > 0 ? `ATS Score: ${atsScore}%` : "Resume completed",
     });
   }
 
@@ -208,9 +191,7 @@ const Home = () => {
           <View style={styles.headerText}>
             <Text style={styles.greeting}>Good day,</Text>
 
-            <Text style={styles.userName}>
-              {user?.fullName || "User"}
-            </Text>
+            <Text style={styles.userName}>{user?.fullName || "User"}</Text>
           </View>
 
           <TouchableOpacity
@@ -218,11 +199,7 @@ const Home = () => {
             onPress={() => navigation.navigate("Profile")}
           >
             <View style={styles.profileCircle}>
-              <Ionicons
-                name="person"
-                size={28}
-                color="#F8FAFC"
-              />
+              <Ionicons name="person" size={28} color="#F8FAFC" />
             </View>
           </TouchableOpacity>
         </View>
@@ -324,20 +301,12 @@ const Home = () => {
             activeOpacity={0.8}
           >
             <View style={styles.iconContainer}>
-              <Ionicons
-                name="create-outline"
-                color="#F8FAFC"
-                size={24}
-              />
+              <Ionicons name="create-outline" color="#F8FAFC" size={24} />
             </View>
 
-            <Text style={styles.cardActionText}>
-              Build Resume
-            </Text>
+            <Text style={styles.cardActionText}>Build Resume</Text>
 
-            <Text style={styles.cardActionSubtext}>
-              Create your resume
-            </Text>
+            <Text style={styles.cardActionSubtext}>Create your resume</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -345,26 +314,13 @@ const Home = () => {
             onPress={() => navigation.navigate("Interview")}
             activeOpacity={0.8}
           >
-            <View
-              style={[
-                styles.iconContainer,
-                styles.primaryIcon,
-              ]}
-            >
-              <Ionicons
-                name="mic-outline"
-                color="#F8FAFC"
-                size={24}
-              />
+            <View style={[styles.iconContainer, styles.primaryIcon]}>
+              <Ionicons name="mic-outline" color="#F8FAFC" size={24} />
             </View>
 
-            <Text style={styles.cardActionText}>
-              Mock Interview
-            </Text>
+            <Text style={styles.cardActionText}>Mock Interview</Text>
 
-            <Text style={styles.cardActionSubtext}>
-              Practice your skills
-            </Text>
+            <Text style={styles.cardActionSubtext}>Practice your skills</Text>
           </TouchableOpacity>
         </View>
 
@@ -374,12 +330,7 @@ const Home = () => {
             onPress={() => navigation.navigate("MyResumes")}
             activeOpacity={0.8}
           >
-            <View
-              style={[
-                styles.iconContainer,
-                styles.primaryIcon,
-              ]}
-            >
+            <View style={[styles.iconContainer, styles.primaryIcon]}>
               <Ionicons
                 name="document-text-outline"
                 color="#F8FAFC"
@@ -387,9 +338,7 @@ const Home = () => {
               />
             </View>
 
-            <Text style={styles.cardActionText}>
-              My Resumes
-            </Text>
+            <Text style={styles.cardActionText}>My Resumes</Text>
 
             <Text style={styles.cardActionSubtext}>
               View your saved resumes
@@ -398,26 +347,16 @@ const Home = () => {
 
           <TouchableOpacity
             style={styles.cardAction}
-            onPress={() =>
-              navigation.navigate("InterviewHistory")
-            }
+            onPress={() => navigation.navigate("InterviewHistory")}
             activeOpacity={0.8}
           >
             <View style={styles.iconContainer}>
-              <Ionicons
-                name="time-outline"
-                color="#F8FAFC"
-                size={24}
-              />
+              <Ionicons name="time-outline" color="#F8FAFC" size={24} />
             </View>
 
-            <Text style={styles.cardActionText}>
-              Interview History
-            </Text>
+            <Text style={styles.cardActionText}>Interview History</Text>
 
-            <Text style={styles.cardActionSubtext}>
-              See past interviews
-            </Text>
+            <Text style={styles.cardActionSubtext}>See past interviews</Text>
           </TouchableOpacity>
         </View>
 
@@ -436,10 +375,7 @@ const Home = () => {
           {loading ? (
             <>
               {[1, 2].map((item) => (
-                <View
-                  key={item}
-                  style={homeStyles.activityItem}
-                >
+                <View key={item} style={homeStyles.activityItem}>
                   <View
                     style={[
                       homeStyles.activityIcon,
@@ -484,11 +420,7 @@ const Home = () => {
           ) : recentActivities.length === 0 ? (
             <View style={homeStyles.emptyActivity}>
               <View style={homeStyles.emptyIcon}>
-                <Ionicons
-                  name="time-outline"
-                  size={24}
-                  color="#71717A"
-                />
+                <Ionicons name="time-outline" size={24} color="#71717A" />
               </View>
 
               <Text style={homeStyles.emptyActivityTitle}>
@@ -496,41 +428,25 @@ const Home = () => {
               </Text>
 
               <Text style={homeStyles.emptyActivityText}>
-                Complete a resume or mock interview to see
-                your activity here.
+                Complete a resume or mock interview to see your activity here.
               </Text>
             </View>
           ) : (
             recentActivities.slice(0, 3).map((activity) => (
-              <View
-                key={activity.id}
-                style={homeStyles.activityItem}
-              >
+              <View key={activity.id} style={homeStyles.activityItem}>
                 <View style={homeStyles.activityIcon}>
-                  <Ionicons
-                    name={activity.icon}
-                    size={22}
-                    color="#F8FAFC"
-                  />
+                  <Ionicons name={activity.icon} size={22} color="#F8FAFC" />
                 </View>
 
                 <View style={homeStyles.activityContent}>
-                  <Text
-                    style={homeStyles.activityTitle}
-                  >
-                    {activity.title}
-                  </Text>
+                  <Text style={homeStyles.activityTitle}>{activity.title}</Text>
 
-                  <Text
-                    style={homeStyles.activitySubtitle}
-                  >
+                  <Text style={homeStyles.activitySubtitle}>
                     {activity.subtitle}
                   </Text>
                 </View>
 
-                <Text style={homeStyles.activityScore}>
-                  {activity.score}
-                </Text>
+                <Text style={homeStyles.activityScore}>{activity.score}</Text>
               </View>
             ))
           )}

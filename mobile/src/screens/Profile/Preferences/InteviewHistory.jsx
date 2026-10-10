@@ -17,10 +17,7 @@ import useMockInterview from "../../../hooks/useMockInterview";
 const InterviewHistory = () => {
   const navigation = useNavigation();
 
-  const {
-    getCompleted,
-    loading,
-  } = useMockInterview();
+  const { getCompleted, loading } = useMockInterview();
 
   const [interviews, setInterviews] = useState([]);
 
@@ -32,19 +29,11 @@ const InterviewHistory = () => {
     try {
       const result = await getCompleted();
 
-      const completed =
-        result?.mockInterviews || [];
+      const completed = result?.mockInterviews || [];
 
-      setInterviews(
-        Array.isArray(completed)
-          ? completed
-          : [],
-      );
+      setInterviews(Array.isArray(completed) ? completed : []);
     } catch (error) {
-      console.log(
-        "Failed to load completed interviews:",
-        error,
-      );
+      console.log("Failed to load completed interviews:", error);
 
       setInterviews([]);
     }
@@ -55,14 +44,11 @@ const InterviewHistory = () => {
       return "Date unavailable";
     }
 
-    return new Date(date).toLocaleDateString(
-      "en-US",
-      {
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-      },
-    );
+    return new Date(date).toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    });
   };
 
   const getScoreColor = (score) => {
@@ -116,10 +102,8 @@ const InterviewHistory = () => {
                 <View
                   style={{
                     flexDirection: "row",
-                    justifyContent:
-                      "space-between",
-                    alignItems:
-                      "flex-start",
+                    justifyContent: "space-between",
+                    alignItems: "flex-start",
                   }}
                 >
                   <View
@@ -133,8 +117,7 @@ const InterviewHistory = () => {
                         width: "65%",
                         height: 16,
                         borderRadius: 5,
-                        backgroundColor:
-                          "#3A3A46",
+                        backgroundColor: "#3A3A46",
                       }}
                     />
 
@@ -143,8 +126,7 @@ const InterviewHistory = () => {
                         width: "45%",
                         height: 11,
                         borderRadius: 4,
-                        backgroundColor:
-                          "#34343F",
+                        backgroundColor: "#34343F",
                         marginTop: 9,
                       }}
                     />
@@ -156,8 +138,7 @@ const InterviewHistory = () => {
                       width: 58,
                       height: 58,
                       borderRadius: 29,
-                      backgroundColor:
-                        "#34343F",
+                      backgroundColor: "#34343F",
                     }}
                   />
                 </View>
@@ -169,8 +150,7 @@ const InterviewHistory = () => {
                     marginTop: 18,
                     paddingTop: 14,
                     borderTopWidth: 1,
-                    borderTopColor:
-                      "#3F3F4A",
+                    borderTopColor: "#3F3F4A",
                   }}
                 >
                   <View
@@ -183,8 +163,7 @@ const InterviewHistory = () => {
                         width: 55,
                         height: 9,
                         borderRadius: 3,
-                        backgroundColor:
-                          "#34343F",
+                        backgroundColor: "#34343F",
                       }}
                     />
 
@@ -193,8 +172,7 @@ const InterviewHistory = () => {
                         width: 30,
                         height: 12,
                         borderRadius: 4,
-                        backgroundColor:
-                          "#3A3A46",
+                        backgroundColor: "#3A3A46",
                         marginTop: 7,
                       }}
                     />
@@ -210,8 +188,7 @@ const InterviewHistory = () => {
                         width: 60,
                         height: 9,
                         borderRadius: 3,
-                        backgroundColor:
-                          "#34343F",
+                        backgroundColor: "#34343F",
                       }}
                     />
 
@@ -220,8 +197,7 @@ const InterviewHistory = () => {
                         width: 75,
                         height: 12,
                         borderRadius: 4,
-                        backgroundColor:
-                          "#3A3A46",
+                        backgroundColor: "#3A3A46",
                         marginTop: 7,
                       }}
                     />
@@ -229,8 +205,7 @@ const InterviewHistory = () => {
 
                   <View
                     style={{
-                      alignItems:
-                        "flex-end",
+                      alignItems: "flex-end",
                     }}
                   >
                     <View
@@ -238,8 +213,7 @@ const InterviewHistory = () => {
                         width: 40,
                         height: 9,
                         borderRadius: 3,
-                        backgroundColor:
-                          "#34343F",
+                        backgroundColor: "#34343F",
                       }}
                     />
 
@@ -248,8 +222,7 @@ const InterviewHistory = () => {
                         width: 65,
                         height: 12,
                         borderRadius: 4,
-                        backgroundColor:
-                          "#3A3A46",
+                        backgroundColor: "#3A3A46",
                         marginTop: 7,
                       }}
                     />
@@ -267,11 +240,7 @@ const InterviewHistory = () => {
               paddingVertical: 50,
             }}
           >
-            <Ionicons
-              name="document-text-outline"
-              size={42}
-              color="#71717A"
-            />
+            <Ionicons name="document-text-outline" size={42} color="#71717A" />
 
             <Text
               style={{
@@ -293,276 +262,222 @@ const InterviewHistory = () => {
                 textAlign: "center",
               }}
             >
-              Complete a mock interview to see it
-              here.
+              Complete a mock interview to see it here.
             </Text>
           </View>
         ) : (
           <View>
-            {interviews.map(
-              (interview, index) => {
-                if (!interview) {
-                  return null;
-                }
+            {interviews.map((interview, index) => {
+              if (!interview) {
+                return null;
+              }
 
-                const score =
-                  Number(
-                    interview.overallScore,
-                  ) || 0;
+              const score = Number(interview.overallScore) || 0;
 
-                return (
-                  <TouchableOpacity
-                    key={
-                      interview._id ||
-                      index
-                    }
-                    activeOpacity={0.8}
+              return (
+                <TouchableOpacity
+                  key={interview._id || index}
+                  activeOpacity={0.8}
+                  style={{
+                    backgroundColor: "#25252F",
+                    borderRadius: 12,
+                    padding: 16,
+                    marginBottom: 14,
+                    borderWidth: 1,
+                    borderColor: "#3F3F4A",
+                  }}
+                >
+                  {/* HEADER */}
+                  <View
                     style={{
-                      backgroundColor:
-                        "#25252F",
-                      borderRadius: 12,
-                      padding: 16,
-                      marginBottom: 14,
-                      borderWidth: 1,
-                      borderColor:
-                        "#3F3F4A",
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      alignItems: "flex-start",
                     }}
                   >
-                    {/* HEADER */}
                     <View
                       style={{
-                        flexDirection:
-                          "row",
-                        justifyContent:
-                          "space-between",
-                        alignItems:
-                          "flex-start",
+                        flex: 1,
+                        paddingRight: 12,
                       }}
                     >
-                      <View
+                      <Text
                         style={{
-                          flex: 1,
-                          paddingRight: 12,
+                          color: "#F8FAFC",
+                          fontSize: 16,
+                          fontWeight: "700",
+                        }}
+                        numberOfLines={1}
+                      >
+                        {interview.targetJob || "Mock Interview"}
+                      </Text>
+
+                      <Text
+                        style={{
+                          color: "#A1A1AA",
+                          fontSize: 12,
+                          marginTop: 5,
                         }}
                       >
-                        <Text
-                          style={{
-                            color:
-                              "#F8FAFC",
-                            fontSize: 16,
-                            fontWeight:
-                              "700",
-                          }}
-                          numberOfLines={1}
-                        >
-                          {interview.targetJob ||
-                            "Mock Interview"}
-                        </Text>
-
-                        <Text
-                          style={{
-                            color:
-                              "#A1A1AA",
-                            fontSize: 12,
-                            marginTop: 5,
-                          }}
-                        >
-                          {interview.interviewCategory ||
-                            "All"}
-                          {" • "}
-                          {interview.responseMode ||
-                            "Text"}
-                        </Text>
-                      </View>
-
-                      {/* SCORE */}
-                      <View
-                        style={{
-                          alignItems:
-                            "center",
-                          justifyContent:
-                            "center",
-                          width: 58,
-                          height: 58,
-                          borderRadius: 29,
-                          backgroundColor:
-                            "#18181F",
-                          borderWidth: 2,
-                          borderColor:
-                            getScoreColor(
-                              score,
-                            ),
-                        }}
-                      >
-                        <Text
-                          style={{
-                            color:
-                              getScoreColor(
-                                score,
-                              ),
-                            fontSize: 16,
-                            fontWeight:
-                              "800",
-                          }}
-                        >
-                          {score}
-                        </Text>
-
-                        <Text
-                          style={{
-                            color:
-                              "#71717A",
-                            fontSize: 8,
-                          }}
-                        >
-                          SCORE
-                        </Text>
-                      </View>
+                        {interview.interviewCategory || "All"}
+                        {" • "}
+                        {interview.responseMode || "Text"}
+                      </Text>
                     </View>
 
-                    {/* DETAILS */}
+                    {/* SCORE */}
                     <View
                       style={{
-                        flexDirection:
-                          "row",
-                        marginTop: 18,
-                        paddingTop: 14,
-                        borderTopWidth: 1,
-                        borderTopColor:
-                          "#3F3F4A",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        width: 58,
+                        height: 58,
+                        borderRadius: 29,
+                        backgroundColor: "#18181F",
+                        borderWidth: 2,
+                        borderColor: getScoreColor(score),
                       }}
                     >
-                      {/* QUESTIONS */}
-                      <View
+                      <Text
                         style={{
-                          flex: 1,
+                          color: getScoreColor(score),
+                          fontSize: 16,
+                          fontWeight: "800",
                         }}
                       >
-                        <Text
+                        {score}
+                      </Text>
+
+                      <Text
+                        style={{
+                          color: "#71717A",
+                          fontSize: 8,
+                        }}
+                      >
+                        SCORE
+                      </Text>
+                    </View>
+                  </View>
+
+                  {/* DETAILS */}
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      marginTop: 18,
+                      paddingTop: 14,
+                      borderTopWidth: 1,
+                      borderTopColor: "#3F3F4A",
+                    }}
+                  >
+                    {/* QUESTIONS */}
+                    <View
+                      style={{
+                        flex: 1,
+                      }}
+                    >
+                      <Text
+                        style={{
+                          color: "#71717A",
+                          fontSize: 10,
+                          textTransform: "uppercase",
+                        }}
+                      >
+                        Questions
+                      </Text>
+
+                      <Text
+                        style={{
+                          color: "#E4E4E7",
+                          fontSize: 13,
+                          fontWeight: "600",
+                          marginTop: 4,
+                        }}
+                      >
+                        {interview.numberOfQuestions ||
+                          interview.questions?.length ||
+                          0}
+                      </Text>
+                    </View>
+
+                    {/* COMPLETED DATE */}
+                    <View
+                      style={{
+                        flex: 1,
+                      }}
+                    >
+                      <Text
+                        style={{
+                          color: "#71717A",
+                          fontSize: 10,
+                          textTransform: "uppercase",
+                        }}
+                      >
+                        Completed
+                      </Text>
+
+                      <Text
+                        style={{
+                          color: "#E4E4E7",
+                          fontSize: 13,
+                          fontWeight: "600",
+                          marginTop: 4,
+                        }}
+                      >
+                        {formatDate(interview.completedAt)}
+                      </Text>
+                    </View>
+
+                    {/* STATUS */}
+                    <View
+                      style={{
+                        alignItems: "flex-end",
+                      }}
+                    >
+                      <Text
+                        style={{
+                          color: "#71717A",
+                          fontSize: 10,
+                          textTransform: "uppercase",
+                        }}
+                      >
+                        Status
+                      </Text>
+
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          alignItems: "center",
+                          marginTop: 5,
+                        }}
+                      >
+                        <View
                           style={{
-                            color:
-                              "#71717A",
-                            fontSize: 10,
-                            textTransform:
-                              "uppercase",
+                            width: 7,
+                            height: 7,
+                            borderRadius: 4,
+                            backgroundColor: "#22C55E",
+                            marginRight: 5,
                           }}
-                        >
-                          Questions
-                        </Text>
+                        />
 
                         <Text
                           style={{
-                            color:
-                              "#E4E4E7",
-                            fontSize: 13,
-                            fontWeight:
-                              "600",
-                            marginTop: 4,
-                          }}
-                        >
-                          {interview.numberOfQuestions ||
-                            interview
-                              .questions
-                              ?.length ||
-                            0}
-                        </Text>
-                      </View>
-
-                      {/* COMPLETED DATE */}
-                      <View
-                        style={{
-                          flex: 1,
-                        }}
-                      >
-                        <Text
-                          style={{
-                            color:
-                              "#71717A",
-                            fontSize: 10,
-                            textTransform:
-                              "uppercase",
+                            color: "#22C55E",
+                            fontSize: 12,
+                            fontWeight: "600",
                           }}
                         >
                           Completed
                         </Text>
-
-                        <Text
-                          style={{
-                            color:
-                              "#E4E4E7",
-                            fontSize: 13,
-                            fontWeight:
-                              "600",
-                            marginTop: 4,
-                          }}
-                        >
-                          {formatDate(
-                            interview.completedAt,
-                          )}
-                        </Text>
-                      </View>
-
-                      {/* STATUS */}
-                      <View
-                        style={{
-                          alignItems:
-                            "flex-end",
-                        }}
-                      >
-                        <Text
-                          style={{
-                            color:
-                              "#71717A",
-                            fontSize: 10,
-                            textTransform:
-                              "uppercase",
-                          }}
-                        >
-                          Status
-                        </Text>
-
-                        <View
-                          style={{
-                            flexDirection:
-                              "row",
-                            alignItems:
-                              "center",
-                            marginTop: 5,
-                          }}
-                        >
-                          <View
-                            style={{
-                              width: 7,
-                              height: 7,
-                              borderRadius: 4,
-                              backgroundColor:
-                                "#22C55E",
-                              marginRight: 5,
-                            }}
-                          />
-
-                          <Text
-                            style={{
-                              color:
-                                "#22C55E",
-                              fontSize: 12,
-                              fontWeight:
-                                "600",
-                            }}
-                          >
-                            Completed
-                          </Text>
-                        </View>
                       </View>
                     </View>
-                  </TouchableOpacity>
-                );
-              },
-            )}
+                  </View>
+                </TouchableOpacity>
+              );
+            })}
           </View>
         )}
       </ScrollView>
-
     </View>
   );
 };

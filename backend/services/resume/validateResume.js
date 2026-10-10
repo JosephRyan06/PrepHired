@@ -17,8 +17,7 @@ const validateResume = ({ parsedResume, user }) => {
     };
   }
 
-  const resumeName =
-    parsedResume.basicInfo?.fullName?.trim() || "";
+  const resumeName = parsedResume.basicInfo?.fullName?.trim() || "";
 
   if (!resumeName) {
     return {
@@ -30,10 +29,7 @@ const validateResume = ({ parsedResume, user }) => {
 
   const userFullName =
     user.fullName ||
-    [user.firstName, user.lastName]
-      .filter(Boolean)
-      .join(" ")
-      .trim();
+    [user.firstName, user.lastName].filter(Boolean).join(" ").trim();
 
   if (!userFullName) {
     return {
@@ -43,10 +39,7 @@ const validateResume = ({ parsedResume, user }) => {
     };
   }
 
-  const isNameMatch = namesMatch(
-    userFullName,
-    resumeName
-  );
+  const isNameMatch = namesMatch(userFullName, resumeName);
 
   if (!isNameMatch) {
     return {

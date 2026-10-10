@@ -11,31 +11,22 @@ const {
 } = require("../pdfHelpers");
 
 const professionalTemplate = (resume) => {
-  const summary =
-    getProfessionalSummary(resume);
+  const summary = getProfessionalSummary(resume);
 
-  const skills =
-    getSkills(resume);
+  const skills = getSkills(resume);
 
-  const certificates =
-    getCertificates(resume);
+  const certificates = getCertificates(resume);
 
-  const experiences =
-    getWorkExperiences(resume);
+  const experiences = getWorkExperiences(resume);
 
-  const educations =
-    getEducations(resume);
+  const educations = getEducations(resume);
 
-  const projects =
-    getProjects(resume);
+  const projects = getProjects(resume);
 
   return `
     <div class="page professional">
 
-      ${getHeader(
-        resume,
-        "professional"
-      )}
+      ${getHeader(resume, "professional")}
 
       ${
         summary
@@ -74,9 +65,7 @@ const professionalTemplate = (resume) => {
                             experience.jobTitle
                               ? `
                                 <div class="job-title">
-                                  ${escapeHTML(
-                                    experience.jobTitle
-                                  )}
+                                  ${escapeHTML(experience.jobTitle)}
                                 </div>
                               `
                               : ""
@@ -86,9 +75,7 @@ const professionalTemplate = (resume) => {
                             experience.company
                               ? `
                                 <div class="company">
-                                  ${escapeHTML(
-                                    experience.company
-                                  )}
+                                  ${escapeHTML(experience.company)}
                                 </div>
                               `
                               : ""
@@ -102,9 +89,7 @@ const professionalTemplate = (resume) => {
                             experience.location
                               ? `
                                 <div>
-                                  ${escapeHTML(
-                                    experience.location
-                                  )}
+                                  ${escapeHTML(experience.location)}
                                 </div>
                               `
                               : ""
@@ -114,9 +99,7 @@ const professionalTemplate = (resume) => {
                             experience.periodOfEmployment
                               ? `
                                 <div class="period">
-                                  ${escapeHTML(
-                                    experience.periodOfEmployment
-                                  )}
+                                  ${escapeHTML(experience.periodOfEmployment)}
                                 </div>
                               `
                               : ""
@@ -130,16 +113,14 @@ const professionalTemplate = (resume) => {
                         experience.description
                           ? `
                             <div class="description">
-                              ${formatText(
-                                experience.description
-                              )}
+                              ${formatText(experience.description)}
                             </div>
                           `
                           : ""
                       }
 
                     </div>
-                  `
+                  `,
                 )
                 .join("")}
             </section>
@@ -166,9 +147,7 @@ const professionalTemplate = (resume) => {
                             education.degreeField
                               ? `
                                 <div class="degree">
-                                  ${escapeHTML(
-                                    education.degreeField
-                                  )}
+                                  ${escapeHTML(education.degreeField)}
                                 </div>
                               `
                               : ""
@@ -178,9 +157,7 @@ const professionalTemplate = (resume) => {
                             education.school
                               ? `
                                 <div class="school">
-                                  ${escapeHTML(
-                                    education.school
-                                  )}
+                                  ${escapeHTML(education.school)}
                                 </div>
                               `
                               : ""
@@ -194,9 +171,7 @@ const professionalTemplate = (resume) => {
                             education.location
                               ? `
                                 <div>
-                                  ${escapeHTML(
-                                    education.location
-                                  )}
+                                  ${escapeHTML(education.location)}
                                 </div>
                               `
                               : ""
@@ -206,9 +181,7 @@ const professionalTemplate = (resume) => {
                             education.schoolYear
                               ? `
                                 <div class="period">
-                                  ${escapeHTML(
-                                    education.schoolYear
-                                  )}
+                                  ${escapeHTML(education.schoolYear)}
                                 </div>
                               `
                               : ""
@@ -222,16 +195,14 @@ const professionalTemplate = (resume) => {
                         education.description
                           ? `
                             <div class="description">
-                              ${formatText(
-                                education.description
-                              )}
+                              ${formatText(education.description)}
                             </div>
                           `
                           : ""
                       }
 
                     </div>
-                  `
+                  `,
                 )
                 .join("")}
             </section>
@@ -268,9 +239,7 @@ const professionalTemplate = (resume) => {
                         project.projectName
                           ? `
                             <div class="project-name">
-                              ${escapeHTML(
-                                project.projectName
-                              )}
+                              ${escapeHTML(project.projectName)}
                             </div>
                           `
                           : ""
@@ -280,16 +249,14 @@ const professionalTemplate = (resume) => {
                         project.projectDescription
                           ? `
                             <div class="description">
-                              ${formatText(
-                                project.projectDescription
-                              )}
+                              ${formatText(project.projectDescription)}
                             </div>
                           `
                           : ""
                       }
 
                     </div>
-                  `
+                  `,
                 )
                 .join("")}
             </section>
@@ -304,9 +271,7 @@ const professionalTemplate = (resume) => {
               <h2>CERTIFICATIONS</h2>
 
               <div class="content">
-                ${formatText(
-                  certificates
-                )}
+                ${formatText(certificates)}
               </div>
             </section>
           `

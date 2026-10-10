@@ -1,11 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  Modal,
-} from "react-native";
+import { View, Text, TouchableOpacity, Modal } from "react-native";
 
 import { Ionicons } from "@expo/vector-icons";
 
@@ -61,13 +56,9 @@ const InterviewHeader = ({
 
     const remainingSeconds = seconds % 60;
 
-    return `${String(minutes).padStart(
-      2,
-      "0",
-    )}:${String(remainingSeconds).padStart(
-      2,
-      "0",
-    )}`;
+    return `${String(minutes).padStart(2, "0")}:${String(
+      remainingSeconds,
+    ).padStart(2, "0")}`;
   };
 
   const handleBack = () => {
@@ -80,15 +71,9 @@ const InterviewHeader = ({
     });
   };
 
-  const iconName =
-    backIcon === "exit"
-      ? "exit-outline"
-      : "arrow-back";
+  const iconName = backIcon === "exit" ? "exit-outline" : "arrow-back";
 
-  const iconColor =
-    backIcon === "exit"
-      ? "#DC2626"
-      : "#F8FAFC";
+  const iconColor = backIcon === "exit" ? "#DC2626" : "#F8FAFC";
 
   const handleExit = async () => {
     setShowExitModal(false);
@@ -114,21 +99,9 @@ const InterviewHeader = ({
 
   return (
     <>
-      <View
-        style={[
-          styles.header,
-          style,
-        ]}
-      >
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={handleNavigation}
-        >
-          <Ionicons
-            name={iconName}
-            size={28}
-            color={iconColor}
-          />
+      <View style={[styles.header, style]}>
+        <TouchableOpacity style={styles.backButton} onPress={handleNavigation}>
+          <Ionicons name={iconName} size={28} color={iconColor} />
         </TouchableOpacity>
 
         <View
@@ -158,10 +131,7 @@ const InterviewHeader = ({
           <View
             style={{
               borderWidth: 2,
-              borderColor:
-                timeLeft <= 10
-                  ? "#DC2626"
-                  : "#2563EB",
+              borderColor: timeLeft <= 10 ? "#DC2626" : "#2563EB",
 
               width: 60,
 
@@ -172,10 +142,7 @@ const InterviewHeader = ({
           >
             <Text
               style={{
-                color:
-                  timeLeft <= 10
-                    ? "#DC2626"
-                    : "#F8FAFC",
+                color: timeLeft <= 10 ? "#DC2626" : "#F8FAFC",
 
                 fontWeight: "600",
 
@@ -228,11 +195,7 @@ const InterviewHeader = ({
                 marginBottom: 16,
               }}
             >
-              <Ionicons
-                name="exit-outline"
-                size={30}
-                color="#DC2626"
-              />
+              <Ionicons name="exit-outline" size={30} color="#DC2626" />
             </View>
 
             {/* Title */}
@@ -258,8 +221,8 @@ const InterviewHeader = ({
                 marginBottom: 24,
               }}
             >
-              Are you sure you want to exit this interview?
-              Your current progress may be lost.
+              Are you sure you want to exit this interview? Your current
+              progress may be lost.
             </Text>
 
             {/* Buttons */}

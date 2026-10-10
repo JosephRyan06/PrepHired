@@ -152,7 +152,7 @@ const useAuth = () => {
   const changePassword = async (
     currentPassword,
     newPassword,
-    confirmPassword
+    confirmPassword,
   ) => {
     setLoading(true);
 
@@ -173,7 +173,7 @@ const useAuth = () => {
         currentPassword,
         newPassword,
         confirmPassword,
-        token
+        token,
       );
 
       return {
@@ -184,8 +184,7 @@ const useAuth = () => {
     } catch (error) {
       return {
         success: false,
-        message:
-          error.message || "Unable to change password",
+        message: error.message || "Unable to change password",
         errors: error.errors || {},
       };
     } finally {

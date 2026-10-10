@@ -11,23 +11,17 @@ const {
 } = require("../pdfHelpers");
 
 const minimalTemplate = (resume) => {
-  const summary =
-    getProfessionalSummary(resume);
+  const summary = getProfessionalSummary(resume);
 
-  const skills =
-    getSkills(resume);
+  const skills = getSkills(resume);
 
-  const certificates =
-    getCertificates(resume);
+  const certificates = getCertificates(resume);
 
-  const experiences =
-    getWorkExperiences(resume);
+  const experiences = getWorkExperiences(resume);
 
-  const educations =
-    getEducations(resume);
+  const educations = getEducations(resume);
 
-  const projects =
-    getProjects(resume);
+  const projects = getProjects(resume);
 
   return `
     <div class="page minimal">
@@ -62,31 +56,25 @@ const minimalTemplate = (resume) => {
 
                         <div>
                           <div class="job-title">
-                            ${escapeHTML(
-                              experience.jobTitle
-                            )}
+                            ${escapeHTML(experience.jobTitle)}
                           </div>
 
                           <div class="company">
-                            ${escapeHTML(
-                              experience.company
-                            )}
+                            ${escapeHTML(experience.company)}
                           </div>
                         </div>
 
                         <div class="minimal-meta">
                           ${
                             experience.location
-                              ? escapeHTML(
-                                  experience.location
-                                )
+                              ? escapeHTML(experience.location)
                               : ""
                           }
 
                           ${
                             experience.periodOfEmployment
                               ? `<br />${escapeHTML(
-                                  experience.periodOfEmployment
+                                  experience.periodOfEmployment,
                                 )}`
                               : ""
                           }
@@ -98,16 +86,14 @@ const minimalTemplate = (resume) => {
                         experience.description
                           ? `
                             <div class="description">
-                              ${formatText(
-                                experience.description
-                              )}
+                              ${formatText(experience.description)}
                             </div>
                           `
                           : ""
                       }
 
                     </div>
-                  `
+                  `,
                 )
                 .join("")}
             </section>
@@ -130,32 +116,24 @@ const minimalTemplate = (resume) => {
 
                         <div>
                           <div class="degree">
-                            ${escapeHTML(
-                              education.degreeField
-                            )}
+                            ${escapeHTML(education.degreeField)}
                           </div>
 
                           <div class="school">
-                            ${escapeHTML(
-                              education.school
-                            )}
+                            ${escapeHTML(education.school)}
                           </div>
                         </div>
 
                         <div class="minimal-meta">
                           ${
                             education.location
-                              ? escapeHTML(
-                                  education.location
-                                )
+                              ? escapeHTML(education.location)
                               : ""
                           }
 
                           ${
                             education.schoolYear
-                              ? `<br />${escapeHTML(
-                                  education.schoolYear
-                                )}`
+                              ? `<br />${escapeHTML(education.schoolYear)}`
                               : ""
                           }
                         </div>
@@ -166,16 +144,14 @@ const minimalTemplate = (resume) => {
                         education.description
                           ? `
                             <div class="description">
-                              ${formatText(
-                                education.description
-                              )}
+                              ${formatText(education.description)}
                             </div>
                           `
                           : ""
                       }
 
                     </div>
-                  `
+                  `,
                 )
                 .join("")}
             </section>
@@ -209,25 +185,21 @@ const minimalTemplate = (resume) => {
                     <div class="minimal-project">
 
                       <div class="project-name">
-                        ${escapeHTML(
-                          project.projectName
-                        )}
+                        ${escapeHTML(project.projectName)}
                       </div>
 
                       ${
                         project.projectDescription
                           ? `
                             <div class="description">
-                              ${formatText(
-                                project.projectDescription
-                              )}
+                              ${formatText(project.projectDescription)}
                             </div>
                           `
                           : ""
                       }
 
                     </div>
-                  `
+                  `,
                 )
                 .join("")}
             </section>
@@ -242,9 +214,7 @@ const minimalTemplate = (resume) => {
               <h2>CERTIFICATIONS</h2>
 
               <div class="skills-text">
-                ${formatText(
-                  certificates
-                )}
+                ${formatText(certificates)}
               </div>
             </section>
           `

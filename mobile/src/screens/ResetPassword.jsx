@@ -45,6 +45,33 @@ const ResetPassword = () => {
     setModalVisible,
   });
 
+  const passwordRequirements = [
+    {
+      label: "At least 8 characters",
+      met: password.length >= 8,
+    },
+    {
+      label: "No more than 16 characters",
+      met: password.length <= 16 && password.length > 0,
+    },
+    {
+      label: "At least one uppercase letter (A-Z)",
+      met: /[A-Z]/.test(password),
+    },
+    {
+      label: "At least one number (0-9)",
+      met: /[0-9]/.test(password),
+    },
+    {
+      label: "At least one special character (@, #, !)",
+      met: /[^A-Za-z0-9\s]/.test(password),
+    },
+    {
+      label: "No spaces",
+      met: password.length > 0 && !/\s/.test(password),
+    },
+  ];
+
   return (
     <ScrollView
       style={styles.container}
@@ -92,6 +119,35 @@ const ResetPassword = () => {
             {passwordError}
           </Text>
         ) : null}
+
+        {password.length > 0 && (
+          <View style={styles.passwordRequirements}>
+            <Text style={styles.requirementsTitle}>Password requirements</Text>
+
+            {passwordRequirements.map((requirement, index) => (
+              <View key={index} style={styles.requirementRow}>
+                <Ionicons
+                  name={
+                    requirement.met
+                      ? "checkmark-circle"
+                      : "close-circle-outline"
+                  }
+                  size={16}
+                  color={requirement.met ? "#60A5FA" : "#A1A1AA"}
+                />
+
+                <Text
+                  style={[
+                    styles.requirementText,
+                    requirement.met && styles.requirementMet,
+                  ]}
+                >
+                  {requirement.label}
+                </Text>
+              </View>
+            ))}
+          </View>
+        )}
 
         <IconTextInput
           label="CONFIRM PASSWORD"
@@ -212,5 +268,37 @@ const styles = StyleSheet.create({
     color: "#60A5FA",
     textDecorationLine: "underline",
     fontWeight: 600,
+  },
+
+  passwordRequirements: {
+    width: "100%",
+    marginTop: 8,
+    marginBottom: 12,
+    padding: 12,
+    backgroundColor: "#1E1E26",
+    borderRadius: 10,
+  },
+
+  requirementsTitle: {
+    color: "#F8FAFC",
+    fontSize: 13,
+    fontWeight: "600",
+    marginBottom: 8,
+  },
+
+  requirementRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 6,
+    gap: 8,
+  },
+
+  requirementText: {
+    color: "#A1A1AA",
+    fontSize: 12,
+  },
+
+  requirementMet: {
+    color: "#60A5FA",
   },
 });

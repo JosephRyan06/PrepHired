@@ -1,5 +1,13 @@
 import React, { useEffect, useState, useRef } from "react";
-import { View, Text, TouchableOpacity, ScrollView, Modal, Animated, Easing } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ScrollView,
+  Modal,
+  Animated,
+  Easing,
+} from "react-native";
 
 import { useRoute } from "@react-navigation/native";
 
@@ -469,7 +477,6 @@ const SummaryExtras = ({ navigation }) => {
         message="Please wait while we generate your resume."
         icon="document-text-outline"
       />
-
     </View>
   );
 };

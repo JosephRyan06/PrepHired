@@ -20,7 +20,7 @@ const changePasswordHandler = ({
       const result = await changePassword(
         currentPassword,
         newPassword,
-        confirmPassword
+        confirmPassword,
       );
 
       if (!result.success) {
@@ -40,9 +40,7 @@ const changePasswordHandler = ({
 
         // No field-specific error
         if (Object.keys(errors).length === 0) {
-          setMessage(
-            result.message || "Unable to change password"
-          );
+          setMessage(result.message || "Unable to change password");
 
           setModalVisible(true);
         }
@@ -51,17 +49,13 @@ const changePasswordHandler = ({
       }
 
       // Password changed successfully
-      setMessage(
-        result.message || "Password changed successfully"
-      );
+      setMessage(result.message || "Password changed successfully");
 
       setModalVisible(true);
     } catch (error) {
       console.error("Change password error:", error);
 
-      setMessage(
-        error.message || "Unable to change password"
-      );
+      setMessage(error.message || "Unable to change password");
 
       setModalVisible(true);
     }

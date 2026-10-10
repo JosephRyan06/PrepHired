@@ -19,7 +19,6 @@ app.use("/api/mobile/resume", resumeRoutes);
 app.use("/api/mobile/mockInterview", mockInterviewRoutes);
 app.use("/api/mobile/progress", progressRoutes);
 
-
 const PORT = process.env.PORT || 5000;
 
 const startServer = async () => {

@@ -21,15 +21,15 @@ const {
 } = require("../controller/resumeController");
 
 const { authenticateUser } = require("../middleware/mobileAuthMiddleware");
-const uploadResume  = require("../middleware/uploadResume");
+const uploadResume = require("../middleware/uploadResume");
 
 router.post(
   "/upload",
   authenticateUser,
   uploadResume.single("resume"),
-  importResume
+  importResume,
 );
-          
+
 router.post("/", authenticateUser, createResume);
 router.get("/draft", authenticateUser, getDraftResume);
 router.get("/:id/export-pdf", authenticateUser, exportResumePDF);

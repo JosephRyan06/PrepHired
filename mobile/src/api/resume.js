@@ -1,6 +1,6 @@
 import { API_URL } from "../config/api";
 import * as FileSystem from "expo-file-system/legacy";
-import { Blob } from 'expo-blob';
+import { Blob } from "expo-blob";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const getAuthHeaders = async () => {
@@ -50,51 +50,39 @@ export const importResume = async (pdf) => {
     };
   }
 
-  console.log(
-    "========== RESUME UPLOAD =========="
-  );
+  console.log("========== RESUME UPLOAD ==========");
 
-  console.log(
-    "Resume file:",
-    {
-      uri: pdf.uri,
-      name: pdf.name,
-      mimeType: pdf.mimeType,
-      size: pdf.size,
-    }
-  );
+  console.log("Resume file:", {
+    uri: pdf.uri,
+    name: pdf.name,
+    mimeType: pdf.mimeType,
+    size: pdf.size,
+  });
 
   // ==========================================
   // READ DOCUMENT PICKER URI
   // ==========================================
-  console.log(
-    "Reading resume file..."
-  );
+  console.log("Reading resume file...");
 
   const fileResponse = await fetch(pdf.uri);
 
   if (!fileResponse.ok) {
     throw {
-      message:
-        "Unable to read the selected resume file.",
+      message: "Unable to read the selected resume file.",
       errors: {},
     };
   }
 
   const blob = await fileResponse.blob();
 
-  console.log(
-    "Resume blob created:",
-    {
-      size: blob.size,
-      type: blob.type,
-    }
-  );
+  console.log("Resume blob created:", {
+    size: blob.size,
+    type: blob.type,
+  });
 
   if (!blob || blob.size === 0) {
     throw {
-      message:
-        "The selected resume file is empty.",
+      message: "The selected resume file is empty.",
       errors: {},
     };
   }
@@ -104,44 +92,27 @@ export const importResume = async (pdf) => {
   // ==========================================
   const formData = new FormData();
 
-  formData.append(
-    "resume",
-    blob,
-    pdf.name || "resume.pdf"
-  );
+  formData.append("resume", blob, pdf.name || "resume.pdf");
 
-  console.log(
-    "Resume appended to FormData"
-  );
+  console.log("Resume appended to FormData");
 
-  console.log(
-    "Uploading resume..."
-  );
+  console.log("Uploading resume...");
 
-  const response = await fetch(
-    `${API_URL}/mobile/resume/upload`,
-    {
-      method: "POST",
+  const response = await fetch(`${API_URL}/mobile/resume/upload`, {
+    method: "POST",
 
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
 
-      body: formData,
-    }
-  );
+    body: formData,
+  });
 
-  console.log(
-    "Resume upload status:",
-    response.status
-  );
+  console.log("Resume upload status:", response.status);
 
   const responseText = await response.text();
 
-  console.log(
-    "Raw server response:",
-    responseText
-  );
+  console.log("Raw server response:", responseText);
 
   let data;
 
@@ -149,32 +120,23 @@ export const importResume = async (pdf) => {
     data = JSON.parse(responseText);
   } catch {
     throw {
-      message:
-        responseText ||
-        `Server returned HTTP ${response.status}`,
+      message: responseText || `Server returned HTTP ${response.status}`,
       errors: {},
     };
   }
 
-  console.log(
-    "Resume upload response:",
-    data
-  );
+  console.log("Resume upload response:", data);
 
   if (!response.ok) {
     throw {
-      message:
-        data?.message ||
-        "Failed to import resume",
+      message: data?.message || "Failed to import resume",
 
-      errors:
-        data?.errors || {},
+      errors: data?.errors || {},
     };
   }
 
   return data;
 };
-
 
 // GET DRAFT
 export const getDraftResume = async () => {

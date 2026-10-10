@@ -144,17 +144,17 @@ const ResumePreview = ({ navigation }) => {
           disabled={loading}
         />
       </View>
-      
+
       <AppModal
-          visible={modalVisible}
-          message={modalMessage}
-          onClose={() => {
-            setModalVisible(false);
-            if (modalMessage.includes("Resume saved successfully.")) {
-              navigation.replace("Resume");
-            }
-          }}
-        />
+        visible={modalVisible}
+        message={modalMessage}
+        onClose={() => {
+          setModalVisible(false);
+          if (modalMessage.includes("Resume saved successfully.")) {
+            navigation.replace("Resume");
+          }
+        }}
+      />
     </View>
   );
 };

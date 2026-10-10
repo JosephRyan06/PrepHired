@@ -1,8 +1,4 @@
-import React, {
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import {
   View,
@@ -12,10 +8,7 @@ import {
   ScrollView,
 } from "react-native";
 
-import {
-  useNavigation,
-  useRoute,
-} from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 
 import { Ionicons } from "@expo/vector-icons";
 import * as Speech from "expo-speech";
@@ -28,16 +21,13 @@ import styles from "../../styles/global";
 
 import useMockInterview from "../../hooks/useMockInterview";
 
-import {
-  questionAndAnswerHandler,
-} from "../../handlers/interview/questionAndAnswerHandler";
+import { questionAndAnswerHandler } from "../../handlers/interview/questionAndAnswerHandler";
 
 const QuestionAndAnswer = () => {
   const navigation = useNavigation();
   const route = useRoute();
 
-  const mockInterviewId =
-    route.params?.mockInterviewId;
+  const mockInterviewId = route.params?.mockInterviewId;
 
   const {
     mockInterview,
@@ -47,33 +37,23 @@ const QuestionAndAnswer = () => {
     numberOfQuestions,
   } = route.params || {};
 
-  const {
-    saveAnswer,
-    analyzeAnswer,
-    analyzeSession,
-    complete,
-    loading,
-  } = useMockInterview();
+  const { saveAnswer, analyzeAnswer, analyzeSession, complete, loading } =
+    useMockInterview();
 
   const [currentQuestion, setCurrentQuestion] = useState(1);
-
   const [response, setResponse] = useState("");
-
   const [timeLeft, setTimeLeft] = useState(60);
-
   const [answerError, setAnswerError] = useState("");
-
   const [isSpeaking, setIsSpeaking] = useState(false);
 
-  const [ modalVisible, setModalVisible ] = useState(false);
-  const [ modalMessage, setModalMessage ] = useState("");
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
 
   // Prevent double submission / timeout
   const processingRef = useRef(false);
 
   // Prevent timeout from firing multiple times
   const timeoutHandledRef = useRef(false);
-
 
   const {
     questions,
@@ -113,10 +93,7 @@ const QuestionAndAnswer = () => {
     try {
       await Speech.stop();
     } catch (error) {
-      console.error(
-        "Speech stop error:",
-        error,
-      );
+      console.error("Speech stop error:", error);
     }
 
     setIsSpeaking(false);
@@ -137,41 +114,30 @@ const QuestionAndAnswer = () => {
 
       setIsSpeaking(true);
 
-      Speech.speak(
-        currentQuestionText,
-        {
-          language: "en-US",
-          rate: 0.9,
-          pitch: 1.0,
+      Speech.speak(currentQuestionText, {
+        language: "en-US",
+        rate: 0.9,
+        pitch: 1.0,
 
-          onStart: () => {
-            setIsSpeaking(true);
-          },
-
-          onDone: () => {
-            setIsSpeaking(false);
-          },
-
-          onStopped: () => {
-            setIsSpeaking(false);
-          },
-
-          onError: (error) => {
-            console.error(
-              "Speech error:",
-              error,
-            );
-
-            setIsSpeaking(false);
-          },
+        onStart: () => {
+          setIsSpeaking(true);
         },
-      );
-    } catch (error) {
-      console.error(
-        "Speech error:",
-        error,
-      );
 
+        onDone: () => {
+          setIsSpeaking(false);
+        },
+
+        onStopped: () => {
+          setIsSpeaking(false);
+        },
+
+        onError: (error) => {
+          console.error("Speech error:", error);
+          setIsSpeaking(false);
+        },
+      });
+    } catch (error) {
+      console.error("Speech error:", error);
       setIsSpeaking(false);
     }
   };
@@ -195,7 +161,6 @@ const QuestionAndAnswer = () => {
     setIsSpeaking(false);
   }, [currentQuestion]);
 
-
   useEffect(() => {
     if (!currentQuestionText) {
       return;
@@ -209,7 +174,6 @@ const QuestionAndAnswer = () => {
 
     return () => {
       clearTimeout(speechTimer);
-
       Speech.stop();
       setIsSpeaking(false);
     };
@@ -262,10 +226,7 @@ const QuestionAndAnswer = () => {
       try {
         await handleTimeOut();
       } catch (error) {
-        console.error(
-          "Timeout error:",
-          error,
-        );
+        console.error("Timeout error:", error);
 
         // Allow another attempt if the handler failed
         timeoutHandledRef.current = false;
@@ -294,7 +255,6 @@ const QuestionAndAnswer = () => {
       Speech.stop();
     };
   }, []);
-
 
   return (
     <View style={styles.container}>
@@ -337,8 +297,7 @@ const QuestionAndAnswer = () => {
               fontWeight: "700",
             }}
           >
-            QUESTION {currentQuestion} OF{" "}
-            {totalQuestions}
+            QUESTION {currentQuestion} OF {totalQuestions}
           </Text>
         </View>
 
@@ -357,12 +316,7 @@ const QuestionAndAnswer = () => {
             style={{
               width: `${
                 totalQuestions > 0
-                  ? Math.min(
-                      (currentQuestion /
-                        totalQuestions) *
-                        100,
-                      100,
-                    )
+                  ? Math.min((currentQuestion / totalQuestions) * 100, 100)
                   : 0
               }%`,
               height: "100%",
@@ -418,11 +372,7 @@ const QuestionAndAnswer = () => {
                 marginLeft: 10,
               }}
             >
-              <Ionicons
-                name="volume-high"
-                size={18}
-                color="#60A5FA"
-              />
+              <Ionicons name="volume-high" size={18} color="#60A5FA" />
 
               <Text
                 style={{
@@ -492,11 +442,7 @@ const QuestionAndAnswer = () => {
                   marginBottom: 12,
                 }}
               >
-                <Ionicons
-                  name="mic"
-                  size={32}
-                  color="#FFFFFF"
-                />
+                <Ionicons name="mic" size={32} color="#FFFFFF" />
               </TouchableOpacity>
 
               <Text
@@ -506,8 +452,7 @@ const QuestionAndAnswer = () => {
                   textAlign: "center",
                 }}
               >
-                Audio recording can be
-                connected here.
+                Audio recording can be connected here.
               </Text>
             </View>
           ) : (
@@ -564,14 +509,11 @@ const QuestionAndAnswer = () => {
           loading
             ? "Saving..."
             : currentQuestion < totalQuestions
-            ? "Save Answer"
-            : "Submit Answer"
+              ? "Save Answer"
+              : "Submit Answer"
         }
         onPress={handleSaveAndContinue}
-        disabled={
-          loading ||
-          processingRef.current
-        }
+        disabled={loading || processingRef.current}
       />
 
       <LoadingModal
@@ -580,7 +522,6 @@ const QuestionAndAnswer = () => {
         message="Please wait while AI analyzes your final answer and completes your interview."
         icon="sparkles-outline"
       />
-
     </View>
   );
 };

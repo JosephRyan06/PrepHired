@@ -47,8 +47,7 @@ const useMockInterview = () => {
       setLoading(true);
       setError(null);
 
-      const result =
-        await getMockInterview(interviewId);
+      const result = await getMockInterview(interviewId);
 
       return result;
     } catch (error) {
@@ -71,14 +70,13 @@ const useMockInterview = () => {
       setLoading(true);
       setError(null);
 
-      const result =
-        await saveInterviewAnswer({
-          interviewId,
-          questionNumber,
-          answer,
-          audioUrl,
-          timeUsed,
-        });
+      const result = await saveInterviewAnswer({
+        interviewId,
+        questionNumber,
+        answer,
+        audioUrl,
+        timeUsed,
+      });
 
       return result;
     } catch (error) {
@@ -90,19 +88,15 @@ const useMockInterview = () => {
   };
 
   // ANALYZE ANSWER
-  const analyzeAnswer = async ({
-    interviewId,
-    questionNumber,
-  }) => {
+  const analyzeAnswer = async ({ interviewId, questionNumber }) => {
     try {
       setLoading(true);
       setError(null);
 
-      const result =
-        await analyzeInterviewAnswer({
-          interviewId,
-          questionNumber,
-        });
+      const result = await analyzeInterviewAnswer({
+        interviewId,
+        questionNumber,
+      });
 
       return result;
     } catch (error) {
@@ -114,17 +108,12 @@ const useMockInterview = () => {
   };
 
   // ANALYZE SESSION
-  const analyzeSession = async (
-    interviewId,
-  ) => {
+  const analyzeSession = async (interviewId) => {
     try {
       setLoading(true);
       setError(null);
 
-      const result =
-        await analyzeInterviewSession(
-          interviewId,
-        );
+      const result = await analyzeInterviewSession(interviewId);
 
       return result;
     } catch (error) {
@@ -136,17 +125,12 @@ const useMockInterview = () => {
   };
 
   // COMPLETE
-  const complete = async (
-    interviewId,
-  ) => {
+  const complete = async (interviewId) => {
     try {
       setLoading(true);
       setError(null);
 
-      const result =
-        await completeMockInterview(
-          interviewId,
-        );
+      const result = await completeMockInterview(interviewId);
 
       return result;
     } catch (error) {
@@ -163,8 +147,7 @@ const useMockInterview = () => {
       setLoading(true);
       setError(null);
 
-      const result =
-        await getCompletedMockInterviews();
+      const result = await getCompletedMockInterviews();
 
       return result;
     } catch (error) {

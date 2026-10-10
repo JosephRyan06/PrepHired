@@ -11,23 +11,17 @@ const {
 } = require("../pdfHelpers");
 
 const classicTemplate = (resume) => {
-  const summary =
-    getProfessionalSummary(resume);
+  const summary = getProfessionalSummary(resume);
 
-  const skills =
-    getSkills(resume);
+  const skills = getSkills(resume);
 
-  const certificates =
-    getCertificates(resume);
+  const certificates = getCertificates(resume);
 
-  const experiences =
-    getWorkExperiences(resume);
+  const experiences = getWorkExperiences(resume);
 
-  const educations =
-    getEducations(resume);
+  const educations = getEducations(resume);
 
-  const projects =
-    getProjects(resume);
+  const projects = getProjects(resume);
 
   return `
     <div class="page classic">
@@ -64,15 +58,11 @@ const classicTemplate = (resume) => {
                         <div class="left">
 
                           <div class="job-title">
-                            ${escapeHTML(
-                              experience.jobTitle
-                            )}
+                            ${escapeHTML(experience.jobTitle)}
                           </div>
 
                           <div class="company">
-                            ${escapeHTML(
-                              experience.company
-                            )}
+                            ${escapeHTML(experience.company)}
                           </div>
 
                         </div>
@@ -81,9 +71,7 @@ const classicTemplate = (resume) => {
 
                           ${
                             experience.location
-                              ? escapeHTML(
-                                  experience.location
-                                )
+                              ? escapeHTML(experience.location)
                               : ""
                           }
 
@@ -91,9 +79,7 @@ const classicTemplate = (resume) => {
                             experience.periodOfEmployment
                               ? `
                                 <br />
-                                ${escapeHTML(
-                                  experience.periodOfEmployment
-                                )}
+                                ${escapeHTML(experience.periodOfEmployment)}
                               `
                               : ""
                           }
@@ -106,16 +92,14 @@ const classicTemplate = (resume) => {
                         experience.description
                           ? `
                             <div class="description">
-                              ${formatText(
-                                experience.description
-                              )}
+                              ${formatText(experience.description)}
                             </div>
                           `
                           : ""
                       }
 
                     </div>
-                  `
+                  `,
                 )
                 .join("")}
             </section>
@@ -139,15 +123,11 @@ const classicTemplate = (resume) => {
                         <div class="left">
 
                           <div class="degree">
-                            ${escapeHTML(
-                              education.degreeField
-                            )}
+                            ${escapeHTML(education.degreeField)}
                           </div>
 
                           <div class="school">
-                            ${escapeHTML(
-                              education.school
-                            )}
+                            ${escapeHTML(education.school)}
                           </div>
 
                         </div>
@@ -156,9 +136,7 @@ const classicTemplate = (resume) => {
 
                           ${
                             education.location
-                              ? escapeHTML(
-                                  education.location
-                                )
+                              ? escapeHTML(education.location)
                               : ""
                           }
 
@@ -166,9 +144,7 @@ const classicTemplate = (resume) => {
                             education.schoolYear
                               ? `
                                 <br />
-                                ${escapeHTML(
-                                  education.schoolYear
-                                )}
+                                ${escapeHTML(education.schoolYear)}
                               `
                               : ""
                           }
@@ -181,16 +157,14 @@ const classicTemplate = (resume) => {
                         education.description
                           ? `
                             <div class="description">
-                              ${formatText(
-                                education.description
-                              )}
+                              ${formatText(education.description)}
                             </div>
                           `
                           : ""
                       }
 
                     </div>
-                  `
+                  `,
                 )
                 .join("")}
             </section>
@@ -224,25 +198,21 @@ const classicTemplate = (resume) => {
                     <div class="classic-item">
 
                       <div class="project-name">
-                        ${escapeHTML(
-                          project.projectName
-                        )}
+                        ${escapeHTML(project.projectName)}
                       </div>
 
                       ${
                         project.projectDescription
                           ? `
                             <div class="description">
-                              ${formatText(
-                                project.projectDescription
-                              )}
+                              ${formatText(project.projectDescription)}
                             </div>
                           `
                           : ""
                       }
 
                     </div>
-                  `
+                  `,
                 )
                 .join("")}
             </section>
@@ -257,9 +227,7 @@ const classicTemplate = (resume) => {
               <h2>CERTIFICATIONS</h2>
 
               <div class="content">
-                ${formatText(
-                  certificates
-                )}
+                ${formatText(certificates)}
               </div>
             </section>
           `

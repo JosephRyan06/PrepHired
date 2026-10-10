@@ -10,7 +10,8 @@ const { sendPasswordResetOtp } = require("../services/emailService");
 
 const register = async (req, res) => {
   try {
-    const { fullName, email, password, confirmPassword, termsAccepted } = req.body;
+    const { fullName, email, password, confirmPassword, termsAccepted } =
+      req.body;
 
     const role = "user";
     const errors = {};
@@ -46,13 +47,18 @@ const register = async (req, res) => {
       errors.email = "Invalid email format";
     }
 
-    // Password validation
     if (password && password.length < 8) {
       errors.password = "Password must be at least 8 characters long";
-    }
-
-    if (password && /\s/.test(password)) {
+    } else if (password && password.length > 16) {
+      errors.password = "Password must not exceed 16 characters";
+    } else if (password && /\s/.test(password)) {
       errors.password = "Password must not contain spaces";
+    } else if (password && !/[A-Z]/.test(password)) {
+      errors.password = "Password must contain at least one uppercase letter";
+    } else if (password && !/[0-9]/.test(password)) {
+      errors.password = "Password must contain at least one number";
+    } else if (password && !/[^A-Za-z0-9\s]/.test(password)) {
+      errors.password = "Password must contain at least one special character";
     }
 
     // Confirm password
@@ -499,10 +505,16 @@ const resetPassword = async (req, res) => {
 
     if (password && password.length < 8) {
       errors.password = "Password must be at least 8 characters long";
-    }
-
-    if (password && /\s/.test(password)) {
+    } else if (password && password.length > 16) {
+      errors.password = "Password must not exceed 16 characters";
+    } else if (password && /\s/.test(password)) {
       errors.password = "Password must not contain spaces";
+    } else if (password && !/[A-Z]/.test(password)) {
+      errors.password = "Password must contain at least one uppercase letter";
+    } else if (password && !/[0-9]/.test(password)) {
+      errors.password = "Password must contain at least one number";
+    } else if (password && !/[^A-Za-z0-9\s]/.test(password)) {
+      errors.password = "Password must contain at least one special character";
     }
 
     if (password && confirmPassword && password !== confirmPassword) {
@@ -665,11 +677,7 @@ const resendOtp = async (req, res) => {
 
 const changePassword = async (req, res) => {
   try {
-    const {
-      currentPassword,
-      newPassword,
-      confirmPassword,
-    } = req.body;
+    const { currentPassword, newPassword, confirmPassword } = req.body;
 
     const errors = {};
 
@@ -685,23 +693,24 @@ const changePassword = async (req, res) => {
       errors.confirmPassword = "Please confirm your new password";
     }
 
-    // Password length
-    if (newPassword && newPassword.length < 8) {
-      errors.newPassword =
-        "Password must be at least 8 characters long";
-    }
-
-    // Password cannot contain spaces
-    if (newPassword && /\s/.test(newPassword)) {
+    if (newPassword.length < 8) {
+      errors.newPassword = "Password must be at least 8 characters long";
+    } else if (newPassword.length > 16) {
+      errors.newPassword = "Password must not exceed 16 characters";
+    } else if (/\s/.test(newPassword)) {
       errors.newPassword = "Password must not contain spaces";
+    } else if (!/[A-Z]/.test(newPassword)) {
+      errors.newPassword =
+        "Password must contain at least one uppercase letter";
+    } else if (!/[0-9]/.test(newPassword)) {
+      errors.newPassword = "Password must contain at least one number";
+    } else if (!/[^A-Za-z0-9\s]/.test(newPassword)) {
+      errors.newPassword =
+        "Password must contain at least one special character";
     }
 
     // Confirm password
-    if (
-      newPassword &&
-      confirmPassword &&
-      newPassword !== confirmPassword
-    ) {
+    if (newPassword && confirmPassword && newPassword !== confirmPassword) {
       errors.confirmPassword = "Passwords do not match";
     }
 
@@ -735,7 +744,7 @@ const changePassword = async (req, res) => {
 
     const isCurrentPasswordValid = await bcrypt.compare(
       currentPassword,
-      user.password
+      user.password,
     );
 
     if (!isCurrentPasswordValid) {
@@ -748,16 +757,12 @@ const changePassword = async (req, res) => {
       });
     }
 
-    const isSamePassword = await bcrypt.compare(
-      newPassword,
-      user.password
-    );
+    const isSamePassword = await bcrypt.compare(newPassword, user.password);
 
     if (isSamePassword) {
       return res.status(400).json({
         success: false,
-        message:
-          "New password must be different from your current password",
+        message: "New password must be different from your current password",
         errors: {
           newPassword:
             "New password must be different from your current password",
@@ -765,10 +770,7 @@ const changePassword = async (req, res) => {
       });
     }
 
-    const hashedPassword = await bcrypt.hash(
-      newPassword,
-      10
-    );
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
 
     user.password = hashedPassword;
 
@@ -832,7 +834,7 @@ const deleteAccount = async (req, res) => {
     // Verify current password
     const isPasswordValid = await bcrypt.compare(
       currentPassword,
-      user.password
+      user.password,
     );
 
     if (!isPasswordValid) {
@@ -879,5 +881,5 @@ module.exports = {
   resetPassword,
   resendOtp,
   changePassword,
-  deleteAccount
+  deleteAccount,
 };

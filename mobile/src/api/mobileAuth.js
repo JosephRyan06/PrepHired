@@ -145,23 +145,20 @@ export const changePassword = async (
   currentPassword,
   newPassword,
   confirmPassword,
-  token
+  token,
 ) => {
-  const response = await fetch(
-    `${API_URL}/mobile/auth/change-password`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        currentPassword,
-        newPassword,
-        confirmPassword,
-      }),
-    }
-  );
+  const response = await fetch(`${API_URL}/mobile/auth/change-password`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({
+      currentPassword,
+      newPassword,
+      confirmPassword,
+    }),
+  });
 
   const data = await response.json();
 

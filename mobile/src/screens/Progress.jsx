@@ -1,10 +1,5 @@
 import React from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  ScrollView,
-} from "react-native";
+import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
@@ -17,25 +12,17 @@ import useProgress from "../hooks/useProgress";
 const Progress = () => {
   const navigation = useNavigation();
 
-  const {
-    progress,
-    loading,
-  } = useProgress();
+  const { progress, loading } = useProgress();
 
-  const employmentReadiness =
-    progress?.employmentReadiness || 0;
+  const employmentReadiness = progress?.employmentReadiness || 0;
 
-  const resumeAtsScore =
-    progress?.resume?.atsScore || 0;
+  const resumeAtsScore = progress?.resume?.atsScore || 0;
 
-  const resumeCount =
-    progress?.resume?.completed || 0;
+  const resumeCount = progress?.resume?.completed || 0;
 
-  const interviewAverage =
-    progress?.interviews?.averageScore || 0;
+  const interviewAverage = progress?.interviews?.averageScore || 0;
 
-  const completedInterviews =
-    progress?.interviews?.completed || 0;
+  const completedInterviews = progress?.interviews?.completed || 0;
 
   const skills = progress?.skills || {};
 
@@ -231,10 +218,7 @@ const Progress = () => {
                     height: 90,
                     borderRadius: 45,
                     borderWidth: 8,
-                    borderColor:
-                      getScoreColor(
-                        employmentReadiness
-                      ),
+                    borderColor: getScoreColor(employmentReadiness),
                     alignItems: "center",
                     justifyContent: "center",
                   }}
@@ -267,16 +251,12 @@ const Progress = () => {
                 >
                   <Text
                     style={{
-                      color: getScoreColor(
-                        employmentReadiness
-                      ),
+                      color: getScoreColor(employmentReadiness),
                       fontSize: 18,
                       fontWeight: "800",
                     }}
                   >
-                    {getReadinessLabel(
-                      employmentReadiness
-                    )}
+                    {getReadinessLabel(employmentReadiness)}
                   </Text>
 
                   <Text
@@ -287,8 +267,7 @@ const Progress = () => {
                       marginTop: 5,
                     }}
                   >
-                    Based on your resume and mock
-                    interview performance.
+                    Based on your resume and mock interview performance.
                   </Text>
                 </View>
               </View>
@@ -306,10 +285,7 @@ const Progress = () => {
                   style={{
                     width: `${employmentReadiness}%`,
                     height: "100%",
-                    backgroundColor:
-                      getScoreColor(
-                        employmentReadiness
-                      ),
+                    backgroundColor: getScoreColor(employmentReadiness),
                     borderRadius: 10,
                   }}
                 />
@@ -469,17 +445,13 @@ const Progress = () => {
                     }}
                   >
                     {resumeCount} completed resume
-                    {resumeCount === 1
-                      ? ""
-                      : "s"}
+                    {resumeCount === 1 ? "" : "s"}
                   </Text>
                 </View>
 
                 <Text
                   style={{
-                    color: getScoreColor(
-                      resumeAtsScore
-                    ),
+                    color: getScoreColor(resumeAtsScore),
                     fontSize: 20,
                     fontWeight: "800",
                   }}
@@ -501,10 +473,7 @@ const Progress = () => {
                   style={{
                     width: `${resumeAtsScore}%`,
                     height: "100%",
-                    backgroundColor:
-                      getScoreColor(
-                        resumeAtsScore
-                      ),
+                    backgroundColor: getScoreColor(resumeAtsScore),
                   }}
                 />
               </View>
@@ -520,9 +489,7 @@ const Progress = () => {
               </Text>
 
               <TouchableOpacity
-                onPress={() =>
-                  navigation.navigate("MyResumes")
-                }
+                onPress={() => navigation.navigate("MyResumes")}
                 style={{
                   backgroundColor: "#1D4ED8",
                   paddingVertical: 12,
@@ -655,11 +622,7 @@ const Progress = () => {
                     justifyContent: "center",
                   }}
                 >
-                  <Ionicons
-                    name="mic-outline"
-                    size={22}
-                    color="#F8FAFC"
-                  />
+                  <Ionicons name="mic-outline" size={22} color="#F8FAFC" />
                 </View>
 
                 <View
@@ -691,9 +654,7 @@ const Progress = () => {
 
                 <Text
                   style={{
-                    color: getScoreColor(
-                      interviewAverage
-                    ),
+                    color: getScoreColor(interviewAverage),
                     fontSize: 20,
                     fontWeight: "800",
                   }}
@@ -715,20 +676,13 @@ const Progress = () => {
                   style={{
                     width: `${interviewAverage}%`,
                     height: "100%",
-                    backgroundColor:
-                      getScoreColor(
-                        interviewAverage
-                      ),
+                    backgroundColor: getScoreColor(interviewAverage),
                   }}
                 />
               </View>
 
               <TouchableOpacity
-                onPress={() =>
-                  navigation.navigate(
-                    "InterviewHistory"
-                  )
-                }
+                onPress={() => navigation.navigate("InterviewHistory")}
                 style={{
                   backgroundColor: "#3F3F46",
                   paddingVertical: 12,
@@ -837,11 +791,7 @@ const Progress = () => {
                     alignItems: "center",
                   }}
                 >
-                  <Ionicons
-                    name={skill.icon}
-                    size={20}
-                    color="#A1A1AA"
-                  />
+                  <Ionicons name={skill.icon} size={20} color="#A1A1AA" />
 
                   <Text
                     style={{
@@ -857,9 +807,7 @@ const Progress = () => {
 
                   <Text
                     style={{
-                      color: getScoreColor(
-                        skill.value
-                      ),
+                      color: getScoreColor(skill.value),
                       fontSize: 14,
                       fontWeight: "800",
                     }}
@@ -881,10 +829,7 @@ const Progress = () => {
                     style={{
                       width: `${skill.value}%`,
                       height: "100%",
-                      backgroundColor:
-                        getScoreColor(
-                          skill.value
-                        ),
+                      backgroundColor: getScoreColor(skill.value),
                       borderRadius: 10,
                     }}
                   />

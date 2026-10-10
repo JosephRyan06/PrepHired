@@ -16,8 +16,7 @@ const getProgress = async (userId) => {
   // Latest completed resume
   const latestResume = resumes[0] || null;
 
-  const resumeAtsScore =
-    latestResume?.aiAnalysis?.atsScore || 0;
+  const resumeAtsScore = latestResume?.aiAnalysis?.atsScore || 0;
 
   // ==========================================
   // GET COMPLETED INTERVIEWS
@@ -35,18 +34,14 @@ const getProgress = async (userId) => {
   // ==========================================
 
   const interviewScores = interviews
-    .map((interview) =>
-      Number(interview.overallScore || 0)
-    )
+    .map((interview) => Number(interview.overallScore || 0))
     .filter((score) => score > 0);
 
   const interviewAverage =
     interviewScores.length > 0
       ? Math.round(
-          interviewScores.reduce(
-            (total, score) => total + score,
-            0
-          ) / interviewScores.length
+          interviewScores.reduce((total, score) => total + score, 0) /
+            interviewScores.length,
         )
       : 0;
 
@@ -60,11 +55,7 @@ const getProgress = async (userId) => {
     }
 
     const scores = interviews
-      .map((interview) =>
-        Number(
-          interview.skillBreakdown?.[skill] || 0
-        )
-      )
+      .map((interview) => Number(interview.skillBreakdown?.[skill] || 0))
       .filter((score) => score > 0);
 
     if (!scores.length) {
@@ -72,27 +63,19 @@ const getProgress = async (userId) => {
     }
 
     return Math.round(
-      scores.reduce(
-        (total, score) => total + score,
-        0
-      ) / scores.length
+      scores.reduce((total, score) => total + score, 0) / scores.length,
     );
   };
 
-  const communication =
-    calculateSkillAverage("communication");
+  const communication = calculateSkillAverage("communication");
 
-  const technicalKnowledge =
-    calculateSkillAverage("technicalKnowledge");
+  const technicalKnowledge = calculateSkillAverage("technicalKnowledge");
 
-  const problemSolving =
-    calculateSkillAverage("problemSolving");
+  const problemSolving = calculateSkillAverage("problemSolving");
 
-  const confidence =
-    calculateSkillAverage("confidence");
+  const confidence = calculateSkillAverage("confidence");
 
-  const relevance =
-    calculateSkillAverage("relevance");
+  const relevance = calculateSkillAverage("relevance");
 
   // ==========================================
   // EMPLOYMENT READINESS
@@ -100,22 +83,14 @@ const getProgress = async (userId) => {
 
   let employmentReadiness = 0;
 
-  if (
-    latestResume &&
-    interviews.length > 0
-  ) {
+  if (latestResume && interviews.length > 0) {
     employmentReadiness = Math.round(
-      resumeAtsScore * 0.5 +
-        interviewAverage * 0.5
+      resumeAtsScore * 0.5 + interviewAverage * 0.5,
     );
   } else if (latestResume) {
-    employmentReadiness = Math.round(
-      resumeAtsScore * 0.5
-    );
+    employmentReadiness = Math.round(resumeAtsScore * 0.5);
   } else if (interviews.length > 0) {
-    employmentReadiness = Math.round(
-      interviewAverage * 0.5
-    );
+    employmentReadiness = Math.round(interviewAverage * 0.5);
   }
 
   // ==========================================

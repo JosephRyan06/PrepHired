@@ -11,8 +11,7 @@ const loginLimiter = rateLimit({
       success: false,
       message: "Login failed",
       errors: {
-        general:
-          "Please try again after 15 minutes.",
+        general: "Please try again after 15 minutes.",
       },
     });
   },
@@ -20,7 +19,6 @@ const loginLimiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
 });
-
 
 // Register rate limiter
 const registerLimiter = rateLimit({
@@ -32,8 +30,7 @@ const registerLimiter = rateLimit({
       success: false,
       message: "Registration failed",
       errors: {
-        general:
-          "Please try again after 15 minutes.",
+        general: "Please try again after 15 minutes.",
       },
     });
   },

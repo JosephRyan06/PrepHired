@@ -23,11 +23,11 @@ import { uploadResumeHandler } from "../handlers/resume/uploadResumeHandler";
 
 const Resume = () => {
   const navigation = useNavigation();
-  
+
   const { getCompletedResumes, importResumeFile, loading } = useResume();
   const [uploadingResume, setUploadingResume] = useState(false);
-  const [ modalVisible, setModalVisible ] = useState(false);
-  const [ modalMessage, setMessage ] = useState("");
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalMessage, setMessage] = useState("");
   const [resumes, setResumes] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
 
@@ -64,7 +64,6 @@ const Resume = () => {
     navigation,
   });
 
-
   return (
     <View style={styles.container}>
       <ScrollView
@@ -80,7 +79,6 @@ const Resume = () => {
           />
         }
       >
-      
         <Text
           style={{
             color: "#F8FAFC",
@@ -248,13 +246,12 @@ const Resume = () => {
                   },
                 ]}
                 activeOpacity={0.8}
-                
+
                 onPress={() =>
                   navigation.navigate("CompletedResumePreview", {
                     resumeId: resume._id,
                   })
                 }
-                
               >
                 <View
                   style={{

@@ -99,7 +99,6 @@ export default function AppModal({ visible, message = "", onClose }) {
       };
     }
 
-
     // Registration rate limit
     if (
       message.includes(
@@ -177,7 +176,11 @@ export default function AppModal({ visible, message = "", onClose }) {
       };
     }
 
-    if (message.includes("The name on the resume does not match your account name.")) {
+    if (
+      message.includes(
+        "The name on the resume does not match your account name.",
+      )
+    ) {
       return {
         icon: "sad-outline",
         color: "#EF4444",
@@ -185,14 +188,15 @@ export default function AppModal({ visible, message = "", onClose }) {
       };
     }
 
-    if (message.includes("The uploaded resume does not belong to your account.")) {
+    if (
+      message.includes("The uploaded resume does not belong to your account.")
+    ) {
       return {
         icon: "sad-outline",
         color: "#EF4444",
         title: "Resume Mismatch",
       };
     }
-
 
     // Default error
     return {

@@ -12,6 +12,7 @@ import { useFocusEffect, useNavigation } from "@react-navigation/native";
 
 import { Ionicons } from "@expo/vector-icons";
 import ResumeHeader from "../../../components/ResumeHeader";
+import InterviewHeader from "../../../components/InterviewHeader";
 import ResumeTemplate from "../../../template/ResumeTemplate";
 import styles from "../../../styles/global";
 
@@ -21,7 +22,7 @@ const MyResumes = () => {
   const navigation = useNavigation();
 
   const { getCompletedResumes, loading } = useResume();
-  
+
   const [resumes, setResumes] = useState([]);
 
   useFocusEffect(
@@ -43,21 +44,29 @@ const MyResumes = () => {
   return (
     <View style={styles.container}>
       <ScrollView
-        contentContainerStyle={styles.scrollContent}
+        contentContainerStyle={[
+          styles.scrollContent,
+          {
+            flexGrow: 1,
+            paddingBottom: 100,
+          },
+        ]}
         showsVerticalScrollIndicator={false}
       >
-
-        <ResumeHeader
+        <InterviewHeader
           navigation={navigation}
-          resumeLabel="My Resumes"
+          interviewLabel="My Resume"
+          showTimer={false}
           navigateTo="Profile"
+          goBack={true}
+          backIcon="back"
         />
 
-         <View style={styles.myResumeCardContainer}>
+        <View style={styles.myResumeCardContainer}>
           {loading ? (
             // LOADING SKELETON
             <>
-              {[1, 2, 3, 4, 5, 6 ,7 ,8].map((item) => (
+              {[1, 2, 3, 4, 5, 6, 7, 8].map((item) => (
                 <View
                   key={item}
                   style={[
@@ -83,44 +92,43 @@ const MyResumes = () => {
               ))}
             </>
           ) : resumes.length === 0 ? (
-              <View
+            <View
+              style={{
+                flex: 1,
+                alignItems: "center",
+                justifyContent: "center",
+                paddingVertical: 250,
+              }}
+            >
+              <Ionicons
+                name="document-text-outline"
+                size={42}
+                color="#71717A"
+              />
+
+              <Text
                 style={{
-                  flex: 1,
-                  alignItems: "center",
-                  justifyContent: "center",
-                  paddingVertical: 50,
+                  color: "#F8FAFC",
+                  fontSize: 14,
+                  fontWeight: "700",
+                  marginTop: 12,
+                  textAlign: "center",
                 }}
               >
-                <Ionicons
-                  name="document-text-outline"
-                  size={42}
-                  color="#71717A"
-                />
-    
-                <Text
-                  style={{
-                    color: "#F8FAFC",
-                    fontSize: 14,
-                    fontWeight: "700",
-                    marginTop: 12,
-                    textAlign: "center",
-                  }}
-                >
-                  No resume created yet
-                </Text>
-    
-                <Text
-                  style={{
-                    color: "#71717A",
-                    fontSize: 12,
-                    marginTop: 6,
-                    textAlign: "center",
-                  }}
-                >
-                  Complete a mock interview to see it
-                  here.
-                </Text>
-              </View>
+                No resume created yet
+              </Text>
+
+              <Text
+                style={{
+                  color: "#71717A",
+                  fontSize: 12,
+                  marginTop: 6,
+                  textAlign: "center",
+                }}
+              >
+                Create your first resume to see it here.
+              </Text>
+            </View>
           ) : (
             // RESUMES
             resumes.map((resume) => (
@@ -133,13 +141,12 @@ const MyResumes = () => {
                   },
                 ]}
                 activeOpacity={0.8}
-                
+
                 onPress={() =>
                   navigation.navigate("CompletedResumePreviewProfile", {
                     resumeId: resume._id,
                   })
                 }
-                
               >
                 <View
                   style={{
@@ -156,7 +163,6 @@ const MyResumes = () => {
           )}
         </View>
       </ScrollView>
-
     </View>
   );
 };

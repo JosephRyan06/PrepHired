@@ -13,24 +13,17 @@ const ClassicTemplate = ({ resume, preview = false }) => {
   // ================================
 
   const address =
-    aiOptimization?.address?.optimized ||
-    resume?.basicInfo?.address ||
-    "";
+    aiOptimization?.address?.optimized || resume?.basicInfo?.address || "";
 
   const professionalSummary =
     aiOptimization?.professionalSummary?.optimized ||
     resume?.professionalSummary ||
     "";
 
-  const skills =
-    aiOptimization?.skills?.optimized ||
-    resume?.skills ||
-    "";
+  const skills = aiOptimization?.skills?.optimized || resume?.skills || "";
 
   const certificates =
-    aiOptimization?.certificates?.optimized ||
-    resume?.certificates ||
-    "";
+    aiOptimization?.certificates?.optimized || resume?.certificates || "";
 
   // ================================
   // WORK EXPERIENCE
@@ -44,24 +37,17 @@ const ClassicTemplate = ({ resume, preview = false }) => {
 
   const workExperiences =
     resume?.workExperiences?.map((experience) => {
-      const optimizedExperience =
-        aiOptimization?.workExperiences?.find(
-          (item) =>
-            String(item.id) === String(experience._id)
-        );
+      const optimizedExperience = aiOptimization?.workExperiences?.find(
+        (item) => String(item.id) === String(experience._id),
+      );
 
       return {
         ...experience,
 
-        location:
-          optimizedExperience?.location ||
-          experience.location ||
-          "",
+        location: optimizedExperience?.location || experience.location || "",
 
         description:
-          optimizedExperience?.optimized ||
-          experience.description ||
-          "",
+          optimizedExperience?.optimized || experience.description || "",
       };
     }) || [];
 
@@ -106,28 +92,21 @@ const ClassicTemplate = ({ resume, preview = false }) => {
       ?.filter(
         (project) =>
           project &&
-          (project.projectName?.trim() ||
-            project.projectDescription?.trim())
+          (project.projectName?.trim() || project.projectDescription?.trim()),
       )
       .map((project) => {
-        const optimizedProject =
-          aiOptimization?.projects?.find(
-            (item) =>
-              String(item.id) === String(project._id)
-          );
+        const optimizedProject = aiOptimization?.projects?.find(
+          (item) => String(item.id) === String(project._id),
+        );
 
         return {
           ...project,
 
           projectName:
-            optimizedProject?.projectName ||
-            project.projectName ||
-            "",
+            optimizedProject?.projectName || project.projectName || "",
 
           projectDescription:
-            optimizedProject?.optimized ||
-            project.projectDescription ||
-            "",
+            optimizedProject?.optimized || project.projectDescription || "",
         };
       }) || [];
 
@@ -141,7 +120,7 @@ const ClassicTemplate = ({ resume, preview = false }) => {
         paddingStart: 20,
         paddingEnd: 20,
         transform: [{ scale }],
-        transformOrigin: "center"
+        transformOrigin: "center",
       }}
     >
       {/* ========================================
@@ -177,8 +156,7 @@ const ClassicTemplate = ({ resume, preview = false }) => {
       >
         {resume?.basicInfo?.email || ""}
 
-        {resume?.basicInfo?.email &&
-        resume?.basicInfo?.contactNumber
+        {resume?.basicInfo?.email && resume?.basicInfo?.contactNumber
           ? "  |  "
           : ""}
 

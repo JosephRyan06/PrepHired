@@ -1,14 +1,8 @@
-export const answerFeedbackHandler = ({
-  mockInterviewId,
-  navigation,
-}) => {
+export const answerFeedbackHandler = ({ mockInterviewId, navigation }) => {
   const handleContinue = () => {
-    navigation.navigate(
-      "ReviewAnswer",
-      {
-        mockInterviewId,
-      },
-    );
+    navigation.navigate("ReviewAnswer", {
+      mockInterviewId,
+    });
   };
 
   return {

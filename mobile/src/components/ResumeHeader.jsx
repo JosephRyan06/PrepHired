@@ -35,15 +35,8 @@ const ResumeHeader = ({
   return (
     <View style={[styles.header, style]}>
       {/* Back Button */}
-      <TouchableOpacity
-        style={styles.backButton}
-        onPress={handleBack}
-      >
-        <Ionicons
-          name="arrow-back-outline"
-          size={28}
-          color="#F8FAFC"
-        />
+      <TouchableOpacity style={styles.backButton} onPress={handleBack}>
+        <Ionicons name="arrow-back-outline" size={28} color="#F8FAFC" />
       </TouchableOpacity>
 
       {/* Header Title */}

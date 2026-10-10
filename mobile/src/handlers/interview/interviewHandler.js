@@ -30,9 +30,7 @@ export const interviewHandler = ({
           return;
         }
 
-        setModalMessage(
-          result.message || "Failed to create mock interview"
-        );
+        setModalMessage(result.message || "Failed to create mock interview");
         setModalVisible(true);
 
         return;
@@ -49,9 +47,7 @@ export const interviewHandler = ({
         numberOfQuestions: Number(selectedNumberOfQuestions),
       });
     } catch (error) {
-      setModalMessage(
-        error?.message || "Failed to create mock interview"
-      );
+      setModalMessage(error?.message || "Failed to create mock interview");
       setModalVisible(true);
     }
   };

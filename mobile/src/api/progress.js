@@ -10,17 +10,13 @@ const getAuthHeaders = async () => {
   };
 };
 
-
 export const getProgress = async () => {
   const headers = await getAuthHeaders();
 
-  const response = await fetch(
-    `${API_URL}/mobile/progress`,
-    {
-      method: "GET",
-      headers,
-    },
-  );
+  const response = await fetch(`${API_URL}/mobile/progress`, {
+    method: "GET",
+    headers,
+  });
 
   const data = await response.json();
 

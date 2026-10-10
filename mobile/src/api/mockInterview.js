@@ -19,19 +19,16 @@ export const createMockInterview = async ({
 }) => {
   const headers = await getAuthHeaders();
 
-  const response = await fetch(
-    `${API_URL}/mobile/mockInterview`,
-    {
-      method: "POST",
-      headers,
-      body: JSON.stringify({
-        targetJob,
-        interviewCategory,
-        responseMode,
-        numberOfQuestions,
-      }),
-    },
-  );
+  const response = await fetch(`${API_URL}/mobile/mockInterview`, {
+    method: "POST",
+    headers,
+    body: JSON.stringify({
+      targetJob,
+      interviewCategory,
+      responseMode,
+      numberOfQuestions,
+    }),
+  });
 
   const data = await response.json();
 
@@ -138,9 +135,7 @@ export const analyzeInterviewAnswer = async ({
 };
 
 // ANALYZE COMPLETE SESSION
-export const analyzeInterviewSession = async (
-  interviewId,
-) => {
+export const analyzeInterviewSession = async (interviewId) => {
   const headers = await getAuthHeaders();
 
   const response = await fetch(
@@ -164,9 +159,7 @@ export const analyzeInterviewSession = async (
 };
 
 // COMPLETE INTERVIEW
-export const completeMockInterview = async (
-  interviewId,
-) => {
+export const completeMockInterview = async (interviewId) => {
   const headers = await getAuthHeaders();
 
   const response = await fetch(
@@ -193,13 +186,10 @@ export const completeMockInterview = async (
 export const getCompletedMockInterviews = async () => {
   const headers = await getAuthHeaders();
 
-  const response = await fetch(
-    `${API_URL}/mobile/mockInterview/completed`,
-    {
-      method: "GET",
-      headers,
-    },
-  );
+  const response = await fetch(`${API_URL}/mobile/mockInterview/completed`, {
+    method: "GET",
+    headers,
+  });
 
   const data = await response.json();
 

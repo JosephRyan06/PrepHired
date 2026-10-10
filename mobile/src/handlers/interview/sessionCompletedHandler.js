@@ -7,7 +7,6 @@ export const sessionCompletedHandler = ({
   setLoading,
 }) => {
   const loadInterview = async () => {
-    
     if (mockInterview) {
       setInterview(mockInterview);
       return;
@@ -24,14 +23,9 @@ export const sessionCompletedHandler = ({
 
       const result = await getById(mockInterviewId);
 
-      setInterview(
-        result?.mockInterview || null
-      );
+      setInterview(result?.mockInterview || null);
     } catch (error) {
-      console.error(
-        "Failed to load completed interview:",
-        error,
-      );
+      console.error("Failed to load completed interview:", error);
 
       setInterview(null);
     } finally {
@@ -40,12 +34,9 @@ export const sessionCompletedHandler = ({
   };
 
   const handleReviewAnswers = () => {
-    navigation.navigate(
-      "ReviewAnswer",
-      {
-        mockInterviewId,
-      },
-    );
+    navigation.navigate("ReviewAnswer", {
+      mockInterviewId,
+    });
   };
 
   const handleDone = () => {

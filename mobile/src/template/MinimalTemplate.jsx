@@ -10,13 +10,10 @@ const MinimalTemplate = ({ resume, preview = false }) => {
   // BASIC INFO
   // ================================
 
-  const fullName =
-    resume?.basicInfo?.fullName || "Your Name";
+  const fullName = resume?.basicInfo?.fullName || "Your Name";
 
   const address =
-    aiOptimization?.address?.optimized ||
-    resume?.basicInfo?.address ||
-    "";
+    aiOptimization?.address?.optimized || resume?.basicInfo?.address || "";
 
   // ================================
   // PROFESSIONAL SUMMARY
@@ -37,10 +34,7 @@ const MinimalTemplate = ({ resume, preview = false }) => {
   // FALLBACK = ORIGINAL
   // ================================
 
-  const skills =
-    aiOptimization?.skills?.optimized ||
-    resume?.skills ||
-    "";
+  const skills = aiOptimization?.skills?.optimized || resume?.skills || "";
 
   // ================================
   // CERTIFICATES
@@ -50,9 +44,7 @@ const MinimalTemplate = ({ resume, preview = false }) => {
   // ================================
 
   const certificates =
-    aiOptimization?.certificates?.optimized ||
-    resume?.certificates ||
-    "";
+    aiOptimization?.certificates?.optimized || resume?.certificates || "";
 
   // ================================
   // WORK EXPERIENCE
@@ -66,40 +58,28 @@ const MinimalTemplate = ({ resume, preview = false }) => {
 
   const workExperiences =
     resume?.workExperiences?.map((experience) => {
-      const optimizedExperience =
-        aiOptimization?.workExperiences?.find(
-          (item) =>
-            String(item.id) ===
-            String(experience._id)
-        );
+      const optimizedExperience = aiOptimization?.workExperiences?.find(
+        (item) => String(item.id) === String(experience._id),
+      );
 
       return {
         ...experience,
 
         // ORIGINAL JOB TITLE
-        jobTitle:
-          experience.jobTitle || "",
+        jobTitle: experience.jobTitle || "",
 
         // ORIGINAL COMPANY
-        company:
-          experience.company || "",
+        company: experience.company || "",
 
         // AI OPTIMIZED LOCATION
-        location:
-          optimizedExperience?.location ||
-          experience.location ||
-          "",
+        location: optimizedExperience?.location || experience.location || "",
 
         // ORIGINAL PERIOD
-        periodOfEmployment:
-          experience.periodOfEmployment ||
-          "",
+        periodOfEmployment: experience.periodOfEmployment || "",
 
         // AI OPTIMIZED DESCRIPTION
         description:
-          optimizedExperience?.optimized ||
-          experience.description ||
-          "",
+          optimizedExperience?.optimized || experience.description || "",
       };
     }) || [];
 
@@ -118,60 +98,42 @@ const MinimalTemplate = ({ resume, preview = false }) => {
 
   const educations =
     aiOptimization?.educations?.length > 0
-      ? aiOptimization.educations.map(
-          (education) => ({
-            id:
-              education.id || "",
+      ? aiOptimization.educations.map((education) => ({
+          id: education.id || "",
 
-            // AI OPTIMIZED
-            degreeField:
-              education.degreeField || "",
+          // AI OPTIMIZED
+          degreeField: education.degreeField || "",
 
-            // AI OPTIMIZED
-            school:
-              education.school || "",
+          // AI OPTIMIZED
+          school: education.school || "",
 
-            // AI OPTIMIZED
-            location:
-              education.location || "",
+          // AI OPTIMIZED
+          location: education.location || "",
 
-            // ORIGINAL
-            schoolYear:
-              education.schoolYear || "",
+          // ORIGINAL
+          schoolYear: education.schoolYear || "",
 
-            // AI OPTIMIZED
-            description:
-              education.optimized ||
-              education.description ||
-              "",
-          })
-        )
-      : resume?.educations?.map(
-          (education) => ({
-            id:
-              education._id || "",
+          // AI OPTIMIZED
+          description: education.optimized || education.description || "",
+        }))
+      : resume?.educations?.map((education) => ({
+          id: education._id || "",
 
-            // ORIGINAL FALLBACK
-            degreeField:
-              education.degreeField || "",
+          // ORIGINAL FALLBACK
+          degreeField: education.degreeField || "",
 
-            // ORIGINAL FALLBACK
-            school:
-              education.school || "",
+          // ORIGINAL FALLBACK
+          school: education.school || "",
 
-            // ORIGINAL FALLBACK
-            location:
-              education.location || "",
+          // ORIGINAL FALLBACK
+          location: education.location || "",
 
-            // ORIGINAL
-            schoolYear:
-              education.schoolYear || "",
+          // ORIGINAL
+          schoolYear: education.schoolYear || "",
 
-            // ORIGINAL FALLBACK
-            description:
-              education.description || "",
-          })
-        ) || [];
+          // ORIGINAL FALLBACK
+          description: education.description || "",
+        })) || [];
 
   // ================================
   // PROJECTS
@@ -187,33 +149,23 @@ const MinimalTemplate = ({ resume, preview = false }) => {
       ?.filter(
         (project) =>
           project &&
-          (
-            project.projectName?.trim() ||
-            project.projectDescription?.trim()
-          )
+          (project.projectName?.trim() || project.projectDescription?.trim()),
       )
       .map((project) => {
-        const optimizedProject =
-          aiOptimization?.projects?.find(
-            (item) =>
-              String(item.id) ===
-              String(project._id)
-          );
+        const optimizedProject = aiOptimization?.projects?.find(
+          (item) => String(item.id) === String(project._id),
+        );
 
         return {
           ...project,
 
           // AI OPTIMIZED PROJECT NAME
           projectName:
-            optimizedProject?.projectName ||
-            project.projectName ||
-            "",
+            optimizedProject?.projectName || project.projectName || "",
 
           // AI OPTIMIZED DESCRIPTION
           projectDescription:
-            optimizedProject?.optimized ||
-            project.projectDescription ||
-            "",
+            optimizedProject?.optimized || project.projectDescription || "",
         };
       }) || [];
 
@@ -251,8 +203,7 @@ const MinimalTemplate = ({ resume, preview = false }) => {
           marginTop: 4,
         }}
       >
-        {resume?.targetJob?.jobTitle ||
-          "Professional Title"}
+        {resume?.targetJob?.jobTitle || "Professional Title"}
       </Text>
 
       {/* CONTACT INFORMATION */}
@@ -266,13 +217,11 @@ const MinimalTemplate = ({ resume, preview = false }) => {
       >
         {resume?.basicInfo?.email || ""}
 
-        {resume?.basicInfo?.email &&
-        resume?.basicInfo?.contactNumber
+        {resume?.basicInfo?.email && resume?.basicInfo?.contactNumber
           ? "  •  "
           : ""}
 
-        {resume?.basicInfo?.contactNumber ||
-          ""}
+        {resume?.basicInfo?.contactNumber || ""}
 
         {address ? "  •  " : ""}
 
@@ -362,137 +311,112 @@ const MinimalTemplate = ({ resume, preview = false }) => {
             EXPERIENCE
           </Text>
 
-          {workExperiences.map(
-            (experience, index) => (
+          {workExperiences.map((experience, index) => (
+            <View
+              key={experience._id || index}
+              style={{
+                marginBottom: 11,
+              }}
+            >
               <View
-                key={
-                  experience._id ||
-                  index
-                }
                 style={{
-                  marginBottom: 11,
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "flex-start",
                 }}
               >
+                {/* LEFT SIDE */}
+
                 <View
                   style={{
-                    flexDirection: "row",
-                    justifyContent:
-                      "space-between",
-                    alignItems:
-                      "flex-start",
+                    flex: 1,
+                    paddingRight: 15,
                   }}
                 >
-                  {/* LEFT SIDE */}
+                  {/* ORIGINAL JOB TITLE */}
 
-                  <View
-                    style={{
-                      flex: 1,
-                      paddingRight: 15,
-                    }}
-                  >
-                    {/* ORIGINAL JOB TITLE */}
+                  {experience.jobTitle ? (
+                    <Text
+                      style={{
+                        fontSize: 9,
+                        fontWeight: "bold",
+                        color: "#111827",
+                      }}
+                    >
+                      {experience.jobTitle}
+                    </Text>
+                  ) : null}
 
-                    {experience.jobTitle ? (
-                      <Text
-                        style={{
-                          fontSize: 9,
-                          fontWeight:
-                            "bold",
-                          color:
-                            "#111827",
-                        }}
-                      >
-                        {
-                          experience.jobTitle
-                        }
-                      </Text>
-                    ) : null}
+                  {/* ORIGINAL COMPANY */}
 
-                    {/* ORIGINAL COMPANY */}
-
-                    {experience.company ? (
-                      <Text
-                        style={{
-                          fontSize: 8,
-                          color:
-                            "#4B5563",
-                          marginTop: 2,
-                        }}
-                      >
-                        {
-                          experience.company
-                        }
-                      </Text>
-                    ) : null}
-                  </View>
-
-                  {/* RIGHT SIDE */}
-
-                  <View
-                    style={{
-                      width: 145,
-                      alignItems:
-                        "flex-end",
-                    }}
-                  >
-                    {/* AI LOCATION */}
-
-                    {experience.location ? (
-                      <Text
-                        style={{
-                          fontSize: 7.5,
-                          color:
-                            "#6B7280",
-                          textAlign:
-                            "right",
-                        }}
-                      >
-                        {
-                          experience.location
-                        }
-                      </Text>
-                    ) : null}
-
-                    {/* ORIGINAL PERIOD */}
-
-                    {experience.periodOfEmployment ? (
-                      <Text
-                        style={{
-                          fontSize: 7.5,
-                          color:
-                            "#6B7280",
-                          textAlign:
-                            "right",
-                          marginTop: 2,
-                        }}
-                      >
-                        {
-                          experience.periodOfEmployment
-                        }
-                      </Text>
-                    ) : null}
-                  </View>
+                  {experience.company ? (
+                    <Text
+                      style={{
+                        fontSize: 8,
+                        color: "#4B5563",
+                        marginTop: 2,
+                      }}
+                    >
+                      {experience.company}
+                    </Text>
+                  ) : null}
                 </View>
 
-                {/* AI DESCRIPTION */}
+                {/* RIGHT SIDE */}
 
-                {experience.description ? (
-                  <Text
-                    style={{
-                      fontSize: 8,
-                      color: "#374151",
-                      lineHeight: 12,
-                      marginTop: 4,
-                    }}
-                  >
-                    {
-                      experience.description
-                    }
-                  </Text>
-                ) : null}
+                <View
+                  style={{
+                    width: 145,
+                    alignItems: "flex-end",
+                  }}
+                >
+                  {/* AI LOCATION */}
+
+                  {experience.location ? (
+                    <Text
+                      style={{
+                        fontSize: 7.5,
+                        color: "#6B7280",
+                        textAlign: "right",
+                      }}
+                    >
+                      {experience.location}
+                    </Text>
+                  ) : null}
+
+                  {/* ORIGINAL PERIOD */}
+
+                  {experience.periodOfEmployment ? (
+                    <Text
+                      style={{
+                        fontSize: 7.5,
+                        color: "#6B7280",
+                        textAlign: "right",
+                        marginTop: 2,
+                      }}
+                    >
+                      {experience.periodOfEmployment}
+                    </Text>
+                  ) : null}
+                </View>
               </View>
-            )
-          )}
+
+              {/* AI DESCRIPTION */}
+
+              {experience.description ? (
+                <Text
+                  style={{
+                    fontSize: 8,
+                    color: "#374151",
+                    lineHeight: 12,
+                    marginTop: 4,
+                  }}
+                >
+                  {experience.description}
+                </Text>
+              ) : null}
+            </View>
+          ))}
         </View>
       ) : null}
 
@@ -517,137 +441,112 @@ const MinimalTemplate = ({ resume, preview = false }) => {
             EDUCATION
           </Text>
 
-          {educations.map(
-            (education, index) => (
+          {educations.map((education, index) => (
+            <View
+              key={education.id || index}
+              style={{
+                marginBottom: 9,
+              }}
+            >
               <View
-                key={
-                  education.id ||
-                  index
-                }
                 style={{
-                  marginBottom: 9,
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "flex-start",
                 }}
               >
+                {/* LEFT SIDE */}
+
                 <View
                   style={{
-                    flexDirection: "row",
-                    justifyContent:
-                      "space-between",
-                    alignItems:
-                      "flex-start",
+                    flex: 1,
+                    paddingRight: 15,
                   }}
                 >
-                  {/* LEFT SIDE */}
+                  {/* DEGREE / FIELD */}
 
-                  <View
-                    style={{
-                      flex: 1,
-                      paddingRight: 15,
-                    }}
-                  >
-                    {/* DEGREE / FIELD */}
+                  {education.degreeField ? (
+                    <Text
+                      style={{
+                        fontSize: 9,
+                        fontWeight: "bold",
+                        color: "#111827",
+                      }}
+                    >
+                      {education.degreeField}
+                    </Text>
+                  ) : null}
 
-                    {education.degreeField ? (
-                      <Text
-                        style={{
-                          fontSize: 9,
-                          fontWeight:
-                            "bold",
-                          color:
-                            "#111827",
-                        }}
-                      >
-                        {
-                          education.degreeField
-                        }
-                      </Text>
-                    ) : null}
+                  {/* SCHOOL */}
 
-                    {/* SCHOOL */}
-
-                    {education.school ? (
-                      <Text
-                        style={{
-                          fontSize: 8,
-                          color:
-                            "#4B5563",
-                          marginTop: 2,
-                        }}
-                      >
-                        {
-                          education.school
-                        }
-                      </Text>
-                    ) : null}
-                  </View>
-
-                  {/* RIGHT SIDE */}
-
-                  <View
-                    style={{
-                      width: 145,
-                      alignItems:
-                        "flex-end",
-                    }}
-                  >
-                    {/* LOCATION */}
-
-                    {education.location ? (
-                      <Text
-                        style={{
-                          fontSize: 7.5,
-                          color:
-                            "#6B7280",
-                          textAlign:
-                            "right",
-                        }}
-                      >
-                        {
-                          education.location
-                        }
-                      </Text>
-                    ) : null}
-
-                    {/* SCHOOL YEAR */}
-
-                    {education.schoolYear ? (
-                      <Text
-                        style={{
-                          fontSize: 7.5,
-                          color:
-                            "#6B7280",
-                          textAlign:
-                            "right",
-                          marginTop: 2,
-                        }}
-                      >
-                        {
-                          education.schoolYear
-                        }
-                      </Text>
-                    ) : null}
-                  </View>
+                  {education.school ? (
+                    <Text
+                      style={{
+                        fontSize: 8,
+                        color: "#4B5563",
+                        marginTop: 2,
+                      }}
+                    >
+                      {education.school}
+                    </Text>
+                  ) : null}
                 </View>
 
-                {/* DESCRIPTION */}
+                {/* RIGHT SIDE */}
 
-                {education.description ? (
-                  <Text
-                    style={{
-                      fontSize: 8,
-                      color: "#374151",
-                      lineHeight: 12,
-                      marginTop: 4,
-                    }}
-                  >
-                    {
-                      education.description
-                    }
-                  </Text>
-                ) : null}
+                <View
+                  style={{
+                    width: 145,
+                    alignItems: "flex-end",
+                  }}
+                >
+                  {/* LOCATION */}
+
+                  {education.location ? (
+                    <Text
+                      style={{
+                        fontSize: 7.5,
+                        color: "#6B7280",
+                        textAlign: "right",
+                      }}
+                    >
+                      {education.location}
+                    </Text>
+                  ) : null}
+
+                  {/* SCHOOL YEAR */}
+
+                  {education.schoolYear ? (
+                    <Text
+                      style={{
+                        fontSize: 7.5,
+                        color: "#6B7280",
+                        textAlign: "right",
+                        marginTop: 2,
+                      }}
+                    >
+                      {education.schoolYear}
+                    </Text>
+                  ) : null}
+                </View>
               </View>
-            )
-          )}
+
+              {/* DESCRIPTION */}
+
+              {education.description ? (
+                <Text
+                  style={{
+                    fontSize: 8,
+                    color: "#374151",
+                    lineHeight: 12,
+                    marginTop: 4,
+                  }}
+                >
+                  {education.description}
+                </Text>
+              ) : null}
+            </View>
+          ))}
         </View>
       ) : null}
 
@@ -705,54 +604,43 @@ const MinimalTemplate = ({ resume, preview = false }) => {
             PROJECTS
           </Text>
 
-          {projects.map(
-            (project, index) => (
-              <View
-                key={
-                  project._id ||
-                  index
-                }
-                style={{
-                  marginBottom: 9,
-                }}
-              >
-                {/* PROJECT NAME */}
+          {projects.map((project, index) => (
+            <View
+              key={project._id || index}
+              style={{
+                marginBottom: 9,
+              }}
+            >
+              {/* PROJECT NAME */}
 
-                {project.projectName ? (
-                  <Text
-                    style={{
-                      fontSize: 9,
-                      fontWeight:
-                        "bold",
-                      color:
-                        "#111827",
-                    }}
-                  >
-                    {
-                      project.projectName
-                    }
-                  </Text>
-                ) : null}
+              {project.projectName ? (
+                <Text
+                  style={{
+                    fontSize: 9,
+                    fontWeight: "bold",
+                    color: "#111827",
+                  }}
+                >
+                  {project.projectName}
+                </Text>
+              ) : null}
 
-                {/* PROJECT DESCRIPTION */}
+              {/* PROJECT DESCRIPTION */}
 
-                {project.projectDescription ? (
-                  <Text
-                    style={{
-                      fontSize: 8,
-                      color: "#374151",
-                      lineHeight: 12,
-                      marginTop: 3,
-                    }}
-                  >
-                    {
-                      project.projectDescription
-                    }
-                  </Text>
-                ) : null}
-              </View>
-            )
-          )}
+              {project.projectDescription ? (
+                <Text
+                  style={{
+                    fontSize: 8,
+                    color: "#374151",
+                    lineHeight: 12,
+                    marginTop: 3,
+                  }}
+                >
+                  {project.projectDescription}
+                </Text>
+              ) : null}
+            </View>
+          ))}
         </View>
       ) : null}
 

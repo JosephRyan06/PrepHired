@@ -8,15 +8,10 @@ const normalizeName = (name = "") => {
     .trim();
 };
 
-const namesMatch = (
-  userName,
-  resumeName
-) => {
-  const user =
-    normalizeName(userName);
+const namesMatch = (userName, resumeName) => {
+  const user = normalizeName(userName);
 
-  const resume =
-    normalizeName(resumeName);
+  const resume = normalizeName(resumeName);
 
   if (!user || !resume) {
     return false;
@@ -31,9 +26,7 @@ const namesMatch = (
 
   return (
     resumeParts.length >= 2 &&
-    resumeParts.every((part) =>
-      userParts.includes(part)
-    )
+    resumeParts.every((part) => userParts.includes(part))
   );
 };
 

@@ -1,10 +1,5 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  ScrollView,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, ScrollView, TouchableOpacity } from "react-native";
 
 import { Ionicons } from "@expo/vector-icons";
 import InterviewHeader from "../../../components/InterviewHeader";
@@ -105,17 +100,12 @@ const TermsPrivacy = ({ navigation }) => {
                 alignItems: "center",
                 justifyContent: "center",
                 backgroundColor:
-                  activeTab === "terms"
-                    ? "#2563EB"
-                    : "transparent",
+                  activeTab === "terms" ? "#2563EB" : "transparent",
               }}
             >
               <Text
                 style={{
-                  color:
-                    activeTab === "terms"
-                      ? "#FFFFFF"
-                      : "#A1A1AA",
+                  color: activeTab === "terms" ? "#FFFFFF" : "#A1A1AA",
                   fontSize: 13,
                   fontWeight: "700",
                 }}
@@ -134,17 +124,12 @@ const TermsPrivacy = ({ navigation }) => {
                 alignItems: "center",
                 justifyContent: "center",
                 backgroundColor:
-                  activeTab === "privacy"
-                    ? "#2563EB"
-                    : "transparent",
+                  activeTab === "privacy" ? "#2563EB" : "transparent",
               }}
             >
               <Text
                 style={{
-                  color:
-                    activeTab === "privacy"
-                      ? "#FFFFFF"
-                      : "#A1A1AA",
+                  color: activeTab === "privacy" ? "#FFFFFF" : "#A1A1AA",
                   fontSize: 13,
                   fontWeight: "700",
                 }}
@@ -154,11 +139,7 @@ const TermsPrivacy = ({ navigation }) => {
             </TouchableOpacity>
           </View>
 
-          {activeTab === "terms" ? (
-            <TermsContent />
-          ) : (
-            <PrivacyContent />
-          )}
+          {activeTab === "terms" ? <TermsContent /> : <PrivacyContent />}
         </View>
       </ScrollView>
     </View>
@@ -286,14 +267,13 @@ const TermsContent = () => {
 
       <Section number="06" title="Application Availability">
         We may update, modify, suspend, or discontinue parts of the application
-        when necessary. Features may also change as the application is
-        improved.
+        when necessary. Features may also change as the application is improved.
       </Section>
 
       <Section number="07" title="Prohibited Use">
         You must not use the application for unlawful activities, to submit
-        intentionally misleading information, or to interfere with the
-        operation or security of the application.
+        intentionally misleading information, or to interfere with the operation
+        or security of the application.
       </Section>
 
       <Section number="08" title="Changes to These Terms">
@@ -364,22 +344,22 @@ const PrivacyContent = () => {
       </Section>
 
       <Section number="05" title="Account Security">
-        You are responsible for keeping your account credentials secure. Do
-        not share your password or other authentication information with
+        You are responsible for keeping your account credentials secure. Do not
+        share your password or other authentication information with
         unauthorized individuals.
       </Section>
 
       <Section number="06" title="Data Protection">
         Reasonable measures should be used to protect stored information from
-        unauthorized access, alteration, disclosure, or destruction.
-        However, no internet-based system can guarantee absolute security.
+        unauthorized access, alteration, disclosure, or destruction. However, no
+        internet-based system can guarantee absolute security.
       </Section>
 
       <Section number="07" title="Third-Party Services">
-        Some application features may depend on third-party services,
-        including AI, authentication, database, hosting, or other technical
-        service providers. Information required for those services may be
-        processed according to their applicable policies.
+        Some application features may depend on third-party services, including
+        AI, authentication, database, hosting, or other technical service
+        providers. Information required for those services may be processed
+        according to their applicable policies.
       </Section>
 
       <Section number="08" title="Your Choices">

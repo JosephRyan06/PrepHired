@@ -25,7 +25,6 @@ const registerHandler = ({
     setConfirmPasswordError("");
     setTermsConditionError("");
 
-  
     const result = await register({
       fullName: fullName.trim(),
       email: email.trim(),
@@ -33,7 +32,7 @@ const registerHandler = ({
       confirmPassword,
       termsAccepted: checked,
     });
- 
+
     if (!result.success) {
       const errors = result.errors || {};
 

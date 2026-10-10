@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "mobile",
+    "name": "PrepHired",
     "slug": "mobile",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -26,8 +26,14 @@
     },
     "plugins": [
       "expo-sharing",
-      "@react-native-voice/voice",
-      "@react-native-community/datetimepicker"
-    ]
+      "@react-native-community/datetimepicker",
+      "expo-speech-recognition"
+
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "c1281bd9-0ec5-4d43-9605-fe9b3b272ce5"
+      }
+    }
   }
 }

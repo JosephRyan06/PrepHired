@@ -5,36 +5,29 @@ const deleteAccountHandler = ({
   setCurrentPasswordError,
   setMessage,
   setModalVisible,
+  setCurrentPassword,
 }) => {
   const handleDeleteAccount = async () => {
     setCurrentPasswordError("");
-    setMessage("");
-
-    if (!currentPassword.trim()) {
-      setCurrentPasswordError("Please enter your current password");
-      return;
-    }
 
     try {
       const result = await deleteAccount(currentPassword);
 
       if (!result.success) {
         setCurrentPasswordError(
-          result.message || "Incorrect password"
+          result.message || "Incorrect password. Please try again.",
         );
         return;
       }
 
-      setMessage(
-        result.message || "Account deleted successfully."
-      );
-
+      setMessage("Account deleted successfully.");
       setModalVisible(true);
+      setCurrentPassword("");
     } catch (error) {
       console.error("Delete account error:", error);
 
       setCurrentPasswordError(
-        error.message || "Unable to delete account"
+        error.message || "Unable to delete account. Please try again.",
       );
     }
   };
@@ -42,16 +35,10 @@ const deleteAccountHandler = ({
   const handleDeleteAccountModalClose = () => {
     setModalVisible(false);
 
-    if (message.includes("Account deleted successfully")) {
-      navigation.reset({
-        index: 0,
-        routes: [
-          {
-            name: "Login",
-          },
-        ],
-      });
-    }
+    navigation.reset({
+      index: 0,
+      routes: [{ name: "Login" }],
+    });
   };
 
   return {
@@ -61,4 +48,3 @@ const deleteAccountHandler = ({
 };
 
 export default deleteAccountHandler;
-

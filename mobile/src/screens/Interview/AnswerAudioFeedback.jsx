@@ -1,15 +1,8 @@
 import React from "react";
 
-import {
-  View,
-  Text,
-  ScrollView,
-} from "react-native";
+import { View, Text, ScrollView } from "react-native";
 
-import {
-  useNavigation,
-  useRoute,
-} from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 
 import { Ionicons } from "@expo/vector-icons";
 
@@ -18,16 +11,10 @@ import Button from "../../components/Button";
 
 import styles from "../../styles/global";
 
-import {
-  answerFeedbackHandler,
-} from "../../handlers/interview/answerFeedbackHandler";
+import { answerFeedbackHandler } from "../../handlers/interview/answerFeedbackHandler";
 
-const ScoreCard = ({
-  title,
-  score,
-}) => {
-  const safeScore =
-    Number(score) || 0;
+const ScoreCard = ({ title, score }) => {
+  const safeScore = Number(score) || 0;
 
   return (
     <View
@@ -71,10 +58,7 @@ const ScoreCard = ({
       >
         <View
           style={{
-            width: `${Math.min(
-              Math.max(safeScore, 0),
-              100,
-            )}%`,
+            width: `${Math.min(Math.max(safeScore, 0), 100)}%`,
             height: "100%",
             backgroundColor: "#2563EB",
           }}
@@ -88,16 +72,10 @@ const AnswerAudioFeedback = () => {
   const navigation = useNavigation();
   const route = useRoute();
 
-  const {
-    mockInterviewId,
-    questionNumber,
-    question,
-    analysis,
-  } = route.params || {};
+  const { mockInterviewId, questionNumber, question, analysis } =
+    route.params || {};
 
-  const {
-    handleContinue,
-  } = answerFeedbackHandler({
+  const { handleContinue } = answerFeedbackHandler({
     mockInterviewId,
     navigation,
   });
@@ -112,35 +90,21 @@ const AnswerAudioFeedback = () => {
       : "No additional feedback was provided.";
 
   const tone =
-    typeof analysis?.toneAndModulation ===
-    "string"
+    typeof analysis?.toneAndModulation === "string"
       ? analysis.toneAndModulation
       : "No tone and modulation feedback was provided.";
 
-  const strengths =
-    Array.isArray(analysis?.strengths)
-      ? analysis.strengths.filter(
-          (item) =>
-            typeof item === "string",
-        )
-      : [];
+  const strengths = Array.isArray(analysis?.strengths)
+    ? analysis.strengths.filter((item) => typeof item === "string")
+    : [];
 
-  const improvements =
-    Array.isArray(
-      analysis?.improvements,
-    )
-      ? analysis.improvements.filter(
-          (item) =>
-            typeof item === "string",
-        )
-      : [];
+  const improvements = Array.isArray(analysis?.improvements)
+    ? analysis.improvements.filter((item) => typeof item === "string")
+    : [];
 
-  const wordChoiceSuggestions =
-    Array.isArray(
-      analysis?.wordChoiceSuggestions,
-    )
-      ? analysis.wordChoiceSuggestions
-      : [];
+  const wordChoiceSuggestions = Array.isArray(analysis?.wordChoiceSuggestions)
+    ? analysis.wordChoiceSuggestions
+    : [];
 
   return (
     <View style={styles.container}>
@@ -151,9 +115,7 @@ const AnswerAudioFeedback = () => {
             paddingBottom: 120,
           },
         ]}
-        showsVerticalScrollIndicator={
-          false
-        }
+        showsVerticalScrollIndicator={false}
       >
         {/* HEADER */}
 
@@ -161,9 +123,7 @@ const AnswerAudioFeedback = () => {
           navigation={navigation}
           interviewLabel="Answer Feedback"
           showTimer={false}
-          mockInterviewId={
-            mockInterviewId
-          }
+          mockInterviewId={mockInterviewId}
           navigateTo="ReviewAnswer"
           backIcon="back"
         />
@@ -188,8 +148,7 @@ const AnswerAudioFeedback = () => {
                 marginBottom: 10,
               }}
             >
-              QUESTION{" "}
-              {questionNumber || ""}
+              QUESTION {questionNumber || ""}
             </Text>
 
             <Text
@@ -214,26 +173,11 @@ const AnswerAudioFeedback = () => {
             marginBottom: 20,
           }}
         >
-          <ScoreCard
-            title="CONTENT"
-            score={
-              analysis?.contentScore
-            }
-          />
+          <ScoreCard title="CONTENT" score={analysis?.contentScore} />
 
-          <ScoreCard
-            title="CONFIDENCE"
-            score={
-              analysis?.confidenceScore
-            }
-          />
+          <ScoreCard title="CONFIDENCE" score={analysis?.confidenceScore} />
 
-          <ScoreCard
-            title="NATURAL"
-            score={
-              analysis?.naturalScore
-            }
-          />
+          <ScoreCard title="NATURAL" score={analysis?.naturalScore} />
         </View>
 
         {/* OVERALL SCORE */}
@@ -265,10 +209,7 @@ const AnswerAudioFeedback = () => {
               fontWeight: "900",
             }}
           >
-            {Number(
-              analysis?.score,
-            ) || 0}
-            %
+            {Number(analysis?.score) || 0}%
           </Text>
         </View>
 
@@ -338,8 +279,7 @@ const AnswerAudioFeedback = () => {
 
         {/* WORD CHOICE SUGGESTIONS */}
 
-        {wordChoiceSuggestions.length >
-          0 && (
+        {wordChoiceSuggestions.length > 0 && (
           <View
             style={{
               backgroundColor: "#25252F",
@@ -359,126 +299,104 @@ const AnswerAudioFeedback = () => {
               WORD CHOICE SUGGESTIONS
             </Text>
 
-            {wordChoiceSuggestions.map(
-              (item, index) => {
-                const original =
-                  typeof item === "object"
-                    ? item?.original
-                    : "";
+            {wordChoiceSuggestions.map((item, index) => {
+              const original = typeof item === "object" ? item?.original : "";
 
-                const suggestion =
-                  typeof item === "object"
-                    ? item?.suggestion
-                    : "";
+              const suggestion =
+                typeof item === "object" ? item?.suggestion : "";
 
-                const reason =
-                  typeof item === "object"
-                    ? item?.reason
-                    : "";
+              const reason = typeof item === "object" ? item?.reason : "";
 
-                return (
-                  <View
-                    key={
-                      item?._id ||
-                      index
-                    }
+              return (
+                <View
+                  key={item?._id || index}
+                  style={{
+                    backgroundColor: "#18181F",
+                    borderRadius: 12,
+                    padding: 14,
+                    marginBottom:
+                      index < wordChoiceSuggestions.length - 1 ? 10 : 0,
+                  }}
+                >
+                  {/* ORIGINAL */}
+
+                  <Text
                     style={{
-                      backgroundColor:
-                        "#18181F",
-                      borderRadius: 12,
-                      padding: 14,
-                      marginBottom:
-                        index <
-                        wordChoiceSuggestions.length -
-                          1
-                          ? 10
-                          : 0,
+                      color: "#71717A",
+                      fontSize: 10,
+                      fontWeight: "800",
+                      marginBottom: 5,
                     }}
                   >
-                    {/* ORIGINAL */}
+                    ORIGINAL
+                  </Text>
 
-                    <Text
-                      style={{
-                        color: "#71717A",
-                        fontSize: 10,
-                        fontWeight: "800",
-                        marginBottom: 5,
-                      }}
-                    >
-                      ORIGINAL
-                    </Text>
+                  <Text
+                    style={{
+                      color: "#F8FAFC",
+                      fontSize: 14,
+                      lineHeight: 21,
+                      marginBottom: 12,
+                    }}
+                  >
+                    {original || "No original phrase provided."}
+                  </Text>
 
-                    <Text
-                      style={{
-                        color: "#F8FAFC",
-                        fontSize: 14,
-                        lineHeight: 21,
-                        marginBottom: 12,
-                      }}
-                    >
-                      {original ||
-                        "No original phrase provided."}
-                    </Text>
+                  {/* SUGGESTION */}
 
-                    {/* SUGGESTION */}
+                  <Text
+                    style={{
+                      color: "#60A5FA",
+                      fontSize: 10,
+                      fontWeight: "800",
+                      marginBottom: 5,
+                    }}
+                  >
+                    SUGGESTION
+                  </Text>
 
-                    <Text
-                      style={{
-                        color: "#60A5FA",
-                        fontSize: 10,
-                        fontWeight: "800",
-                        marginBottom: 5,
-                      }}
-                    >
-                      SUGGESTION
-                    </Text>
+                  <Text
+                    style={{
+                      color: "#F8FAFC",
+                      fontSize: 14,
+                      lineHeight: 21,
+                      marginBottom: 12,
+                    }}
+                  >
+                    {suggestion || "No suggestion provided."}
+                  </Text>
 
-                    <Text
-                      style={{
-                        color: "#F8FAFC",
-                        fontSize: 14,
-                        lineHeight: 21,
-                        marginBottom: 12,
-                      }}
-                    >
-                      {suggestion ||
-                        "No suggestion provided."}
-                    </Text>
+                  {/* REASON */}
 
-                    {/* REASON */}
+                  <Text
+                    style={{
+                      color: "#71717A",
+                      fontSize: 10,
+                      fontWeight: "800",
+                      marginBottom: 5,
+                    }}
+                  >
+                    WHY
+                  </Text>
 
-                    <Text
-                      style={{
-                        color: "#71717A",
-                        fontSize: 10,
-                        fontWeight: "800",
-                        marginBottom: 5,
-                      }}
-                    >
-                      WHY
-                    </Text>
-
-                    <Text
-                      style={{
-                        color: "#A1A1AA",
-                        fontSize: 13,
-                        lineHeight: 20,
-                      }}
-                    >
-                      {reason ||
-                        "No reason provided."}
-                    </Text>
-                  </View>
-                );
-              },
-            )}
+                  <Text
+                    style={{
+                      color: "#A1A1AA",
+                      fontSize: 13,
+                      lineHeight: 20,
+                    }}
+                  >
+                    {reason || "No reason provided."}
+                  </Text>
+                </View>
+              );
+            })}
           </View>
         )}
 
         {/* NO WORD SUGGESTIONS */}
 
-        {wordChoiceSuggestions.length ===
-          0 && (
+        {wordChoiceSuggestions.length === 0 && (
           <View
             style={{
               backgroundColor: "#25252F",
@@ -505,8 +423,7 @@ const AnswerAudioFeedback = () => {
                 lineHeight: 22,
               }}
             >
-              No word choice suggestions
-              were provided.
+              No word choice suggestions were provided.
             </Text>
           </View>
         )}
@@ -533,37 +450,35 @@ const AnswerAudioFeedback = () => {
               STRENGTHS
             </Text>
 
-            {strengths.map(
-              (item, index) => (
-                <View
-                  key={index}
+            {strengths.map((item, index) => (
+              <View
+                key={index}
+                style={{
+                  flexDirection: "row",
+                  marginBottom: 9,
+                }}
+              >
+                <Ionicons
+                  name="checkmark-circle"
+                  size={18}
+                  color="#60A5FA"
                   style={{
-                    flexDirection: "row",
-                    marginBottom: 9,
+                    marginRight: 8,
+                  }}
+                />
+
+                <Text
+                  style={{
+                    flex: 1,
+                    color: "#A1A1AA",
+                    fontSize: 14,
+                    lineHeight: 21,
                   }}
                 >
-                  <Ionicons
-                    name="checkmark-circle"
-                    size={18}
-                    color="#60A5FA"
-                    style={{
-                      marginRight: 8,
-                    }}
-                  />
-
-                  <Text
-                    style={{
-                      flex: 1,
-                      color: "#A1A1AA",
-                      fontSize: 14,
-                      lineHeight: 21,
-                    }}
-                  >
-                    {item}
-                  </Text>
-                </View>
-              ),
-            )}
+                  {item}
+                </Text>
+              </View>
+            ))}
           </View>
         )}
 
@@ -589,40 +504,37 @@ const AnswerAudioFeedback = () => {
               IMPROVEMENTS
             </Text>
 
-            {improvements.map(
-              (item, index) => (
-                <View
-                  key={index}
+            {improvements.map((item, index) => (
+              <View
+                key={index}
+                style={{
+                  flexDirection: "row",
+                  marginBottom: 9,
+                }}
+              >
+                <Ionicons
+                  name="arrow-forward-circle"
+                  size={18}
+                  color="#60A5FA"
                   style={{
-                    flexDirection: "row",
-                    marginBottom: 9,
+                    marginRight: 8,
+                  }}
+                />
+
+                <Text
+                  style={{
+                    flex: 1,
+                    color: "#A1A1AA",
+                    fontSize: 14,
+                    lineHeight: 21,
                   }}
                 >
-                  <Ionicons
-                    name="arrow-forward-circle"
-                    size={18}
-                    color="#60A5FA"
-                    style={{
-                      marginRight: 8,
-                    }}
-                  />
-
-                  <Text
-                    style={{
-                      flex: 1,
-                      color: "#A1A1AA",
-                      fontSize: 14,
-                      lineHeight: 21,
-                    }}
-                  >
-                    {item}
-                  </Text>
-                </View>
-              ),
-            )}
+                  {item}
+                </Text>
+              </View>
+            ))}
           </View>
         )}
-
       </ScrollView>
     </View>
   );

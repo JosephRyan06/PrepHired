@@ -11,7 +11,6 @@ export const educationHandler = ({
     try {
       const result = await getById(resumeId);
 
-
       if (result.success && result.resume) {
         if (result.resume.educations && result.resume.educations.length > 0) {
           setEducations(
@@ -22,8 +21,8 @@ export const educationHandler = ({
           );
         }
       }
-    
-     /*
+
+      /*
      if (
       result.success &&
       result.resume
@@ -48,7 +47,6 @@ export const educationHandler = ({
       console.log("Load education error:", error);
     }
   };
-
 
   const addEducation = () => {
     if (educations.length >= 5) {

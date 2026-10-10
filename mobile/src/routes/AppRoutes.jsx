@@ -33,6 +33,8 @@ import UploadedAiGeneratedResume from "../screens/Resume/UploadResume/UploadedAi
 import CompletedResumePreview from "../screens/Resume/CompletedResumePreview";
 
 import ChangePassword from "../screens/Profile/Account/ChangePassword";
+import DeleteAccount from "../screens/Profile/Account/DeleteAccount";
+
 import InterviewHistory from "../screens/Profile/Preferences/InteviewHistory";
 import MyResumes from "../screens/Profile/Preferences/MyResumes";
 import CompletedResumePreviewProfile from "../screens/Profile/Preferences/CompletedResumePreviewProfile";
@@ -46,7 +48,7 @@ export default function AppRoutes() {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="Login"
+        initialRouteName="QuestionAndAnswer"
         screenOptions={{
           headerShown: false,
           animation: "none",
@@ -65,8 +67,14 @@ export default function AppRoutes() {
         <Stack.Screen name="Interview" component={InterviewScreen} />
         <Stack.Screen name="Profile" component={ProfileScreen} />
 
-        <Stack.Screen name="CompletedResumePreview" component={CompletedResumePreview} />
-        <Stack.Screen name="UploadedAiGeneratedResume" component={UploadedAiGeneratedResume} />
+        <Stack.Screen
+          name="CompletedResumePreview"
+          component={CompletedResumePreview}
+        />
+        <Stack.Screen
+          name="UploadedAiGeneratedResume"
+          component={UploadedAiGeneratedResume}
+        />
 
         <Stack.Screen name="BasicInfo" component={BasicInfo} />
         <Stack.Screen name="TargetJobPosition" component={TargetJobPosition} />
@@ -78,20 +86,27 @@ export default function AppRoutes() {
         <Stack.Screen name="ResumePreview" component={ResumePreview} />
 
         <Stack.Screen name="QuestionAndAnswer" component={QuestionAndAnswer} />
-        <Stack.Screen name="AnswerAudioFeedback" component={AnswerAudioFeedback} />
-        <Stack.Screen name="AnswerTextFeedback" component={AnswerTextFeedback} />
+        <Stack.Screen
+          name="AnswerAudioFeedback"
+          component={AnswerAudioFeedback}
+        />
+        <Stack.Screen
+          name="AnswerTextFeedback"
+          component={AnswerTextFeedback}
+        />
         <Stack.Screen name="SessionCompleted" component={SessionCompleted} />
         <Stack.Screen name="ReviewAnswer" component={ReviewAnswer} />
-        
 
         <Stack.Screen name="ChangePassword" component={ChangePassword} />
+        <Stack.Screen name="DeleteAccount" component={DeleteAccount} />
         <Stack.Screen name="MyResumes" component={MyResumes} />
-        <Stack.Screen name="CompletedResumePreviewProfile" component={CompletedResumePreviewProfile} />
+        <Stack.Screen
+          name="CompletedResumePreviewProfile"
+          component={CompletedResumePreviewProfile}
+        />
         <Stack.Screen name="InterviewHistory" component={InterviewHistory} />
         <Stack.Screen name="HelpFAQs" component={HelpFAQs} />
         <Stack.Screen name="TermsPrivacy" component={TermsPrivacy} />
-
-
       </Stack.Navigator>
     </NavigationContainer>
   );

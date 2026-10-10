@@ -179,8 +179,7 @@ const importResume = async (req, res) => {
     // =========================
 
     if (!userId) {
-      errors.userId =
-        "User authentication is required";
+      errors.userId = "User authentication is required";
     }
 
     // =========================
@@ -188,8 +187,7 @@ const importResume = async (req, res) => {
     // =========================
 
     if (!req.file) {
-      errors.resume =
-        "Resume file is required";
+      errors.resume = "Resume file is required";
     }
 
     if (Object.keys(errors).length > 0) {
@@ -202,45 +200,26 @@ const importResume = async (req, res) => {
 
     const file = req.file;
 
-    console.log(
-      "========== RESUME FILE =========="
-    );
+    console.log("========== RESUME FILE ==========");
 
-    console.log(
-      "Original name:",
-      file.originalname
-    );
+    console.log("Original name:", file.originalname);
 
-    console.log(
-      "Mimetype:",
-      file.mimetype
-    );
+    console.log("Mimetype:", file.mimetype);
 
-    console.log(
-      "Size:",
-      file.size
-    );
+    console.log("Size:", file.size);
 
-    console.log(
-      "Field:",
-      file.fieldname
-    );
+    console.log("Field:", file.fieldname);
 
     // =========================
     // FILE BUFFER
     // =========================
 
-    if (
-      !file.buffer ||
-      file.buffer.length === 0
-    ) {
+    if (!file.buffer || file.buffer.length === 0) {
       return res.status(400).json({
         success: false,
-        message:
-          "Uploaded resume file is empty.",
+        message: "Uploaded resume file is empty.",
         errors: {
-          resume:
-            "The uploaded file contains no data.",
+          resume: "The uploaded file contains no data.",
         },
       });
     }
@@ -249,17 +228,9 @@ const importResume = async (req, res) => {
     // EXTENSION
     // =========================
 
-    const extension =
-      path
-        .extname(
-          file.originalname || ""
-        )
-        .toLowerCase();
+    const extension = path.extname(file.originalname || "").toLowerCase();
 
-    console.log(
-      "Extension:",
-      extension
-    );
+    console.log("Extension:", extension);
 
     // =========================
     // EXTRACT TEXT
@@ -272,30 +243,20 @@ const importResume = async (req, res) => {
     // =========================
 
     if (extension === ".pdf") {
-      console.log(
-        "Processing PDF..."
-      );
+      console.log("Processing PDF...");
 
-      const parser =
-        new PDFParse({
-          data: file.buffer,
-        });
+      const parser = new PDFParse({
+        data: file.buffer,
+      });
 
       try {
-        const pdfData =
-          await parser.getText();
+        const pdfData = await parser.getText();
 
-        extractedText =
-          pdfData.text || "";
+        extractedText = pdfData.text || "";
 
-        console.log(
-          "PDF text extracted successfully"
-        );
+        console.log("PDF text extracted successfully");
 
-        console.log(
-          "PDF text length:",
-          extractedText.length
-        );
+        console.log("PDF text length:", extractedText.length);
       } finally {
         await parser.destroy();
       }
@@ -304,34 +265,22 @@ const importResume = async (req, res) => {
     // =========================
     // DOCX
     // =========================
+    else if (extension === ".docx") {
+      console.log("Processing DOCX...");
 
-    else if (
-      extension === ".docx"
-    ) {
-      console.log(
-        "Processing DOCX..."
-      );
+      const result = await mammoth.extractRawText({
+        buffer: file.buffer,
+      });
 
-      const result =
-        await mammoth.extractRawText({
-          buffer: file.buffer,
-        });
+      extractedText = result.value || "";
 
-      extractedText =
-        result.value || "";
-
-      console.log(
-        "DOCX text extracted successfully"
-      );
+      console.log("DOCX text extracted successfully");
     }
 
     // =========================
     // DOC
     // =========================
-
-    else if (
-      extension === ".doc"
-    ) {
+    else if (extension === ".doc") {
       return res.status(400).json({
         success: false,
         message:
@@ -343,15 +292,12 @@ const importResume = async (req, res) => {
     // =========================
     // INVALID FILE TYPE
     // =========================
-
     else {
       return res.status(400).json({
         success: false,
-        message:
-          "Unsupported resume file type.",
+        message: "Unsupported resume file type.",
         errors: {
-          resume:
-            "Only PDF and DOCX files are supported.",
+          resume: "Only PDF and DOCX files are supported.",
         },
       });
     }
@@ -360,25 +306,18 @@ const importResume = async (req, res) => {
     // CLEAN TEXT
     // =========================
 
-    extractedText =
-      extractedText.trim();
+    extractedText = extractedText.trim();
 
-    console.log(
-      "========== EXTRACTED TEXT =========="
-    );
+    console.log("========== EXTRACTED TEXT ==========");
 
-    console.log(
-      extractedText
-    );
+    console.log(extractedText);
 
     if (!extractedText) {
       return res.status(400).json({
         success: false,
-        message:
-          "Could not extract text from the uploaded resume.",
+        message: "Could not extract text from the uploaded resume.",
         errors: {
-          resume:
-            "The resume may be scanned or image-based.",
+          resume: "The resume may be scanned or image-based.",
         },
       });
     }
@@ -387,25 +326,20 @@ const importResume = async (req, res) => {
     // VALIDATE EXTRACTED TEXT BEFORE AI PARSING
     // =========================================================
 
-    console.log(
-      "========== VALIDATING EXTRACTED TEXT =========="
-    );
+    console.log("========== VALIDATING EXTRACTED TEXT ==========");
 
     // =========================
     // GET USER
     // =========================
 
-    const user =
-      await User.findById(userId);
+    const user = await User.findById(userId);
 
     if (!user) {
       return res.status(401).json({
         success: false,
-        message:
-          "Authenticated user could not be found.",
+        message: "Authenticated user could not be found.",
         errors: {
-          userId:
-            "User account not found.",
+          userId: "User account not found.",
         },
       });
     }
@@ -416,22 +350,14 @@ const importResume = async (req, res) => {
 
     const userFullName =
       user.fullName ||
-      [
-        user.firstName,
-        user.lastName,
-      ]
-        .filter(Boolean)
-        .join(" ")
-        .trim();
+      [user.firstName, user.lastName].filter(Boolean).join(" ").trim();
 
     if (!userFullName) {
       return res.status(400).json({
         success: false,
-        message:
-          "Your account does not have a valid full name.",
+        message: "Your account does not have a valid full name.",
         errors: {
-          userId:
-            "Please update your account with your full name.",
+          userId: "Please update your account with your full name.",
         },
       });
     }
@@ -440,240 +366,145 @@ const importResume = async (req, res) => {
     // NORMALIZE TEXT
     // =========================================================
 
-    const normalizeText = (
-      text = ""
-    ) => {
+    const normalizeText = (text = "") => {
       return text
         .toLowerCase()
         .normalize("NFKD")
-        .replace(
-          /[\u0300-\u036f]/g,
-          ""
-        )
-        .replace(
-          /[^a-z0-9\s]/g,
-          " "
-        )
-        .replace(
-          /\s+/g,
-          " "
-        )
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^a-z0-9\s]/g, " ")
+        .replace(/\s+/g, " ")
         .trim();
     };
 
-    const normalizedExtractedText =
-      normalizeText(
-        extractedText
-      );
+    const normalizedExtractedText = normalizeText(extractedText);
 
-    const normalizedUserName =
-      normalizeText(
-        userFullName
-      );
+    const normalizedUserName = normalizeText(userFullName);
 
     // =========================================================
     // CHECK USER NAME IN EXTRACTED RESUME TEXT
     // =========================================================
 
-    const userNameParts =
-      normalizedUserName.split(" ");
+    const userNameParts = normalizedUserName.split(" ");
 
     const hasUserName =
       userNameParts.length >= 2 &&
-      userNameParts.every(
-        (part) =>
-          normalizedExtractedText.includes(
-            part
-          )
-      );
+      userNameParts.every((part) => normalizedExtractedText.includes(part));
 
     // =========================================================
     // NAME DOES NOT MATCH
     // =========================================================
 
-  if (!hasUserName) {
-    console.log(
-      "========== RESUME VALIDATION FAILED =========="
-    );
+    if (!hasUserName) {
+      console.log("========== RESUME VALIDATION FAILED ==========");
 
-    console.log(
-      "User Name:",
-      userFullName
-    );
+      console.log("User Name:", userFullName);
 
-    console.log(
-      "Name Found In Resume:",
-      false
-    );
+      console.log("Name Found In Resume:", false);
 
-    return res.status(400).json({
-      success: false,
-      message:
-        "The name on the resume does not match your account name.",
-    });
-  }
-
+      return res.status(400).json({
+        success: false,
+        message: "The name on the resume does not match your account name.",
+      });
+    }
 
     // =========================================================
     // NAME VALIDATION PASSED
     // =========================================================
 
-    console.log(
-      "========== EXTRACTED TEXT VALIDATION PASSED =========="
-    );
+    console.log("========== EXTRACTED TEXT VALIDATION PASSED ==========");
 
-    console.log(
-      "User Name:",
-      userFullName
-    );
+    console.log("User Name:", userFullName);
 
-    console.log(
-      "Name Found In Resume:",
-      true
-    );
+    console.log("Name Found In Resume:", true);
 
     // =========================================================
     // AI PARSE
     // =========================================================
 
-    console.log(
-      "========== AI PARSING =========="
-    );
+    console.log("========== AI PARSING ==========");
 
-    const parsedResume =
-      await parseImportedResume(
-        extractedText
-      );
+    const parsedResume = await parseImportedResume(extractedText);
 
     if (!parsedResume) {
       return res.status(400).json({
         success: false,
-        message:
-          "Could not parse the uploaded resume.",
+        message: "Could not parse the uploaded resume.",
         errors: {},
       });
     }
 
-    console.log(
-      "========== PARSED RESUME =========="
-    );
+    console.log("========== PARSED RESUME ==========");
 
-    console.log(
-      JSON.stringify(
-        parsedResume,
-        null,
-        2
-      )
-    );
+    console.log(JSON.stringify(parsedResume, null, 2));
 
-    if (
-      parsedResume.isResume === false
-    ) {
+    if (parsedResume.isResume === false) {
       return res.status(400).json({
         success: false,
-        message:
-          "The uploaded file is not a valid resume.",
+        message: "The uploaded file is not a valid resume.",
         errors: {
-          resume:
-            "Please upload a valid resume.",
+          resume: "Please upload a valid resume.",
         },
       });
     }
 
-    const resume =
-      await Resume.create({
-        userId,
+    const resume = await Resume.create({
+      userId,
 
-        basicInfo:
-          parsedResume.basicInfo || {
-            fullName: "",
-            contactNumber: "",
-            address: "",
-            email: "",
-            linkedInURL: "",
-            portfolioLink: "",
-          },
+      basicInfo: parsedResume.basicInfo || {
+        fullName: "",
+        contactNumber: "",
+        address: "",
+        email: "",
+        linkedInURL: "",
+        portfolioLink: "",
+      },
 
-        targetJob:
-          parsedResume.targetJob || {
-            jobTitle: "",
-            industry: "",
-            jobDescription: "",
-          },
+      targetJob: parsedResume.targetJob || {
+        jobTitle: "",
+        industry: "",
+        jobDescription: "",
+      },
 
-        workExperiences:
-          parsedResume.workExperiences ||
-          [],
+      workExperiences: parsedResume.workExperiences || [],
 
-        educations:
-          parsedResume.educations ||
-          [],
+      educations: parsedResume.educations || [],
 
-        professionalSummary:
-          parsedResume.professionalSummary ||
-          "",
+      professionalSummary: parsedResume.professionalSummary || "",
 
-        skills:
-          parsedResume.skills ||
-          "",
+      skills: parsedResume.skills || "",
 
-        projects:
-          parsedResume.projects ||
-          [],
+      projects: parsedResume.projects || [],
 
-        certificates:
-          parsedResume.certificates ||
-          "",
+      certificates: parsedResume.certificates || "",
 
-        template:
-          "classic",
+      template: "classic",
 
-        currentStep:
-          1,
+      currentStep: 1,
 
-        status:
-          "draft",
-      });
+      status: "draft",
+    });
 
-    console.log(
-      "========== IMPORTED RESUME CREATED =========="
-    );
+    console.log("========== IMPORTED RESUME CREATED ==========");
 
-    console.log(
-      "Resume ID:",
-      resume._id
-    );
+    console.log("Resume ID:", resume._id);
 
     // =========================================================
     // AI ANALYSIS - ORIGINAL IMPORTED RESUME
     // =========================================================
 
-    console.log(
-      "========== AI ANALYZING IMPORTED RESUME =========="
-    );
+    console.log("========== AI ANALYZING IMPORTED RESUME ==========");
 
-    const originalAnalysis =
-      await generateResumeAnalysis(
-        resume
-      );
+    const originalAnalysis = await generateResumeAnalysis(resume);
 
-    if (
-      !originalAnalysis ||
-      typeof originalAnalysis.atsScore !==
-        "number"
-    ) {
+    if (!originalAnalysis || typeof originalAnalysis.atsScore !== "number") {
       return res.status(500).json({
         success: false,
-        message:
-          "AI did not return a valid original ATS score",
+        message: "AI did not return a valid original ATS score",
         errors: {},
       });
     }
 
-    console.log(
-      "Original ATS Score:",
-      originalAnalysis.atsScore
-    );
+    console.log("Original ATS Score:", originalAnalysis.atsScore);
 
     // =========================
     // SAVE ORIGINAL ANALYSIS
@@ -681,8 +512,7 @@ const importResume = async (req, res) => {
 
     resume.aiAnalysis = {
       ...originalAnalysis,
-      generatedAt:
-        new Date(),
+      generatedAt: new Date(),
     };
 
     await resume.save();
@@ -691,150 +521,91 @@ const importResume = async (req, res) => {
     // AI OPTIMIZATION
     // =========================================================
 
-    console.log(
-      "========== AI OPTIMIZING IMPORTED RESUME =========="
-    );
+    console.log("========== AI OPTIMIZING IMPORTED RESUME ==========");
 
-    const optimization =
-      await optimizeResumeAI(
-        resume
-      );
+    const optimization = await optimizeResumeAI(resume);
 
-    if (
-      !optimization ||
-      typeof optimization !==
-        "object"
-    ) {
+    if (!optimization || typeof optimization !== "object") {
       return res.status(500).json({
         success: false,
-        message:
-          "AI returned invalid resume optimization",
+        message: "AI returned invalid resume optimization",
         errors: {},
       });
     }
 
-    console.log(
-      "========== AI OPTIMIZATION RESULT =========="
-    );
+    console.log("========== AI OPTIMIZATION RESULT ==========");
 
-    console.log(
-      JSON.stringify(
-        optimization,
-        null,
-        2
-      )
-    );
+    console.log(JSON.stringify(optimization, null, 2));
 
     // =========================================================
     // STORE OPTIMIZATION
     // =========================================================
 
     resume.aiOptimization = {
-      address:
-        optimization.address || {
-          original:
-            resume.basicInfo?.address ||
-            "",
+      address: optimization.address || {
+        original: resume.basicInfo?.address || "",
 
-          optimized:
-            resume.basicInfo?.address ||
-            "",
+        optimized: resume.basicInfo?.address || "",
 
-          reason:
-            "No address change was necessary.",
-        },
+        reason: "No address change was necessary.",
+      },
 
-      professionalSummary:
-        optimization.professionalSummary || {
-          original:
-            resume.professionalSummary ||
-            "",
+      professionalSummary: optimization.professionalSummary || {
+        original: resume.professionalSummary || "",
 
-          optimized:
-            resume.professionalSummary ||
-            "",
+        optimized: resume.professionalSummary || "",
 
-          reason:
-            "No professional summary change was necessary.",
-        },
+        reason: "No professional summary change was necessary.",
+      },
 
-      workExperiences:
-        optimization.workExperiences ||
-        [],
+      workExperiences: optimization.workExperiences || [],
 
-      educations:
-        optimization.educations ||
-        [],
+      educations: optimization.educations || [],
 
-      skills:
-        optimization.skills || {
-          original:
-            resume.skills || "",
+      skills: optimization.skills || {
+        original: resume.skills || "",
 
-          optimized:
-            resume.skills || "",
+        optimized: resume.skills || "",
 
-          reason:
-            "No skills change was necessary.",
-        },
+        reason: "No skills change was necessary.",
+      },
 
-      projects:
-        optimization.projects ||
-        [],
+      projects: optimization.projects || [],
 
-      certificates:
-        optimization.certificates || {
-          original:
-            resume.certificates ||
-            "",
+      certificates: optimization.certificates || {
+        original: resume.certificates || "",
 
-          optimized:
-            resume.certificates ||
-            "",
+        optimized: resume.certificates || "",
 
-          reason:
-            "No certificate change was necessary.",
-        },
+        reason: "No certificate change was necessary.",
+      },
 
-      changes:
-        optimization.changes ||
-        [],
+      changes: optimization.changes || [],
 
-      generatedAt:
-        new Date(),
+      generatedAt: new Date(),
     };
 
     // =========================================================
     // CREATE TEMPORARY OPTIMIZED RESUME
     // =========================================================
 
-    const optimizedResumeData =
-      resume.toObject();
+    const optimizedResumeData = resume.toObject();
 
     // =========================
     // ADDRESS
     // =========================
 
-    if (
-      optimization.address?.optimized !==
-      undefined
-    ) {
-      optimizedResumeData.basicInfo =
-        optimizedResumeData.basicInfo ||
-        {};
+    if (optimization.address?.optimized !== undefined) {
+      optimizedResumeData.basicInfo = optimizedResumeData.basicInfo || {};
 
-      optimizedResumeData.basicInfo.address =
-        optimization.address.optimized;
+      optimizedResumeData.basicInfo.address = optimization.address.optimized;
     }
 
     // =========================
     // PROFESSIONAL SUMMARY
     // =========================
 
-    if (
-      optimization.professionalSummary
-        ?.optimized !== undefined
-    ) {
+    if (optimization.professionalSummary?.optimized !== undefined) {
       optimizedResumeData.professionalSummary =
         optimization.professionalSummary.optimized;
     }
@@ -843,252 +614,159 @@ const importResume = async (req, res) => {
     // SKILLS
     // =========================
 
-    if (
-      optimization.skills?.optimized !==
-      undefined
-    ) {
-      optimizedResumeData.skills =
-        optimization.skills.optimized;
+    if (optimization.skills?.optimized !== undefined) {
+      optimizedResumeData.skills = optimization.skills.optimized;
     }
 
     // =========================
     // CERTIFICATES
     // =========================
 
-    if (
-      optimization.certificates?.optimized !==
-      undefined
-    ) {
-      optimizedResumeData.certificates =
-        optimization.certificates.optimized;
+    if (optimization.certificates?.optimized !== undefined) {
+      optimizedResumeData.certificates = optimization.certificates.optimized;
     }
 
     // =========================
     // WORK EXPERIENCES
     // =========================
 
-    if (
-      Array.isArray(
-        optimization.workExperiences
-      )
-    ) {
+    if (Array.isArray(optimization.workExperiences)) {
       optimizedResumeData.workExperiences =
-        optimizedResumeData.workExperiences ||
-        [];
+        optimizedResumeData.workExperiences || [];
 
-      optimization.workExperiences.forEach(
-        (optimizedExperience) => {
-          const index =
-            optimizedResumeData.workExperiences.findIndex(
-              (experience) =>
-                String(
-                  experience._id
-                ) ===
-                String(
-                  optimizedExperience.id
-                )
-            );
+      optimization.workExperiences.forEach((optimizedExperience) => {
+        const index = optimizedResumeData.workExperiences.findIndex(
+          (experience) =>
+            String(experience._id) === String(optimizedExperience.id),
+        );
 
-          if (index === -1) {
-            return;
-          }
-
-          const original =
-            optimizedResumeData
-              .workExperiences[index];
-
-          const originalDescription =
-            original.description
-              ?.trim() || "";
-
-          // Only optimize description
-          // if the original had one.
-          if (
-            originalDescription &&
-            optimizedExperience.description !==
-              undefined
-          ) {
-            original.description =
-              optimizedExperience.description;
-          }
-
-          // Preserve original user data.
-          original.jobTitle =
-            original.jobTitle;
-
-          original.company =
-            original.company;
-
-          original.location =
-            original.location;
-
-          original.periodOfEmployment =
-            original.periodOfEmployment;
-
-          original.currentlyWorking =
-            original.currentlyWorking;
+        if (index === -1) {
+          return;
         }
-      );
+
+        const original = optimizedResumeData.workExperiences[index];
+
+        const originalDescription = original.description?.trim() || "";
+
+        // Only optimize description
+        // if the original had one.
+        if (
+          originalDescription &&
+          optimizedExperience.description !== undefined
+        ) {
+          original.description = optimizedExperience.description;
+        }
+
+        // Preserve original user data.
+        original.jobTitle = original.jobTitle;
+
+        original.company = original.company;
+
+        original.location = original.location;
+
+        original.periodOfEmployment = original.periodOfEmployment;
+
+        original.currentlyWorking = original.currentlyWorking;
+      });
     }
 
     // =========================
     // EDUCATION
     // =========================
 
-    if (
-      Array.isArray(
-        optimization.educations
-      )
-    ) {
-      optimizedResumeData.educations =
-        optimizedResumeData.educations ||
-        [];
+    if (Array.isArray(optimization.educations)) {
+      optimizedResumeData.educations = optimizedResumeData.educations || [];
 
-      optimization.educations.forEach(
-        (optimizedEducation) => {
-          const index =
-            optimizedResumeData.educations.findIndex(
-              (education) =>
-                String(
-                  education._id
-                ) ===
-                String(
-                  optimizedEducation.id
-                )
-            );
+      optimization.educations.forEach((optimizedEducation) => {
+        const index = optimizedResumeData.educations.findIndex(
+          (education) =>
+            String(education._id) === String(optimizedEducation.id),
+        );
 
-          if (index === -1) {
-            return;
-          }
-
-          const original =
-            optimizedResumeData
-              .educations[index];
-
-          const originalDescription =
-            original.description
-              ?.trim() || "";
-
-          // Only optimize description
-          // if the original had one.
-          if (
-            originalDescription &&
-            optimizedEducation.description !==
-              undefined
-          ) {
-            original.description =
-              optimizedEducation.description;
-          }
-
-          // Never allow AI to change
-          // the user's school year.
-          original.schoolYear =
-            original.schoolYear;
+        if (index === -1) {
+          return;
         }
-      );
+
+        const original = optimizedResumeData.educations[index];
+
+        const originalDescription = original.description?.trim() || "";
+
+        // Only optimize description
+        // if the original had one.
+        if (
+          originalDescription &&
+          optimizedEducation.description !== undefined
+        ) {
+          original.description = optimizedEducation.description;
+        }
+
+        // Never allow AI to change
+        // the user's school year.
+        original.schoolYear = original.schoolYear;
+      });
     }
 
     // =========================
     // PROJECTS
     // =========================
 
-    if (
-      Array.isArray(
-        optimization.projects
-      )
-    ) {
-      optimizedResumeData.projects =
-        optimizedResumeData.projects ||
-        [];
+    if (Array.isArray(optimization.projects)) {
+      optimizedResumeData.projects = optimizedResumeData.projects || [];
 
-      optimization.projects.forEach(
-        (optimizedProject) => {
-          const index =
-            optimizedResumeData.projects.findIndex(
-              (project) =>
-                String(
-                  project._id
-                ) ===
-                String(
-                  optimizedProject.id
-                )
-            );
+      optimization.projects.forEach((optimizedProject) => {
+        const index = optimizedResumeData.projects.findIndex(
+          (project) => String(project._id) === String(optimizedProject.id),
+        );
 
-          if (index === -1) {
-            return;
-          }
-
-          const optimizedDescription =
-            optimizedProject.optimized
-              ?.trim();
-
-          if (
-            optimizedDescription
-          ) {
-            optimizedResumeData
-              .projects[index]
-              .projectDescription =
-              optimizedDescription;
-          }
+        if (index === -1) {
+          return;
         }
-      );
+
+        const optimizedDescription = optimizedProject.optimized?.trim();
+
+        if (optimizedDescription) {
+          optimizedResumeData.projects[index].projectDescription =
+            optimizedDescription;
+        }
+      });
     }
 
     // =========================================================
     // AI ANALYSIS - OPTIMIZED VERSION
     // =========================================================
 
-    console.log(
-      "========== AI ANALYZING OPTIMIZED RESUME =========="
-    );
+    console.log("========== AI ANALYZING OPTIMIZED RESUME ==========");
 
-    const optimizedAnalysis =
-      await generateResumeAnalysis(
-        optimizedResumeData
-      );
+    const optimizedAnalysis = await generateResumeAnalysis(optimizedResumeData);
 
-    if (
-      !optimizedAnalysis ||
-      typeof optimizedAnalysis.atsScore !==
-        "number"
-    ) {
+    if (!optimizedAnalysis || typeof optimizedAnalysis.atsScore !== "number") {
       return res.status(500).json({
         success: false,
-        message:
-          "AI did not return a valid optimized ATS score",
+        message: "AI did not return a valid optimized ATS score",
         errors: {},
       });
     }
 
-    console.log(
-      "Optimized ATS Score:",
-      optimizedAnalysis.atsScore
-    );
+    console.log("Optimized ATS Score:", optimizedAnalysis.atsScore);
 
     // =========================================================
     // SCORE IMPROVEMENT
     // =========================================================
 
-    const originalScore =
-      originalAnalysis.atsScore;
+    const originalScore = originalAnalysis.atsScore;
 
-    const optimizedScore =
-      optimizedAnalysis.atsScore;
+    const optimizedScore = optimizedAnalysis.atsScore;
 
-    const scoreImprovement =
-      optimizedScore -
-      originalScore;
+    const scoreImprovement = optimizedScore - originalScore;
 
     // =========================================================
     // STORE OPTIMIZED ANALYSIS
     // =========================================================
 
-    resume.aiOptimization.optimizedAnalysis =
-      {
-        ...optimizedAnalysis,
-        generatedAt:
-          new Date(),
-      };
+    resume.aiOptimization.optimizedAnalysis = {
+      ...optimizedAnalysis,
+      generatedAt: new Date(),
+    };
 
     await resume.save();
 
@@ -1096,30 +774,18 @@ const importResume = async (req, res) => {
     // SUCCESS
     // =========================================================
 
-    console.log(
-      "========== IMPORT COMPLETE =========="
-    );
+    console.log("========== IMPORT COMPLETE ==========");
 
-    console.log(
-      "Original ATS:",
-      originalScore
-    );
+    console.log("Original ATS:", originalScore);
 
-    console.log(
-      "Optimized ATS:",
-      optimizedScore
-    );
+    console.log("Optimized ATS:", optimizedScore);
 
-    console.log(
-      "Improvement:",
-      scoreImprovement
-    );
+    console.log("Improvement:", scoreImprovement);
 
     return res.status(201).json({
       success: true,
 
-      message:
-        "Resume imported, analyzed, and optimized successfully",
+      message: "Resume imported, analyzed, and optimized successfully",
 
       resume,
 
@@ -1133,28 +799,20 @@ const importResume = async (req, res) => {
 
       optimizedAnalysis,
 
-      optimization:
-        resume.aiOptimization,
+      optimization: resume.aiOptimization,
 
       errors: {},
     });
-
   } catch (error) {
-    console.error(
-      "Import resume error:",
-      error
-    );
+    console.error("Import resume error:", error);
 
     return res.status(500).json({
       success: false,
-      message:
-        error?.message ||
-        "Failed to import resume",
+      message: error?.message || "Failed to import resume",
       errors: {},
     });
   }
 };
-
 
 // STEP 1 - BASIC INFO
 const saveBasicInfo = async (req, res) => {
@@ -2156,66 +1814,56 @@ const optimizeResume = async (req, res) => {
       });
     }
     */
-   if (Array.isArray(optimization.workExperiences)) {
-    optimization.workExperiences.forEach((optimizedExperience) => {
-      const experience = resume.workExperiences.id(
-        optimizedExperience.id
-      );
+    if (Array.isArray(optimization.workExperiences)) {
+      optimization.workExperiences.forEach((optimizedExperience) => {
+        const experience = resume.workExperiences.id(optimizedExperience.id);
 
-      if (!experience) {
-        return;
-      }
+        if (!experience) {
+          return;
+        }
 
-      // IMPORTANT:
-      // Check the ORIGINAL work experience stored in resume.workExperiences.
-      const originalDescription =
-        experience.description?.trim() || "";
+        // IMPORTANT:
+        // Check the ORIGINAL work experience stored in resume.workExperiences.
+        const originalDescription = experience.description?.trim() || "";
 
-      // Store the AI result separately.
-      // DO NOT modify resume.workExperiences here.
-      optimizedExperience.jobTitle =
-        optimizedExperience.jobTitle ??
-        experience.jobTitle;
+        // Store the AI result separately.
+        // DO NOT modify resume.workExperiences here.
+        optimizedExperience.jobTitle =
+          optimizedExperience.jobTitle ?? experience.jobTitle;
 
-      optimizedExperience.company =
-        optimizedExperience.company ??
-        experience.company;
+        optimizedExperience.company =
+          optimizedExperience.company ?? experience.company;
 
-      optimizedExperience.location =
-        optimizedExperience.location ??
-        experience.location;
+        optimizedExperience.location =
+          optimizedExperience.location ?? experience.location;
 
-      // NEVER allow AI to change the user's employment period.
-      optimizedExperience.periodOfEmployment =
-        experience.periodOfEmployment || "";
+        // NEVER allow AI to change the user's employment period.
+        optimizedExperience.periodOfEmployment =
+          experience.periodOfEmployment || "";
 
-      // NEVER allow AI to change the user's currentlyWorking value.
-      optimizedExperience.currentlyWorking =
-        experience.currentlyWorking;
+        // NEVER allow AI to change the user's currentlyWorking value.
+        optimizedExperience.currentlyWorking = experience.currentlyWorking;
 
-      // If user had NO original description,
-      // AI optimized description MUST remain empty.
-      /*
+        // If user had NO original description,
+        // AI optimized description MUST remain empty.
+        /*
       if (!originalDescription) {
         optimizedExperience.description = "";
       }*/
 
-      // If user DID provide a description,
-      // use the AI description if provided.
-      if (
-        originalDescription &&
-        optimizedExperience.description === undefined
-      ) {
-        optimizedExperience.description =
-          originalDescription;
-      }
-    });
+        // If user DID provide a description,
+        // use the AI description if provided.
+        if (
+          originalDescription &&
+          optimizedExperience.description === undefined
+        ) {
+          optimizedExperience.description = originalDescription;
+        }
+      });
 
       // Save ONLY to aiOptimization.
-      resume.aiOptimization.workExperiences =
-        optimization.workExperiences;
+      resume.aiOptimization.workExperiences = optimization.workExperiences;
     }
-
 
     /*
     if (Array.isArray(optimization.educations)) {
@@ -2288,61 +1936,52 @@ const optimizeResume = async (req, res) => {
       });
     }
     */
-   if (Array.isArray(optimization.educations)) {
-    optimization.educations.forEach((optimizedEducation) => {
-      const education = resume.educations.id(
-        optimizedEducation.id
-      );
+    if (Array.isArray(optimization.educations)) {
+      optimization.educations.forEach((optimizedEducation) => {
+        const education = resume.educations.id(optimizedEducation.id);
 
-      if (!education) {
-        return;
-      }
+        if (!education) {
+          return;
+        }
 
-      // IMPORTANT:
-      // Check the ORIGINAL education stored in resume.educations.
-      const originalDescription =
-        education.description?.trim() || "";
+        // IMPORTANT:
+        // Check the ORIGINAL education stored in resume.educations.
+        const originalDescription = education.description?.trim() || "";
 
-      // Store the AI result separately.
-      // DO NOT modify resume.educations here.
-      optimizedEducation.school =
-        optimizedEducation.school ??
-        education.school;
+        // Store the AI result separately.
+        // DO NOT modify resume.educations here.
+        optimizedEducation.school =
+          optimizedEducation.school ?? education.school;
 
-      optimizedEducation.degreeField =
-        optimizedEducation.degreeField ??
-        education.degreeField;
+        optimizedEducation.degreeField =
+          optimizedEducation.degreeField ?? education.degreeField;
 
-      optimizedEducation.location =
-        optimizedEducation.location ??
-        education.location;
+        optimizedEducation.location =
+          optimizedEducation.location ?? education.location;
 
-      // NEVER allow AI to change the user's schoolYear.
-      optimizedEducation.schoolYear =
-        education.schoolYear || "";
+        // NEVER allow AI to change the user's schoolYear.
+        optimizedEducation.schoolYear = education.schoolYear || "";
 
-      // If user had NO original description,
-      // AI optimized description MUST remain empty.
-      
-      if (!originalDescription) {
-        optimizedEducation.description = "";
-      }
-      
-      // If user DID provide a description,
-      // the AI description can be stored.
-      if (
-        originalDescription &&
-        optimizedEducation.description === undefined
-      ) {
-        optimizedEducation.description =
-          originalDescription;
-      }
-    });
+        // If user had NO original description,
+        // AI optimized description MUST remain empty.
 
-    // Save ONLY to aiOptimization.
-    resume.aiOptimization.educations =
-      optimization.educations;
-  }
+        if (!originalDescription) {
+          optimizedEducation.description = "";
+        }
+
+        // If user DID provide a description,
+        // the AI description can be stored.
+        if (
+          originalDescription &&
+          optimizedEducation.description === undefined
+        ) {
+          optimizedEducation.description = originalDescription;
+        }
+      });
+
+      // Save ONLY to aiOptimization.
+      resume.aiOptimization.educations = optimization.educations;
+    }
 
     if (optimization.skills?.optimized !== undefined) {
       resume.skills = optimization.skills.optimized;
@@ -2362,22 +2001,17 @@ const optimizeResume = async (req, res) => {
 
     if (Array.isArray(optimization.projects)) {
       optimization.projects.forEach((optimizedProject) => {
-        const project = resume.projects.id(
-          optimizedProject.id
-        );
+        const project = resume.projects.id(optimizedProject.id);
 
         if (!project) return;
 
-        const optimizedDescription =
-          optimizedProject.optimized?.trim();
+        const optimizedDescription = optimizedProject.optimized?.trim();
 
         if (optimizedDescription) {
-          project.projectDescription =
-            optimizedDescription;
+          project.projectDescription = optimizedDescription;
         }
       });
     }
-
 
     if (optimization.certificates?.optimized !== undefined) {
       resume.certificates = optimization.certificates.optimized;
@@ -2497,11 +2131,9 @@ const exportResumePDF = async (req, res) => {
       professional: "Professional",
     };
 
-    const templateName =
-      templateNames[resume.template] || "Resume";
+    const templateName = templateNames[resume.template] || "Resume";
 
     const fileName = `${templateName}_Resume.pdf`;
-   
 
     res.set({
       "Content-Type": "application/pdf",

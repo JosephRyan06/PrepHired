@@ -102,7 +102,7 @@ const ProfessionalTemplate = ({ resume, preview = false }) => {
       };
     }) || [];
     */
-    const educations =
+  const educations =
     aiOptimization?.educations?.map((education) => {
       return {
         id: education.id || "",
@@ -160,7 +160,7 @@ const ProfessionalTemplate = ({ resume, preview = false }) => {
         paddingStart: 20,
         paddingEnd: 20,
         transform: [{ scale }],
-        transformOrigin: "center"
+        transformOrigin: "center",
       }}
     >
       {/* ========================================

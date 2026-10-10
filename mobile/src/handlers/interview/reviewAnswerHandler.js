@@ -12,24 +12,15 @@ export const reviewAnswerHandler = ({
     try {
       setLoading(true);
 
-      const result =
-        await getById(mockInterviewId);
+      const result = await getById(mockInterviewId);
 
-      setInterview(
-        result?.mockInterview ||
-          null,
-      );
+      setInterview(result?.mockInterview || null);
     } catch (error) {
-      console.error(
-        "Failed to load interview review:",
-        error,
-      );
+      console.error("Failed to load interview review:", error);
     } finally {
       setLoading(false);
     }
   };
-
-    
 
   return {
     loadInterview,

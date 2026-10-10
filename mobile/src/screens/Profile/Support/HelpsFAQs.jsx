@@ -1,4 +1,3 @@
-
 import React, { useMemo, useState } from "react";
 import {
   View,
@@ -101,7 +100,7 @@ const HelpFAQs = ({ navigation }) => {
       questions: category.questions.filter(
         (item) =>
           item.question.toLowerCase().includes(keyword) ||
-          item.answer.toLowerCase().includes(keyword)
+          item.answer.toLowerCase().includes(keyword),
       ),
     })).filter((category) => category.questions.length > 0);
   }, [search]);
@@ -151,11 +150,7 @@ const HelpFAQs = ({ navigation }) => {
                 marginBottom: 14,
               }}
             >
-              <Ionicons
-                name="help-circle-outline"
-                size={27}
-                color="#FFFFFF"
-              />
+              <Ionicons name="help-circle-outline" size={27} color="#FFFFFF" />
             </View>
 
             <Text
@@ -195,11 +190,7 @@ const HelpFAQs = ({ navigation }) => {
               marginBottom: 25,
             }}
           >
-            <Ionicons
-              name="search-outline"
-              size={20}
-              color="#71717A"
-            />
+            <Ionicons name="search-outline" size={20} color="#71717A" />
 
             <TextInput
               value={search}
@@ -216,11 +207,7 @@ const HelpFAQs = ({ navigation }) => {
 
             {search.length > 0 && (
               <TouchableOpacity onPress={() => setSearch("")}>
-                <Ionicons
-                  name="close-circle"
-                  size={20}
-                  color="#71717A"
-                />
+                <Ionicons name="close-circle" size={20} color="#71717A" />
               </TouchableOpacity>
             )}
           </View>
@@ -232,11 +219,7 @@ const HelpFAQs = ({ navigation }) => {
                 paddingVertical: 45,
               }}
             >
-              <Ionicons
-                name="search-outline"
-                size={42}
-                color="#52525B"
-              />
+              <Ionicons name="search-outline" size={42} color="#52525B" />
 
               <Text
                 style={{
@@ -292,10 +275,7 @@ const HelpFAQs = ({ navigation }) => {
                         <TouchableOpacity
                           activeOpacity={0.75}
                           onPress={() =>
-                            toggleQuestion(
-                              categoryIndex,
-                              questionIndex
-                            )
+                            toggleQuestion(categoryIndex, questionIndex)
                           }
                           style={{
                             minHeight: 58,
@@ -306,8 +286,7 @@ const HelpFAQs = ({ navigation }) => {
                             justifyContent: "space-between",
                             borderBottomWidth:
                               isExpanded ||
-                              questionIndex !==
-                                category.questions.length - 1
+                              questionIndex !== category.questions.length - 1
                                 ? 1
                                 : 0,
                             borderBottomColor: "#30303B",
@@ -327,11 +306,7 @@ const HelpFAQs = ({ navigation }) => {
                           </Text>
 
                           <Ionicons
-                            name={
-                              isExpanded
-                                ? "chevron-up"
-                                : "chevron-down"
-                            }
+                            name={isExpanded ? "chevron-up" : "chevron-down"}
                             size={18}
                             color="#71717A"
                           />

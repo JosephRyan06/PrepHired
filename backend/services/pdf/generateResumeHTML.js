@@ -4,31 +4,26 @@ const modernTemplate = require("./templates/modernTemplate");
 const classicTemplate = require("./templates/classicTemplate");
 
 const generateResumeHTML = (resume) => {
-  const template =
-    resume?.template || "classic";
+  const template = resume?.template || "classic";
 
   let content;
 
   switch (template) {
     case "professional":
-      content =
-        professionalTemplate(resume);
+      content = professionalTemplate(resume);
       break;
 
     case "minimal":
-      content =
-        minimalTemplate(resume);
+      content = minimalTemplate(resume);
       break;
 
     case "modern":
-      content =
-        modernTemplate(resume);
+      content = modernTemplate(resume);
       break;
 
     case "classic":
     default:
-      content =
-        classicTemplate(resume);
+      content = classicTemplate(resume);
       break;
   }
 

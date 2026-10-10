@@ -470,4 +470,37 @@ export default StyleSheet.create({
   skeletonBody: {
     marginTop: 15,
   },
+
+  //Password requirements
+
+  passwordRequirements: {
+    marginTop: 8,
+    marginBottom: 12,
+    padding: 12,
+    backgroundColor: "#1E1E26",
+    borderRadius: 10,
+  },
+
+  requirementsTitle: {
+    color: "#F8FAFC",
+    fontSize: 13,
+    fontWeight: "600",
+    marginBottom: 8,
+  },
+
+  requirementRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 6,
+    gap: 8,
+  },
+
+  requirementText: {
+    color: "#A1A1AA",
+    fontSize: 12,
+  },
+
+  requirementMet: {
+    color: "#60A5FA",
+  },
 });

@@ -22,41 +22,27 @@ const getAIOptimization = (resume) => {
 const getAddress = (resume) => {
   const ai = getAIOptimization(resume);
 
-  return (
-    ai?.address?.optimized ||
-    resume?.basicInfo?.address ||
-    ""
-  );
+  return ai?.address?.optimized || resume?.basicInfo?.address || "";
 };
 
 const getProfessionalSummary = (resume) => {
   const ai = getAIOptimization(resume);
 
   return (
-    ai?.professionalSummary?.optimized ||
-    resume?.professionalSummary ||
-    ""
+    ai?.professionalSummary?.optimized || resume?.professionalSummary || ""
   );
 };
 
 const getSkills = (resume) => {
   const ai = getAIOptimization(resume);
 
-  return (
-    ai?.skills?.optimized ||
-    resume?.skills ||
-    ""
-  );
+  return ai?.skills?.optimized || resume?.skills || "";
 };
 
 const getCertificates = (resume) => {
   const ai = getAIOptimization(resume);
 
-  return (
-    ai?.certificates?.optimized ||
-    resume?.certificates ||
-    ""
-  );
+  return ai?.certificates?.optimized || resume?.certificates || "";
 };
 
 const getWorkExperiences = (resume) => {
@@ -64,40 +50,27 @@ const getWorkExperiences = (resume) => {
 
   return (
     resume?.workExperiences?.map((experience) => {
-      const optimized =
-        ai?.workExperiences?.find(
-          (item) =>
-            String(item.id) ===
-            String(experience._id)
-        );
+      const optimized = ai?.workExperiences?.find(
+        (item) => String(item.id) === String(experience._id),
+      );
 
       return {
         ...experience,
 
         // ORIGINAL
-        jobTitle:
-          experience.jobTitle || "",
+        jobTitle: experience.jobTitle || "",
 
         // ORIGINAL
-        company:
-          experience.company || "",
+        company: experience.company || "",
 
         // AI
-        location:
-          optimized?.location ||
-          experience.location ||
-          "",
+        location: optimized?.location || experience.location || "",
 
         // ORIGINAL
-        periodOfEmployment:
-          experience.periodOfEmployment ||
-          "",
+        periodOfEmployment: experience.periodOfEmployment || "",
 
         // AI
-        description:
-          optimized?.optimized ||
-          experience.description ||
-          "",
+        description: optimized?.optimized || experience.description || "",
       };
     }) || []
   );
@@ -111,26 +84,19 @@ const getEducations = (resume) => {
       id: education.id || "",
 
       // AI
-      degreeField:
-        education.degreeField || "",
+      degreeField: education.degreeField || "",
 
       // AI
-      school:
-        education.school || "",
+      school: education.school || "",
 
       // AI
-      location:
-        education.location || "",
+      location: education.location || "",
 
       // ORIGINAL
-      schoolYear:
-        education.schoolYear || "",
+      schoolYear: education.schoolYear || "",
 
       // AI
-      description:
-        education.optimized ||
-        education.description ||
-        "",
+      description: education.optimized || education.description || "",
     }));
   }
 
@@ -139,24 +105,19 @@ const getEducations = (resume) => {
       id: education._id || "",
 
       // ORIGINAL FALLBACK
-      degreeField:
-        education.degreeField || "",
+      degreeField: education.degreeField || "",
 
       // ORIGINAL FALLBACK
-      school:
-        education.school || "",
+      school: education.school || "",
 
       // ORIGINAL FALLBACK
-      location:
-        education.location || "",
+      location: education.location || "",
 
       // ORIGINAL
-      schoolYear:
-        education.schoolYear || "",
+      schoolYear: education.schoolYear || "",
 
       // ORIGINAL FALLBACK
-      description:
-        education.description || "",
+      description: education.description || "",
     })) || []
   );
 };
@@ -169,33 +130,22 @@ const getProjects = (resume) => {
       ?.filter(
         (project) =>
           project &&
-          (
-            project.projectName?.trim() ||
-            project.projectDescription?.trim()
-          )
+          (project.projectName?.trim() || project.projectDescription?.trim()),
       )
       .map((project) => {
-        const optimized =
-          ai?.projects?.find(
-            (item) =>
-              String(item.id) ===
-              String(project._id)
-          );
+        const optimized = ai?.projects?.find(
+          (item) => String(item.id) === String(project._id),
+        );
 
         return {
           ...project,
 
           // AI
-          projectName:
-            optimized?.projectName ||
-            project.projectName ||
-            "",
+          projectName: optimized?.projectName || project.projectName || "",
 
           // AI
           projectDescription:
-            optimized?.optimized ||
-            project.projectDescription ||
-            "",
+            optimized?.optimized || project.projectDescription || "",
         };
       }) || []
   );
@@ -209,64 +159,41 @@ const getHeader = (resume, variant = "professional") => {
     <header class="header ${variant}-header">
 
       <div class="name">
-        ${escapeHTML(
-          basic.fullName || "Your Name"
-        )}
+        ${escapeHTML(basic.fullName || "Your Name")}
       </div>
 
       <div class="target">
-        ${escapeHTML(
-          resume?.targetJob?.jobTitle ||
-          "Professional Title"
-        )}
+        ${escapeHTML(resume?.targetJob?.jobTitle || "Professional Title")}
       </div>
 
       <div class="contact">
 
-        ${
-          basic.email
-            ? `<span>${escapeHTML(
-                basic.email
-              )}</span>`
-            : ""
-        }
+        ${basic.email ? `<span>${escapeHTML(basic.email)}</span>` : ""}
 
         ${
-          basic.email &&
-          basic.contactNumber
+          basic.email && basic.contactNumber
             ? `<span class="separator">|</span>`
             : ""
         }
 
         ${
           basic.contactNumber
-            ? `<span>${escapeHTML(
-                basic.contactNumber
-              )}</span>`
+            ? `<span>${escapeHTML(basic.contactNumber)}</span>`
             : ""
         }
 
         ${
-          (basic.email ||
-            basic.contactNumber) &&
-          address
+          (basic.email || basic.contactNumber) && address
             ? `<span class="separator">|</span>`
             : ""
         }
 
-        ${
-          address
-            ? `<span>${escapeHTML(
-                address
-              )}</span>`
-            : ""
-        }
+        ${address ? `<span>${escapeHTML(address)}</span>` : ""}
 
       </div>
 
       ${
-        basic.linkedInURL ||
-        basic.portfolioLink
+        basic.linkedInURL || basic.portfolioLink
           ? `
             <div class="links">
 
@@ -274,17 +201,14 @@ const getHeader = (resume, variant = "professional") => {
                 basic.linkedInURL
                   ? `
                     <span>
-                      ${escapeHTML(
-                        basic.linkedInURL
-                      )}
+                      ${escapeHTML(basic.linkedInURL)}
                     </span>
                   `
                   : ""
               }
 
               ${
-                basic.linkedInURL &&
-                basic.portfolioLink
+                basic.linkedInURL && basic.portfolioLink
                   ? `<span class="separator">|</span>`
                   : ""
               }
@@ -293,9 +217,7 @@ const getHeader = (resume, variant = "professional") => {
                 basic.portfolioLink
                   ? `
                     <span>
-                      ${escapeHTML(
-                        basic.portfolioLink
-                      )}
+                      ${escapeHTML(basic.portfolioLink)}
                     </span>
                   `
                   : ""
