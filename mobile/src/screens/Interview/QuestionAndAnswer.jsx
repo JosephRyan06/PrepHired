@@ -51,9 +51,10 @@ const QuestionAndAnswer = () => {
 
   // Prevent double submission / timeout
   const processingRef = useRef(false);
-
-  // Prevent timeout from firing multiple times
+  const interviewCompletedRef = useRef(false);
+  const timerPausedRef = useRef(false);
   const timeoutHandledRef = useRef(false);
+  const [isAnswerProcessing, setIsAnswerProcessing] = useState(false);
 
   const {
     questions,
@@ -73,6 +74,9 @@ const QuestionAndAnswer = () => {
     setTimeLeft,
     setAnswerError,
 
+
+    setModalVisible,
+    setModalMessage,
     navigation,
 
     saveAnswer,
@@ -180,11 +184,15 @@ const QuestionAndAnswer = () => {
   }, [currentQuestionText]);
 
   useEffect(() => {
-    if (timeLeft <= 0) {
+    if (timeLeft <= 0 || timerPausedRef.current) {
       return;
     }
 
     const timer = setInterval(() => {
+      if (timerPausedRef.current || processingRef.current) {
+        return;
+      }
+
       setTimeLeft((previous) => {
         if (previous <= 1) {
           clearInterval(timer);
@@ -195,9 +203,7 @@ const QuestionAndAnswer = () => {
       });
     }, 1000);
 
-    return () => {
-      clearInterval(timer);
-    };
+    return () => clearInterval(timer);
   }, [timeLeft]);
 
   useEffect(() => {
@@ -276,10 +282,10 @@ const QuestionAndAnswer = () => {
           mockInterviewId={mockInterviewId}
           navigateTo="Interview"
           showTimer={true}
+          timerRunning={!isAnswerProcessing && !timerPausedRef.current}
           backIcon="exit"
           onExit={handleEndInterview}
         />
-
         {/* QUESTION PROGRESS */}
 
         <View
@@ -505,15 +511,32 @@ const QuestionAndAnswer = () => {
         style={{
           marginBottom: 65,
         }}
-        title={
-          loading
-            ? "Saving..."
-            : currentQuestion < totalQuestions
-              ? "Save Answer"
-              : "Submit Answer"
-        }
-        onPress={handleSaveAndContinue}
+        title="Submit Answer"
+        loading={loading}
+        onPress={async () => {
+          if (processingRef.current || interviewCompletedRef.current) {
+            return;
+          }
+
+          timerPausedRef.current = true;
+          setIsAnswerProcessing(true);
+
+          try {
+            await handleSaveAndContinue();
+          } finally {
+            if (!interviewCompletedRef.current) {
+              timerPausedRef.current = false;
+              setIsAnswerProcessing(false);
+            }
+          }
+        }}
         disabled={loading || processingRef.current}
+      />
+
+      <AppModal
+        visible={modalVisible}
+        message={modalMessage}
+        onClose={() => setModalVisible(false)}
       />
 
       <LoadingModal

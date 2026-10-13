@@ -21,14 +21,16 @@ const BasicInfo = ({ navigation }) => {
 
   const [resumeId, setResumeId] = useState(null);
 
-  const [fullName, setFullName] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [contactNumber, setContactNumber] = useState("");
   const [address, setAddress] = useState("");
   const [email, setEmail] = useState("");
   const [linkedInURL, setLinkedInURL] = useState("");
   const [portfolioLink, setPortfolioLink] = useState("");
 
-  const [fullNameError, setFullNameError] = useState("");
+  const [firstNameError, setFirstNameError] = useState("");
+  const [lastNameError, setLastNameError] = useState("");
   const [contactNumberError, setContactNumberError] = useState("");
   const [addressError, setAddressError] = useState("");
   const [emailError, setEmailError] = useState("");
@@ -39,21 +41,24 @@ const BasicInfo = ({ navigation }) => {
     resumeId,
     setResumeId,
 
-    fullName,
+    firstName,
+    lastName,
     contactNumber,
     address,
     email,
     linkedInURL,
     portfolioLink,
 
-    setFullName,
+    setFirstName,
+    setLastName,
     setContactNumber,
     setAddress,
     setEmail,
     setLinkedInURL,
     setPortfolioLink,
 
-    setFullNameError,
+    setFirstNameError,
+    setLastNameError,
     setContactNumberError,
     setAddressError,
     setEmailError,
@@ -106,21 +111,39 @@ const BasicInfo = ({ navigation }) => {
         </View>
 
         <IconTextInput
-          label="FULL NAME"
+          label="FIRST NAME"
           style={{ height: 55 }}
           icon="person-outline"
-          placeholder="eg. Juan Dela Cruz"
-          value={fullName}
+          placeholder="eg. Juan"
+          value={firstName}
           onChangeText={(text) => {
-            setFullName(text);
-            setFullNameError("");
+            setFirstName(text);
+            setFirstNameError("");
           }}
           keyboardType="default"
-          error={fullNameError}
+          error={firstNameError}
         />
 
-        {fullNameError ? (
-          <Text style={styles.textError}>{fullNameError}</Text>
+        {firstNameError ? (
+          <Text style={styles.textError}>{firstNameError}</Text>
+        ) : null}
+
+        <IconTextInput
+          label="LAST NAME"
+          style={{ height: 55 }}
+          icon="person-outline"
+          placeholder="eg. Dela Cruz"
+          value={lastName}
+          onChangeText={(text) => {
+            setLastName(text);
+            setLastNameError("");
+          }}
+          keyboardType="default"
+          error={lastNameError}
+        />
+
+        {lastNameError ? (
+          <Text style={styles.textError}>{lastNameError}</Text>
         ) : null}
 
         <IconTextInput

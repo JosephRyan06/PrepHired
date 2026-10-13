@@ -2,6 +2,11 @@ import { API_URL } from "../config/api";
 import * as FileSystem from "expo-file-system/legacy";
 import { Blob } from "expo-blob";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { LogBox } from 'react-native';
+
+LogBox.ignoreLogs([
+  'Response.blob() is using React Native\'s Blob',
+]);
 
 const getAuthHeaders = async () => {
   const token = await AsyncStorage.getItem("token");
@@ -188,7 +193,8 @@ export const saveBasicInfo = async (id, basicInfo) => {
     method: "PUT",
     headers,
     body: JSON.stringify({
-      fullName: basicInfo.fullName,
+      firstName: basicInfo.firstName,
+      lastName: basicInfo.lastName,
       contactNumber: basicInfo.contactNumber,
       address: basicInfo.address,
       email: basicInfo.email,

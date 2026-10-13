@@ -15,8 +15,7 @@ const InterviewHeader = ({
   onExit,
   style,
   showTimer = true,
-
-  // Choose: "back" or "exit"
+  timerRunning = true,
   backIcon = "back",
 }) => {
   const [timeLeft, setTimeLeft] = useState(60);
@@ -31,7 +30,7 @@ const InterviewHeader = ({
   }, [questionNumber, showTimer]);
 
   useEffect(() => {
-    if (!showTimer || timeLeft <= 0) {
+    if (!showTimer || !timerRunning || timeLeft <= 0) {
       return;
     }
 
@@ -49,7 +48,7 @@ const InterviewHeader = ({
     return () => {
       clearInterval(timer);
     };
-  }, [timeLeft, showTimer]);
+  }, [timeLeft, showTimer, timerRunning]);
 
   const formatTime = (seconds) => {
     const minutes = Math.floor(seconds / 60);
@@ -132,20 +131,15 @@ const InterviewHeader = ({
             style={{
               borderWidth: 2,
               borderColor: timeLeft <= 10 ? "#DC2626" : "#2563EB",
-
               width: 60,
-
               paddingVertical: 5,
-
               borderRadius: 16,
             }}
           >
             <Text
               style={{
                 color: timeLeft <= 10 ? "#DC2626" : "#F8FAFC",
-
                 fontWeight: "600",
-
                 textAlign: "center",
               }}
             >

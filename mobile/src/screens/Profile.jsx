@@ -75,7 +75,7 @@ const Profile = () => {
         <View style={styles.card}>
           <Text style={styles.sectionTitle}>ACCOUNT</Text>
 
-          <TouchableOpacity style={styles.menuItem}>
+          <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate("EditProfile")}>
             <Ionicons name="create-outline" size={22} color="#A1A1AA" />
 
             <Text style={styles.menuText}>Edit Profile</Text>

@@ -168,6 +168,14 @@ export default function AppModal({ visible, message = "", onClose }) {
       };
     }
 
+    if (message.includes("Failed to analyze interview answer")) {
+      return {
+        icon: "sad-outline",
+        color: "#EF4444",
+        title: "Try Again",
+      };
+    }
+
     if (message.includes("The uploaded file is not a valid resume.")) {
       return {
         icon: "sad-outline",

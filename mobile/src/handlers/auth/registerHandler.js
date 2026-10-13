@@ -4,13 +4,15 @@ const registerHandler = ({
   setMessage,
   setModalVisible,
 
-  fullName,
+  firstName,
+  lastName,
   email,
   password,
   confirmPassword,
   checked,
 
-  setFullNameError,
+  setFirstNameError,
+  setLastNameError,
   setEmailError,
   setPasswordError,
   setConfirmPasswordError,
@@ -19,14 +21,16 @@ const registerHandler = ({
   const handleRegister = async () => {
     // Clear previous errors
     setMessage("");
-    setFullNameError("");
+    setFirstNameError("");
+    setLastNameError("");
     setEmailError("");
     setPasswordError("");
     setConfirmPasswordError("");
     setTermsConditionError("");
 
     const result = await register({
-      fullName: fullName.trim(),
+      firstName: firstName.trim(),
+      lastName: lastName.trim(),
       email: email.trim(),
       password,
       confirmPassword,
@@ -36,7 +40,8 @@ const registerHandler = ({
     if (!result.success) {
       const errors = result.errors || {};
 
-      setFullNameError(errors.fullName || "");
+      setFirstNameError(errors.firstName || "");
+      setLastNameError(errors.lastName || "");
       setEmailError(errors.email || "");
       setPasswordError(errors.password || "");
       setConfirmPasswordError(errors.confirmPassword || "");

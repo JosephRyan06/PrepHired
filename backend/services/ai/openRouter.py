@@ -98,18 +98,25 @@ Return ONLY valid JSON using exactly this structure:
     "certificates": ""
 }}
 
-Rules:
-- Use empty strings for unknown text fields.
-- Use empty arrays when no entries exist.
-- Use false for currentlyWorking unless current employment
-  is explicitly supported by the resume.
-- Do not infer a target job from work experience.
-- Preserve the meaning of dates and qualifications.
-- Do not invent IDs; the backend will generate them.
-- Extract skills as a readable, comma-separated string.
-- Extract certificates as a readable string.
-- Do not include analysis or optimization.
-- Do not include Markdown or code fences.
+    Rules:
+
+    Use empty strings for unknown text fields.
+    Use empty arrays when no entries exist.
+    Use false for currentlyWorking unless current employment is explicitly supported by the resume.
+    Extract targetJob.jobTitle from an explicitly stated desired position, career objective, or professional summary.
+    If the resume explicitly states that the applicant is seeking, pursuing, or applying for a particular role, use that role as targetJob.jobTitle.
+    If a job title appears directly below the applicant's name, consider it a potential target job title. Use the professional summary and surrounding text to determine whether it represents the desired position.
+    For example, if the resume lists "Junior Developer" below the applicant's name and the professional summary says "seeking a Junior Developer role", set targetJob.jobTitle to "Junior Developer".
+    Do not automatically treat a previous or current work experience job title as the target job.
+    Extract targetJob.industry only when supported by the resume. You may use clearly stated career goals and relevant context to identify the industry, but do not invent details.
+    Extract targetJob.jobDescription only when the resume explicitly provides a description of the desired role. Otherwise, use an empty string.
+    Do not confuse targetJob.jobTitle with basicInfo.fullName or any other field.
+    Preserve the meaning of dates and qualifications.
+    Do not invent IDs; the backend will generate them.
+    Extract skills as a readable, comma-separated string.
+    Extract certificates as a readable string.
+    Do not include analysis or optimization.
+    Do not include Markdown or code fences.
 
 RESUME TEXT:
 {json.dumps(extracted_text, ensure_ascii=False)}

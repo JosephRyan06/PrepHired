@@ -490,6 +490,19 @@ const resumeSchema = new mongoose.Schema(
     },
 
     basicInfo: {
+
+      firstName: {
+        type: String,
+        trim: true,
+        default: "",
+      },
+
+      lastName: {
+        type: String,
+        trim: true,
+        default: "",
+      },
+
       fullName: {
         type: String,
         trim: true,

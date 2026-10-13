@@ -10,15 +10,21 @@ const { sendPasswordResetOtp } = require("../services/emailService");
 
 const register = async (req, res) => {
   try {
-    const { fullName, email, password, confirmPassword, termsAccepted } =
+    const { firstName, lastName, email, password, confirmPassword, termsAccepted } =
       req.body;
 
+
+    const fullName = `${firstName || ""} ${lastName || ""}`.trim();
     const role = "user";
     const errors = {};
 
     // Required fields
-    if (!fullName) {
-      errors.fullName = "Full name is required";
+    if (!firstName) {
+      errors.firstName = "First name is required";
+    }
+
+    if (!lastName) {
+      errors.lastName = "Last name is required";
     }
 
     if (!email) {
@@ -37,9 +43,13 @@ const register = async (req, res) => {
       errors.confirmPassword = "Please confirm your password";
     }
 
-    // Full name validation
-    if (fullName && /\d/.test(fullName)) {
-      errors.fullName = "Name must not contain numbers";
+    //name validation
+    if (firstName && /\d/.test(firstName)) {
+      errors.firstName = "First name must not contain numbers";
+    }
+
+    if (lastName && /\d/.test(lastName)) {
+      errors.lastName = "Last name must not contain numbers";
     }
 
     // Email validation
@@ -93,6 +103,8 @@ const register = async (req, res) => {
 
     // Create user
     const user = await User.create({
+      firstName: firstName.trim(),
+      lastName: lastName.trim(),
       fullName,
       email,
       password: hashedPassword,
@@ -106,6 +118,8 @@ const register = async (req, res) => {
       message: "Registration successful",
       user: {
         _id: user._id,
+        firstName: user.firstName,
+        lastName: user.lastName,
         fullName: user.fullName,
         email: user.email,
         role: user.role,
@@ -488,39 +502,63 @@ const resetPassword = async (req, res) => {
 
     const errors = {};
 
-    // Validation
-    if (!resetToken) {
+    // Validate reset token
+    if (typeof resetToken !== "string" || !resetToken.trim()) {
       return res.status(400).json({
+        success: false,
         message: "Password reset authorization is required",
+        errors: {
+          resetToken: "Password reset authorization is required",
+        },
       });
     }
 
-    if (!password) {
+    // Validate required fields
+    if (typeof password !== "string" || !password.trim()) {
       errors.password = "Password is required";
     }
 
-    if (!confirmPassword) {
+    if (
+      typeof confirmPassword !== "string" ||
+      !confirmPassword.trim()
+    ) {
       errors.confirmPassword = "Please confirm your password";
     }
 
-    if (password && password.length < 8) {
-      errors.password = "Password must be at least 8 characters long";
-    } else if (password && password.length > 16) {
-      errors.password = "Password must not exceed 16 characters";
-    } else if (password && /\s/.test(password)) {
-      errors.password = "Password must not contain spaces";
-    } else if (password && !/[A-Z]/.test(password)) {
-      errors.password = "Password must contain at least one uppercase letter";
-    } else if (password && !/[0-9]/.test(password)) {
-      errors.password = "Password must contain at least one number";
-    } else if (password && !/[^A-Za-z0-9\s]/.test(password)) {
-      errors.password = "Password must contain at least one special character";
+    // Validate password length and complexity only if provided
+    if (typeof password === "string" && password.trim()) {
+      if (password.length < 8) {
+        errors.password =
+          "Password must be at least 8 characters long";
+      } else if (password.length > 16) {
+        errors.password =
+          "Password must not exceed 16 characters";
+      } else if (/\s/.test(password)) {
+        errors.password = "Password must not contain spaces";
+      } else if (!/[A-Z]/.test(password)) {
+        errors.password =
+          "Password must contain at least one uppercase letter";
+      } else if (!/[0-9]/.test(password)) {
+        errors.password =
+          "Password must contain at least one number";
+      } else if (!/[^A-Za-z0-9\s]/.test(password)) {
+        errors.password =
+          "Password must contain at least one special character";
+      }
     }
 
-    if (password && confirmPassword && password !== confirmPassword) {
+    // Validate password confirmation
+    if (
+      typeof password === "string" &&
+      typeof confirmPassword === "string" &&
+      password.length > 0 &&
+      confirmPassword.length > 0 &&
+      password !== confirmPassword
+    ) {
       errors.confirmPassword = "Passwords do not match";
     }
 
+    // Return validation errors
     if (Object.keys(errors).length > 0) {
       return res.status(400).json({
         success: false,
@@ -535,7 +573,7 @@ const resetPassword = async (req, res) => {
       .update(resetToken)
       .digest("hex");
 
-    // Find user
+    // Find user with a valid, unexpired reset token
     const user = await User.findOne({
       resetTokenHash,
       resetTokenExpires: {
@@ -547,6 +585,9 @@ const resetPassword = async (req, res) => {
       return res.status(400).json({
         success: false,
         message: "Invalid or expired password reset session",
+        errors: {
+          resetToken: "Invalid or expired password reset session",
+        },
       });
     }
 
@@ -556,21 +597,17 @@ const resetPassword = async (req, res) => {
     // Update password
     user.password = hashedPassword;
 
-    // Destroy reset token
+    // Clear reset token information
     user.resetTokenHash = null;
-
     user.resetTokenExpires = null;
 
-    // Make sure OTP information is also removed
+    // Clear OTP information
     user.resetOtpHash = null;
-
     user.resetOtpExpires = null;
-
     user.resetOtpAttempts = 0;
 
     await user.save();
 
-    // Success
     return res.status(200).json({
       success: true,
       message: "Password reset successfully.",
@@ -579,8 +616,9 @@ const resetPassword = async (req, res) => {
     console.error("Reset password error:", error);
 
     return res.status(500).json({
-      sucess: false,
+      success: false,
       message: "Unable to reset password",
+      errors: {},
     });
   }
 };
@@ -685,36 +723,42 @@ const changePassword = async (req, res) => {
       errors.currentPassword = "Current password is required";
     }
 
-    if (!newPassword) {
+    if (!newPassword || !newPassword.trim()) {
       errors.newPassword = "New password is required";
     }
 
-    if (!confirmPassword) {
+    if (!confirmPassword || !confirmPassword.trim()) {
       errors.confirmPassword = "Please confirm your new password";
     }
 
-    if (newPassword.length < 8) {
-      errors.newPassword = "Password must be at least 8 characters long";
-    } else if (newPassword.length > 16) {
-      errors.newPassword = "Password must not exceed 16 characters";
-    } else if (/\s/.test(newPassword)) {
-      errors.newPassword = "Password must not contain spaces";
-    } else if (!/[A-Z]/.test(newPassword)) {
-      errors.newPassword =
-        "Password must contain at least one uppercase letter";
-    } else if (!/[0-9]/.test(newPassword)) {
-      errors.newPassword = "Password must contain at least one number";
-    } else if (!/[^A-Za-z0-9\s]/.test(newPassword)) {
-      errors.newPassword =
-        "Password must contain at least one special character";
+    // Validate password length and complexity only if provided
+    if (newPassword && newPassword.trim()) {
+      if (newPassword.length < 8) {
+        errors.newPassword = "Password must be at least 8 characters long";
+      } else if (newPassword.length > 16) {
+        errors.newPassword = "Password must not exceed 16 characters";
+      } else if (/\s/.test(newPassword)) {
+        errors.newPassword = "Password must not contain spaces";
+      } else if (!/[A-Z]/.test(newPassword)) {
+        errors.newPassword =
+          "Password must contain at least one uppercase letter";
+      } else if (!/[0-9]/.test(newPassword)) {
+        errors.newPassword = "Password must contain at least one number";
+      } else if (!/[^A-Za-z0-9\s]/.test(newPassword)) {
+        errors.newPassword =
+          "Password must contain at least one special character";
+      }
     }
 
-    // Confirm password
-    if (newPassword && confirmPassword && newPassword !== confirmPassword) {
+    // Check confirmation only when both fields have values
+    if (
+      newPassword &&
+      confirmPassword &&
+      newPassword !== confirmPassword
+    ) {
       errors.confirmPassword = "Passwords do not match";
     }
 
-    // Return validation errors
     if (Object.keys(errors).length > 0) {
       return res.status(400).json({
         success: false,
@@ -722,6 +766,7 @@ const changePassword = async (req, res) => {
         errors,
       });
     }
+    
 
     // req.user comes from authenticateUser middleware
     const user = await User.findById(req.user._id);

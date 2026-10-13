@@ -146,7 +146,7 @@ const TargetJobPosition = ({ navigation }) => {
 
         <Text
           style={{
-            color: "#A1A1AA",
+            color: "#F8FAFC",
             fontSize: 12,
             fontWeight: "600",
             marginStart: 5,

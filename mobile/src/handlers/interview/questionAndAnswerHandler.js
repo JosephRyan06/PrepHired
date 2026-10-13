@@ -9,6 +9,9 @@ export const questionAndAnswerHandler = ({
   setTimeLeft,
   setAnswerError,
 
+  setModalVisible,
+  setModalMessage,
+  
   navigation,
 
   saveAnswer,
@@ -126,10 +129,13 @@ export const questionAndAnswerHandler = ({
     } catch (error) {
       console.error("Question and answer flow error:", error);
 
-      setAnswerError(
+      const message =
         error?.message ||
-          "Something went wrong while saving or analyzing your answer.",
-      );
+        "Something went wrong while saving or analyzing your answer.";
+
+      setAnswerError("");
+      setModalMessage(message);
+      setModalVisible(true);
     } finally {
       if (processingRef) {
         processingRef.current = false;
@@ -189,13 +195,9 @@ export const questionAndAnswerHandler = ({
           });
         }
 
-        // Complete only after the final
-        // answer has been handled.
-        const completedResult = await complete(mockInterview._id);
-
-        // Analyze the complete session
-        // after completion.
         const sessionAnalysis = await analyzeSession(mockInterview._id);
+      
+        const completedResult = await complete(mockInterview._id);
 
         navigation.navigate("SessionCompleted", {
           mockInterviewId: mockInterview._id,
@@ -245,12 +247,16 @@ export const questionAndAnswerHandler = ({
 
       setCurrentQuestion(nextQuestion);
     } catch (error) {
-      console.error("Timeout error:", error);
+      console.error("Question and answer flow error:", error);
 
-      setAnswerError(
+      const message =
         error?.message ||
-          "Something went wrong while moving to the next question.",
-      );
+        "Something went wrong while saving or analyzing your answer.";
+
+      setAnswerError("");
+      setModalMessage(message);
+      setModalVisible(true);
+
     } finally {
       if (processingRef) {
         processingRef.current = false;

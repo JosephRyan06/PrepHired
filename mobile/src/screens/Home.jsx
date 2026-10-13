@@ -327,7 +327,7 @@ const Home = () => {
         <View style={styles.quickActionsCard}>
           <TouchableOpacity
             style={[styles.cardAction, styles.primaryCard]}
-            onPress={() => navigation.navigate("MyResumes")}
+            onPress={() => navigation.navigate("HomeMyResumes")}
             activeOpacity={0.8}
           >
             <View style={[styles.iconContainer, styles.primaryIcon]}>
@@ -347,7 +347,7 @@ const Home = () => {
 
           <TouchableOpacity
             style={styles.cardAction}
-            onPress={() => navigation.navigate("InterviewHistory")}
+            onPress={() => navigation.navigate("HomeInterviewHistory")}
             activeOpacity={0.8}
           >
             <View style={styles.iconContainer}>

@@ -20,12 +20,14 @@ import useAuth from "../hooks/useAuth";
 const Register = () => {
   const navigation = useNavigation();
 
-  const [fullName, setFullName] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  const [fullNameError, setFullNameError] = useState("");
+  const [firstNameError, setFirstNameError] = useState("");
+  const [lastNameError, setLastNameError] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [confirmPasswordError, setConfirmPasswordError] = useState("");
@@ -45,13 +47,15 @@ const Register = () => {
     setMessage,
     setModalVisible,
 
-    fullName,
+    firstName,
+    lastName,
     email,
     password,
     confirmPassword,
     checked,
 
-    setFullNameError,
+    setFirstNameError,
+    setLastNameError,
     setEmailError,
     setPasswordError,
     setConfirmPasswordError,
@@ -104,22 +108,42 @@ const Register = () => {
         <Text style={styles.subTitle}>Sign up and enjoy our services.</Text>
       </View>
 
+      
       <IconTextInput
-        label="FULL NAME"
+        label="FIRST NAME"
         style={{ height: 55 }}
-        icon="mail-outline"
-        placeholder="Enter your name"
-        value={fullName}
+        icon="person-outline"
+        placeholder="Enter your first name"
+        value={firstName}
         onChangeText={(text) => {
-          setFullName(text);
-          setFullNameError("");
+          setFirstName(text);
+          setFirstNameError("");
         }}
-        error={fullNameError}
+        error={firstNameError}
       />
 
-      {fullNameError ? (
+      {firstNameError ? (
         <Text style={{ color: "#B91C1C", marginTop: 0, fontSize: 12 }}>
-          {fullNameError}
+          {firstNameError}
+        </Text>
+      ) : null}
+
+      <IconTextInput
+        label="LAST NAME"
+        style={{ height: 55 }}
+        icon="person-outline"
+        placeholder="Enter your last name"
+        value={lastName}
+        onChangeText={(text) => {
+          setLastName(text);
+          setLastNameError("");
+        }}
+        error={lastNameError}
+      />
+
+      {lastNameError ? (
+        <Text style={{ color: "#B91C1C", marginTop: 0, fontSize: 12 }}>
+          {lastNameError}
         </Text>
       ) : null}
 

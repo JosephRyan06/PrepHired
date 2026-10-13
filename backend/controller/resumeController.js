@@ -818,7 +818,8 @@ const importResume = async (req, res) => {
 const saveBasicInfo = async (req, res) => {
   try {
     const {
-      fullName,
+      firstName,
+      lastName,
       contactNumber,
       address,
       email,
@@ -829,8 +830,12 @@ const saveBasicInfo = async (req, res) => {
     const errors = {};
 
     // Required fields
-    if (!fullName?.trim()) {
-      errors.fullName = "Full name is required";
+    if (!firstName?.trim()) {
+      errors.firstName = "First name is required";
+    }
+
+    if (!lastName?.trim()) {
+      errors.lastName = "Last name is required";
     }
 
     if (!contactNumber?.trim()) {
@@ -846,8 +851,18 @@ const saveBasicInfo = async (req, res) => {
     }
 
     // Full name validation
-    if (fullName?.trim() && fullName.trim() !== req.user.fullName) {
-      errors.fullName = "Full name does not match your account";
+    if (
+      firstName?.trim() &&
+      firstName.trim() !== req.user.firstName
+    ) {
+      errors.firstName = "First name does not match your account";
+    }
+
+    if (
+      lastName?.trim() &&
+      lastName.trim() !== req.user.lastName
+    ) {
+      errors.lastName = "Last name does not match your account";
     }
 
     // Email validation
@@ -914,7 +929,9 @@ const saveBasicInfo = async (req, res) => {
       {
         $set: {
           basicInfo: {
-            fullName: fullName.trim(),
+            firstName: firstName.trim(),
+            lastName: lastName.trim(),
+            fullName: `${firstName.trim()} ${lastName.trim()}`,
             contactNumber: contactNumber.trim(),
             address: address.trim(),
             email: email.trim().toLowerCase(),

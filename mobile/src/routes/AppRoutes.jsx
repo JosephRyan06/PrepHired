@@ -23,6 +23,10 @@ import AiGeneratedResume from "../screens/Resume/AiGeneratedResume";
 import ChooseTemplate from "../screens/Resume/ChooseTemplate";
 import ResumePreview from "../screens/Resume/ResumePreview";
 
+import HomeCompletedResumePreview from "../screens/Home/HomeCompletedResumePreview";
+import HomeInterviewHistory from "../screens/Home/HomeInterviewHistory";
+import HomeMyResumes from "../screens/Home/HomeMyResumes";
+
 import QuestionAndAnswer from "../screens/Interview/QuestionAndAnswer";
 import AnswerAudioFeedback from "../screens/Interview/AnswerAudioFeedback";
 import AnswerTextFeedback from "../screens/Interview/AnswerTextFeedback";
@@ -32,6 +36,7 @@ import ReviewAnswer from "../screens/Interview/ReviewAnswer";
 import UploadedAiGeneratedResume from "../screens/Resume/UploadResume/UploadedAiGeneratedResume";
 import CompletedResumePreview from "../screens/Resume/CompletedResumePreview";
 
+import EditProfile from "../screens/Profile/Account/EditProfile";
 import ChangePassword from "../screens/Profile/Account/ChangePassword";
 import DeleteAccount from "../screens/Profile/Account/DeleteAccount";
 
@@ -48,7 +53,7 @@ export default function AppRoutes() {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="QuestionAndAnswer"
+        initialRouteName="EditProfile"
         screenOptions={{
           headerShown: false,
           animation: "none",
@@ -66,7 +71,7 @@ export default function AppRoutes() {
         <Stack.Screen name="Progress" component={ProgressScreen} />
         <Stack.Screen name="Interview" component={InterviewScreen} />
         <Stack.Screen name="Profile" component={ProfileScreen} />
-
+        
         <Stack.Screen
           name="CompletedResumePreview"
           component={CompletedResumePreview}
@@ -85,6 +90,13 @@ export default function AppRoutes() {
         <Stack.Screen name="ChooseTemplate" component={ChooseTemplate} />
         <Stack.Screen name="ResumePreview" component={ResumePreview} />
 
+        <Stack.Screen name="HomeMyResumes" component={HomeMyResumes} />
+        <Stack.Screen
+          name="HomeCompletedResumePreview"
+          component={HomeCompletedResumePreview}
+        />
+        <Stack.Screen name="HomeInterviewHistory" component={HomeInterviewHistory} />
+
         <Stack.Screen name="QuestionAndAnswer" component={QuestionAndAnswer} />
         <Stack.Screen
           name="AnswerAudioFeedback"
@@ -97,8 +109,10 @@ export default function AppRoutes() {
         <Stack.Screen name="SessionCompleted" component={SessionCompleted} />
         <Stack.Screen name="ReviewAnswer" component={ReviewAnswer} />
 
+        <Stack.Screen name="EditProfile" component={EditProfile} />
         <Stack.Screen name="ChangePassword" component={ChangePassword} />
         <Stack.Screen name="DeleteAccount" component={DeleteAccount} />
+
         <Stack.Screen name="MyResumes" component={MyResumes} />
         <Stack.Screen
           name="CompletedResumePreviewProfile"

@@ -4,21 +4,25 @@ export const basicInfoHandler = ({
   resumeId,
   setResumeId,
 
-  fullName,
+  firstName,
+  lastName,
   contactNumber,
   address,
   email,
   linkedInURL,
   portfolioLink,
 
-  setFullName,
+  
+  setFirstName,
+  setLastName,
   setContactNumber,
   setAddress,
   setEmail,
   setLinkedInURL,
   setPortfolioLink,
 
-  setFullNameError,
+  setFirstNameError,
+  setLastNameError,
   setContactNumberError,
   setAddressError,
   setEmailError,
@@ -43,7 +47,8 @@ export const basicInfoHandler = ({
         await AsyncStorage.setItem("resumeId", resume._id);
 
         if (resume.basicInfo) {
-          setFullName(resume.basicInfo.fullName || "");
+          setFirstName(resume.basicInfo.firstName || "");
+          setLastName(resume.basicInfo.lastName || "");
 
           setContactNumber(resume.basicInfo.contactNumber || "");
 
@@ -89,7 +94,8 @@ export const basicInfoHandler = ({
   const handleBasicInfoNext = async () => {
     try {
       // Clear previous errors
-      setFullNameError("");
+      setFirstNameError("");
+      setLastNameError("");
       setContactNumberError("");
       setAddressError("");
       setEmailError("");
@@ -108,7 +114,9 @@ export const basicInfoHandler = ({
       }
 
       const result = await saveBasic(id, {
-        fullName,
+        firstName,
+        lastName,
+        fullName: `${firstName.trim()} ${lastName.trim()}`.trim(),
         contactNumber,
         address,
         email,
@@ -120,7 +128,8 @@ export const basicInfoHandler = ({
       if (!result.success) {
         const validationErrors = result.errors || {};
 
-        setFullNameError(validationErrors.fullName || "");
+        setFirstNameError(validationErrors.firstName || "");
+        setLastNameError(validationErrors.lastName || "");
 
         setContactNumberError(validationErrors.contactNumber || "");
 

@@ -215,7 +215,7 @@ const Resume = () => {
                 width: "100%",
                 alignItems: "center",
                 justifyContent: "center",
-                paddingVertical: 30,
+                paddingVertical: 70,
               }}
             >
               <Ionicons

@@ -1,5 +1,11 @@
-import React from "react";
-import { View, Text, TouchableOpacity, ScrollView } from "react-native";
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ScrollView,
+  RefreshControl,
+} from "react-native";
 
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
@@ -12,7 +18,33 @@ import useProgress from "../hooks/useProgress";
 const Progress = () => {
   const navigation = useNavigation();
 
-  const { progress, loading } = useProgress();
+  const [refreshing, setRefreshing] = useState(false);
+
+  const {
+    progress,
+    loading,
+    refetch: refetchProgress,
+  } = useProgress();
+
+  const isLoading = loading || refreshing;
+
+  const onRefresh = async () => {
+    if (refreshing) return;
+
+    setRefreshing(true);
+
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 300));
+
+      if (typeof refetchProgress === "function") {
+        await refetchProgress();
+      }
+    } catch (error) {
+      console.error("Failed to refresh progress:", error);
+    } finally {
+      setRefreshing(false);
+    }
+  };
 
   const employmentReadiness = progress?.employmentReadiness || 0;
 
@@ -96,6 +128,15 @@ const Progress = () => {
           },
         ]}
         showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            tintColor="#F8FAFC"
+            colors={["#F8FAFC"]}
+            progressBackgroundColor="#25252F"
+          />
+        }
       >
         {/* HEADER */}
 
@@ -139,7 +180,7 @@ const Progress = () => {
             EMPLOYMENT READINESS
           </Text>
 
-          {loading ? (
+          {isLoading ? (
             <>
               <View
                 style={{
@@ -315,7 +356,7 @@ const Progress = () => {
             padding: 18,
           }}
         >
-          {loading ? (
+          {isLoading ? (
             <>
               <View
                 style={{
@@ -533,7 +574,7 @@ const Progress = () => {
             padding: 18,
           }}
         >
-          {loading ? (
+          {isLoading ? (
             <>
               <View
                 style={{
@@ -719,7 +760,7 @@ const Progress = () => {
           Interview Skills
         </Text>
 
-        {loading
+        {isLoading
           ? [1, 2, 3, 4, 5].map((item) => (
               <View
                 key={item}
