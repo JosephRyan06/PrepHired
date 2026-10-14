@@ -11,7 +11,7 @@ const {
   resendOtp,
   changePassword,
   deleteAccount,
-  editProfile
+  editProfile,
 } = require("../controller/mobileAuthController");
 
 const { authenticateUser } = require("../middleware/mobileAuthMiddleware");

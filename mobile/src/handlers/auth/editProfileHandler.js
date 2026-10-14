@@ -40,10 +40,7 @@ const editProfileHandler = ({
         throw new Error("editProfile is not a function. Check useAuth.");
       }
 
-      const result = await editProfile(
-        trimmedFirstName,
-        trimmedLastName,
-      );
+      const result = await editProfile(trimmedFirstName, trimmedLastName);
 
       if (!result.success) {
         const errors = result.errors || {};
@@ -52,9 +49,7 @@ const editProfileHandler = ({
         setLastNameError(errors.lastName || "");
 
         if (!errors.firstName && !errors.lastName) {
-          setMessage(
-            result.message || "Unable to update profile",
-          );
+          setMessage(result.message || "Unable to update profile");
           setModalVisible(true);
         }
 

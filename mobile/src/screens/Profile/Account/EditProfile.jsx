@@ -57,7 +57,6 @@ const EditProfile = () => {
     loadUserProfile();
   }, []);
 
-
   return (
     <View style={styles.container}>
       <ScrollView
@@ -96,11 +95,7 @@ const EditProfile = () => {
               marginBottom: 14,
             }}
           >
-            <Ionicons
-              name="person-outline"
-              size={27}
-              color="#60A5FA"
-            />
+            <Ionicons name="person-outline" size={27} color="#60A5FA" />
           </View>
 
           <Text
@@ -121,8 +116,8 @@ const EditProfile = () => {
               lineHeight: 20,
             }}
           >
-            Keep your profile information up to date. Update your first
-            and last name below.
+            Keep your profile information up to date. Update your first and last
+            name below.
           </Text>
         </View>
 
@@ -267,8 +262,7 @@ const EditProfile = () => {
               lineHeight: 19,
             }}
           >
-            Make sure your name is correct before saving your profile
-            changes.
+            Make sure your name is correct before saving your profile changes.
           </Text>
         </View>
 

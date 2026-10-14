@@ -2,11 +2,9 @@ import { API_URL } from "../config/api";
 import * as FileSystem from "expo-file-system/legacy";
 import { Blob } from "expo-blob";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { LogBox } from 'react-native';
+import { LogBox } from "react-native";
 
-LogBox.ignoreLogs([
-  'Response.blob() is using React Native\'s Blob',
-]);
+LogBox.ignoreLogs(["Response.blob() is using React Native's Blob"]);
 
 const getAuthHeaders = async () => {
   const token = await AsyncStorage.getItem("token");

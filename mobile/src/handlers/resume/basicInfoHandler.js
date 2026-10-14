@@ -12,7 +12,6 @@ export const basicInfoHandler = ({
   linkedInURL,
   portfolioLink,
 
-  
   setFirstName,
   setLastName,
   setContactNumber,

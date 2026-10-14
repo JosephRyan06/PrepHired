@@ -11,7 +11,7 @@ export const questionAndAnswerHandler = ({
 
   setModalVisible,
   setModalMessage,
-  
+
   navigation,
 
   saveAnswer,
@@ -196,7 +196,7 @@ export const questionAndAnswerHandler = ({
         }
 
         const sessionAnalysis = await analyzeSession(mockInterview._id);
-      
+
         const completedResult = await complete(mockInterview._id);
 
         navigation.navigate("SessionCompleted", {
@@ -256,7 +256,6 @@ export const questionAndAnswerHandler = ({
       setAnswerError("");
       setModalMessage(message);
       setModalVisible(true);
-
     } finally {
       if (processingRef) {
         processingRef.current = false;

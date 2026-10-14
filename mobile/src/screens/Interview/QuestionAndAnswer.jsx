@@ -74,7 +74,6 @@ const QuestionAndAnswer = () => {
     setTimeLeft,
     setAnswerError,
 
-
     setModalVisible,
     setModalMessage,
     navigation,

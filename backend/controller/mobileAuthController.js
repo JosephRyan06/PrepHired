@@ -10,9 +10,14 @@ const { sendPasswordResetOtp } = require("../services/emailService");
 
 const register = async (req, res) => {
   try {
-    const { firstName, lastName, email, password, confirmPassword, termsAccepted } =
-      req.body;
-
+    const {
+      firstName,
+      lastName,
+      email,
+      password,
+      confirmPassword,
+      termsAccepted,
+    } = req.body;
 
     const fullName = `${firstName || ""} ${lastName || ""}`.trim();
     const role = "user";
@@ -518,29 +523,22 @@ const resetPassword = async (req, res) => {
       errors.password = "Password is required";
     }
 
-    if (
-      typeof confirmPassword !== "string" ||
-      !confirmPassword.trim()
-    ) {
+    if (typeof confirmPassword !== "string" || !confirmPassword.trim()) {
       errors.confirmPassword = "Please confirm your password";
     }
 
     // Validate password length and complexity only if provided
     if (typeof password === "string" && password.trim()) {
       if (password.length < 8) {
-        errors.password =
-          "Password must be at least 8 characters long";
+        errors.password = "Password must be at least 8 characters long";
       } else if (password.length > 16) {
-        errors.password =
-          "Password must not exceed 16 characters";
+        errors.password = "Password must not exceed 16 characters";
       } else if (/\s/.test(password)) {
         errors.password = "Password must not contain spaces";
       } else if (!/[A-Z]/.test(password)) {
-        errors.password =
-          "Password must contain at least one uppercase letter";
+        errors.password = "Password must contain at least one uppercase letter";
       } else if (!/[0-9]/.test(password)) {
-        errors.password =
-          "Password must contain at least one number";
+        errors.password = "Password must contain at least one number";
       } else if (!/[^A-Za-z0-9\s]/.test(password)) {
         errors.password =
           "Password must contain at least one special character";
@@ -751,11 +749,7 @@ const changePassword = async (req, res) => {
     }
 
     // Check confirmation only when both fields have values
-    if (
-      newPassword &&
-      confirmPassword &&
-      newPassword !== confirmPassword
-    ) {
+    if (newPassword && confirmPassword && newPassword !== confirmPassword) {
       errors.confirmPassword = "Passwords do not match";
     }
 
@@ -766,7 +760,6 @@ const changePassword = async (req, res) => {
         errors,
       });
     }
-    
 
     // req.user comes from authenticateUser middleware
     const user = await User.findById(req.user._id);

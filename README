@@ -2,4 +2,3 @@
 // python -m uvicorn geminiService:app --reload --port 8000
 //https://expo.dev/accounts/prephired/projects/mobile/builds/248e01f9-22d1-4385-8e84-fed458c795e3
 // python -m uvicorn openRouter:app --reload --port 8000
-

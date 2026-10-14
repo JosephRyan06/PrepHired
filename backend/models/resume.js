@@ -490,7 +490,6 @@ const resumeSchema = new mongoose.Schema(
     },
 
     basicInfo: {
-
       firstName: {
         type: String,
         trim: true,

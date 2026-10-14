@@ -851,17 +851,11 @@ const saveBasicInfo = async (req, res) => {
     }
 
     // Full name validation
-    if (
-      firstName?.trim() &&
-      firstName.trim() !== req.user.firstName
-    ) {
+    if (firstName?.trim() && firstName.trim() !== req.user.firstName) {
       errors.firstName = "First name does not match your account";
     }
 
-    if (
-      lastName?.trim() &&
-      lastName.trim() !== req.user.lastName
-    ) {
+    if (lastName?.trim() && lastName.trim() !== req.user.lastName) {
       errors.lastName = "Last name does not match your account";
     }
 

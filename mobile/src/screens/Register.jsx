@@ -108,7 +108,6 @@ const Register = () => {
         <Text style={styles.subTitle}>Sign up and enjoy our services.</Text>
       </View>
 
-      
       <IconTextInput
         label="FIRST NAME"
         style={{ height: 55 }}

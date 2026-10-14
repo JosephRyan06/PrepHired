@@ -20,11 +20,7 @@ const Progress = () => {
 
   const [refreshing, setRefreshing] = useState(false);
 
-  const {
-    progress,
-    loading,
-    refetch: refetchProgress,
-  } = useProgress();
+  const { progress, loading, refetch: refetchProgress } = useProgress();
 
   const isLoading = loading || refreshing;
 
