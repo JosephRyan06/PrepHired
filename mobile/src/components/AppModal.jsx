@@ -136,6 +136,14 @@ export default function AppModal({ visible, message = "", onClose }) {
       };
     }
 
+    if (message.includes("Profile updated successfully")) {
+      return {
+        icon: "checkmark-circle",
+        color: "#2563EB",
+        title: "Success",
+      };
+    }
+
     if (message.includes("Failed to generate professional summary")) {
       return {
         icon: "sad-outline",

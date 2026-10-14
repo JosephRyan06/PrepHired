@@ -918,6 +918,92 @@ const deleteAccount = async (req, res) => {
   }
 };
 
+const editProfile = async (req, res) => {
+  try {
+    const { firstName, lastName } = req.body;
+
+    const errors = {};
+
+    // Validate required fields
+    if (typeof firstName !== "string" || !firstName.trim()) {
+      errors.firstName = "First name is required";
+    }
+
+    if (typeof lastName !== "string" || !lastName.trim()) {
+      errors.lastName = "Last name is required";
+    }
+
+    // Validate names do not contain numbers
+    if (typeof firstName === "string" && /\d/.test(firstName)) {
+      errors.firstName = "First name must not contain numbers";
+    }
+
+    if (typeof lastName === "string" && /\d/.test(lastName)) {
+      errors.lastName = "Last name must not contain numbers";
+    }
+
+    if (Object.keys(errors).length > 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Validation failed",
+        errors,
+      });
+    }
+
+    // Get authenticated user
+    const user = await User.findById(req.user._id);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+        errors: {},
+      });
+    }
+
+    if (!user.isEnabled) {
+      return res.status(403).json({
+        success: false,
+        message: "Your account has been disabled",
+        errors: {},
+      });
+    }
+
+    // Normalize names
+    const normalizedFirstName = firstName.trim();
+    const normalizedLastName = lastName.trim();
+
+    // Update profile
+    user.firstName = normalizedFirstName;
+    user.lastName = normalizedLastName;
+    user.fullName = `${normalizedFirstName} ${normalizedLastName}`;
+
+    await user.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Profile updated successfully",
+      user: {
+        _id: user._id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        fullName: user.fullName,
+        email: user.email,
+        role: user.role,
+        isEnabled: user.isEnabled,
+      },
+    });
+  } catch (error) {
+    console.error("Update profile error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Unable to update profile",
+      errors: {},
+    });
+  }
+};
+
 module.exports = {
   register,
   login,
@@ -927,4 +1013,5 @@ module.exports = {
   resendOtp,
   changePassword,
   deleteAccount,
+  editProfile,
 };

@@ -197,3 +197,30 @@ export const deleteAccount = async (currentPassword) => {
 
   return data;
 };
+
+export const editProfile = async (firstName, lastName) => {
+  const token = await AsyncStorage.getItem("token");
+
+  const response = await fetch(`${API_URL}/mobile/auth/edit-profile`, {
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      firstName,
+      lastName,
+    }),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw {
+      message: data.message || "Unable to update profile",
+      errors: data.errors || {},
+    };
+  }
+
+  return data;
+};

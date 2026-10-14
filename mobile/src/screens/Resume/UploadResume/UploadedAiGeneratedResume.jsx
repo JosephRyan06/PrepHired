@@ -176,182 +176,6 @@ const UploadedAiGeneratedResume = ({ navigation }) => {
     );
   };
 
-  /*
-   * WORK EXPERIENCE
-   */
-
-  /*
-  const renderExperience = () => {
-    const originalExperiences =
-      resume?.workExperiences || [];
-
-    const optimizedExperiences =
-      optimization?.workExperiences || [];
-
-    if (!originalExperiences.length) {
-      return (
-        <Text
-          style={{
-            color: "#71717A",
-            fontSize: 13,
-          }}
-        >
-          No work experience added.
-        </Text>
-      );
-    }
-
-    return originalExperiences.map(
-      (experience, index) => {
-        const optimizedExperience =
-          optimizedExperiences.find(
-            (item) =>
-              String(item.id) ===
-              String(
-                experience._id ||
-                  experience.id
-              )
-          );
-
-        let jobTitle = "";
-        let company = "";
-        let location = "";
-        let description = "";
-
-        if (
-          activeTab === "original"
-        ) {
-          jobTitle = getText(
-            experience.jobTitle
-          );
-
-          company = getText(
-            experience.company
-          );
-
-          location = getText(
-            experience.location
-          );
-
-          description = getText(
-            experience.description
-          );
-        } else {
-          jobTitle =
-            getText(
-              optimizedExperience?.jobTitle
-            ) ||
-            getText(
-              experience.jobTitle
-            );
-
-          company =
-            getText(
-              optimizedExperience?.company
-            ) ||
-            getText(
-              experience.company
-            );
-
-          location =
-            getText(
-              optimizedExperience?.location
-            ) ||
-            getText(
-              experience.location
-            );
-
-          description =
-            getText(
-              optimizedExperience?.optimized
-            ) ||
-            getText(
-              experience.description
-            );
-        }
-
-        return (
-          <View
-            key={
-              experience._id ||
-              experience.id ||
-              index
-            }
-            style={{
-              marginBottom: 15,
-              paddingBottom: 15,
-              borderBottomWidth:
-                index !==
-                originalExperiences.length - 1
-                  ? 1
-                  : 0,
-              borderBottomColor:
-                "#3F3F4A",
-            }}
-          >
-            <Text
-              style={{
-                color: "#F8FAFC",
-                fontSize: 14,
-                fontWeight: "700",
-              }}
-            >
-              {jobTitle ||
-                "Untitled Position"}
-            </Text>
-
-            <Text
-              style={{
-                color: "#60A5FA",
-                fontSize: 12,
-                fontWeight: "600",
-                marginTop: 3,
-              }}
-            >
-              {company ||
-                "Company not specified"}
-            </Text>
-
-            {location ? (
-              <Text
-                style={{
-                  color: "#71717A",
-                  fontSize: 11,
-                  marginTop: 3,
-                }}
-              >
-                {location}
-              </Text>
-            ) : null}
-
-            {description ? (
-              <View
-                style={{
-                  marginTop: 8,
-                }}
-              >
-                {renderText(
-                  description
-                )}
-              </View>
-            ) : (
-              <Text
-                style={{
-                  color: "#71717A",
-                  fontSize: 13,
-                  marginTop: 8,
-                }}
-              >
-                No description added.
-              </Text>
-            )}
-          </View>
-        );
-      }
-    );
-  };
-  */
-
   const renderExperience = () => {
     const originalExperiences = resume?.workExperiences || [];
 
@@ -830,142 +654,6 @@ const UploadedAiGeneratedResume = ({ navigation }) => {
       );
     });
   };
-
-  /*
-   * PROJECTS
-   */
-  /*
-  const renderProjects = () => {
-    const originalProjects =
-      resume?.projects || [];
-
-    const optimizedProjects =
-      optimization?.projects || [];
-
-    if (!originalProjects.length) {
-      return (
-        <Text
-          style={{
-            color: "#71717A",
-            fontSize: 13,
-          }}
-        >
-          No projects added.
-        </Text>
-      );
-    }
-
-    return originalProjects.map(
-      (originalProject, index) => {
-        const optimizedProject =
-          optimizedProjects.find(
-            (item) =>
-              String(item.id) ===
-              String(
-                originalProject._id ||
-                  originalProject.id
-              )
-          );
-
-        let projectName = "";
-        let description = "";
-
-        if (
-          activeTab === "original"
-        ) {
-          projectName =
-            getText(
-              originalProject.projectName
-            ).trim();
-
-          description =
-            getText(
-              originalProject.projectDescription
-            ).trim();
-        } else {
-          projectName =
-            getText(
-              optimizedProject?.projectName
-            ).trim() ||
-            getText(
-              originalProject.projectName
-            ).trim();
-
-          description =
-            getText(
-              optimizedProject?.optimized
-            ).trim() ||
-            getText(
-              originalProject.projectDescription
-            ).trim();
-        }
-
-        if (
-          !projectName &&
-          !description
-        ) {
-          return null;
-        }
-
-        return (
-          <View
-            key={
-              originalProject._id ||
-              originalProject.id ||
-              index
-            }
-            style={{
-              marginBottom: 15,
-              paddingBottom: 15,
-              borderBottomWidth:
-                index !==
-                originalProjects.length - 1
-                  ? 1
-                  : 0,
-              borderBottomColor:
-                "#3F3F4A",
-            }}
-          >
-            {projectName ? (
-              <Text
-                style={{
-                  color: "#F8FAFC",
-                  fontSize: 14,
-                  fontWeight: "700",
-                }}
-              >
-                {projectName}
-              </Text>
-            ) : null}
-
-            {description ? (
-              <View
-                style={{
-                  marginTop: 8,
-                }}
-              >
-                {renderText(
-                  description
-                )}
-              </View>
-            ) : (
-              <Text
-                style={{
-                  color: "#71717A",
-                  fontSize: 13,
-                  marginTop: 8,
-                }}
-              >
-                No project description
-                added.
-              </Text>
-            )}
-          </View>
-        );
-      }
-    );
-  };
-  */
 
   const renderProjects = () => {
     const originalProjects = resume?.projects || [];
@@ -1576,7 +1264,7 @@ const UploadedAiGeneratedResume = ({ navigation }) => {
    */
 
   const handleChooseTemplate = () => {
-    navigation.navigate("ChooseTemplate", {
+    navigation.navigate("UploadChooseTemplate", {
       resumeId,
     });
   };
@@ -1653,7 +1341,7 @@ const UploadedAiGeneratedResume = ({ navigation }) => {
             marginBottom: 10,
           }}
         >
-          6/8
+          1/3
         </Text>
 
         <View
@@ -1670,7 +1358,7 @@ const UploadedAiGeneratedResume = ({ navigation }) => {
             style={[
               styles.percent,
               {
-                width: "75%",
+                width: "33%",
               },
             ]}
           />

@@ -8,6 +8,7 @@ import {
   resendOtp as resendOtpApi,
   changePassword as changePasswordApi,
   deleteAccount as deleteAccountApi,
+  editProfile as editProfileApi
 } from "../api/mobileAuth";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -217,6 +218,40 @@ const useAuth = () => {
     }
   };
 
+  const editProfile = async (firstName, lastName) => {
+    setLoading(true);
+
+  try {
+    const data = await editProfileApi(firstName, lastName);
+
+    const savedUser = await AsyncStorage.getItem("user");
+    const currentUser = savedUser ? JSON.parse(savedUser) : {};
+
+    const updatedUser = {
+      ...currentUser,
+      ...data.user,
+    };
+
+    await AsyncStorage.setItem("user", JSON.stringify(updatedUser));
+
+    return {
+      success: true,
+      message: data.message || "Profile updated successfully",
+      user: updatedUser,
+      errors: {},
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: error.message || "Unable to update profile",
+      errors: error.errors || {},
+    };
+  } finally {
+    setLoading(false);
+  }
+};
+
+
   return {
     login,
     register,
@@ -226,6 +261,7 @@ const useAuth = () => {
     resendOtp,
     changePassword,
     deleteAccount,
+    editProfile,
     loading,
   };
 };

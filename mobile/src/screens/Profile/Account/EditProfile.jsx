@@ -1,40 +1,62 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, ScrollView } from "react-native";
 
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import InterviewHeader from "../../../components/InterviewHeader";
 import Button from "../../../components/Button";
 import AppModal from "../../../components/AppModal";
 import IconTextInput from "../../../components/IconTextInput";
-import LoadingModal from "../../../components/LoadingModal";
 import styles from "../../../styles/global";
 
 import useAuth from "../../../hooks/useAuth";
-import deleteAccountHandler from "../../../handlers/auth/deleteAccountHandler";
+import editProfileHandler from "../../../handlers/auth/editProfileHandler";
 
 const EditProfile = () => {
   const navigation = useNavigation();
 
-  const [currentPassword, setCurrentPassword] = useState("");
-  const [currentPasswordError, setCurrentPasswordError] = useState("");
+  const { editProfile, loading } = useAuth();
+
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+
+  const [firstNameError, setFirstNameError] = useState("");
+  const [lastNameError, setLastNameError] = useState("");
 
   const [message, setMessage] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
 
-  const { deleteAccount, loading } = useAuth();
+  const { handleEditProfile } = editProfileHandler({
+    editProfile,
+    firstName,
+    lastName,
+    setFirstNameError,
+    setLastNameError,
+    setMessage,
+    setModalVisible,
+  });
 
-  const { handleDeleteAccount, handleDeleteAccountModalClose } =
-    deleteAccountHandler({
-      deleteAccount,
-      navigation,
-      currentPassword,
-      setCurrentPasswordError,
-      setMessage,
-      setModalVisible,
-      setCurrentPassword,
-    });
+  useEffect(() => {
+    const loadUserProfile = async () => {
+      try {
+        const savedUser = await AsyncStorage.getItem("user");
+
+        if (savedUser) {
+          const user = JSON.parse(savedUser);
+
+          setFirstName(user.firstName || "");
+          setLastName(user.lastName || "");
+        }
+      } catch (error) {
+        console.error("Error loading user profile:", error);
+      }
+    };
+
+    loadUserProfile();
+  }, []);
+
 
   return (
     <View style={styles.container}>
@@ -68,13 +90,17 @@ const EditProfile = () => {
               width: 48,
               height: 48,
               borderRadius: 14,
-              backgroundColor: "#7F1D1D",
+              backgroundColor: "#172554",
               alignItems: "center",
               justifyContent: "center",
               marginBottom: 14,
             }}
           >
-            <Ionicons name="trash-outline" size={27} color="#FCA5A5" />
+            <Ionicons
+              name="person-outline"
+              size={27}
+              color="#60A5FA"
+            />
           </View>
 
           <Text
@@ -85,7 +111,7 @@ const EditProfile = () => {
               marginBottom: 7,
             }}
           >
-            Delete your account
+            Edit your profile
           </Text>
 
           <Text
@@ -95,13 +121,12 @@ const EditProfile = () => {
               lineHeight: 20,
             }}
           >
-            We're sorry to see you go. Please review the information below
-            before permanently deleting your account.
+            Keep your profile information up to date. Update your first
+            and last name below.
           </Text>
         </View>
 
-
-        {/* PASSWORD CARD */}
+        {/* PERSONAL INFORMATION CARD */}
         <View
           style={{
             backgroundColor: "#25252F",
@@ -112,11 +137,12 @@ const EditProfile = () => {
             borderColor: "#30303B",
           }}
         >
+          {/* CARD HEADER */}
           <View
             style={{
               flexDirection: "row",
               alignItems: "center",
-              marginBottom: 16,
+              marginBottom: 20,
             }}
           >
             <View
@@ -130,7 +156,11 @@ const EditProfile = () => {
                 marginRight: 12,
               }}
             >
-              <Ionicons name="lock-closed-outline" size={20} color="#60A5FA" />
+              <Ionicons
+                name="person-circle-outline"
+                size={22}
+                color="#60A5FA"
+              />
             </View>
 
             <View style={{ flex: 1 }}>
@@ -141,7 +171,7 @@ const EditProfile = () => {
                   fontWeight: "700",
                 }}
               >
-                Verify your identity
+                Personal information
               </Text>
 
               <Text
@@ -151,26 +181,26 @@ const EditProfile = () => {
                   marginTop: 3,
                 }}
               >
-                Enter your current password to continue.
+                Update your basic account details.
               </Text>
             </View>
           </View>
 
+          {/* FIRST NAME */}
           <IconTextInput
-            label="CURRENT PASSWORD"
+            label="FIRST NAME"
             style={{ height: 55 }}
-            icon="lock-closed-outline"
-            placeholder="Enter your current password"
-            value={currentPassword}
+            icon="person-outline"
+            placeholder="Enter your first name"
+            value={firstName}
             onChangeText={(text) => {
-              setCurrentPassword(text);
-              setCurrentPasswordError("");
+              setFirstName(text);
+              setFirstNameError("");
             }}
-            secureTextEntry={true}
-            error={currentPasswordError}
+            error={firstNameError}
           />
 
-          {currentPasswordError ? (
+          {firstNameError ? (
             <Text
               style={{
                 color: "#F87171",
@@ -179,28 +209,98 @@ const EditProfile = () => {
                 fontSize: 12,
               }}
             >
-              {currentPasswordError}
+              {firstNameError}
+            </Text>
+          ) : null}
+
+          <View style={{ height: 18 }} />
+
+          {/* LAST NAME */}
+          <IconTextInput
+            label="LAST NAME"
+            style={{ height: 55 }}
+            icon="person-outline"
+            placeholder="Enter your last name"
+            value={lastName}
+            onChangeText={(text) => {
+              setLastName(text);
+              setLastNameError("");
+            }}
+            error={lastNameError}
+          />
+
+          {lastNameError ? (
+            <Text
+              style={{
+                color: "#F87171",
+                marginTop: 5,
+                width: "100%",
+                fontSize: 12,
+              }}
+            >
+              {lastNameError}
             </Text>
           ) : null}
         </View>
 
+        {/* INFORMATION NOTE */}
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "flex-start",
+            paddingHorizontal: 4,
+            marginBottom: 20,
+          }}
+        >
+          <Ionicons
+            name="information-circle-outline"
+            size={19}
+            color="#60A5FA"
+            style={{ marginRight: 9, marginTop: 1 }}
+          />
+
+          <Text
+            style={{
+              flex: 1,
+              color: "#71717A",
+              fontSize: 12,
+              lineHeight: 19,
+            }}
+          >
+            Make sure your name is correct before saving your profile
+            changes.
+          </Text>
+        </View>
 
         <AppModal
           visible={modalVisible}
           message={message}
-          onClose={handleDeleteAccountModalClose}
+          onClose={() => {
+            setModalVisible(false);
+
+            setTimeout(() => {
+              navigation.reset({
+                index: 0,
+                routes: [
+                  {
+                    name: "Profile",
+                  },
+                ],
+              });
+            }, 100);
+          }}
         />
       </ScrollView>
 
+      {/* BOTTOM BUTTON */}
       <Button
-        title="Delete Account"
-        onPress={handleDeleteAccount}
+        title="Save Changes"
+        onPress={handleEditProfile}
         loading={loading}
         disabled={loading}
-        icon="trash-outline"
         style={{
           width: "100%",
-          backgroundColor: "#B91C1C",
+          backgroundColor: "#2563EB",
           marginBottom: 65,
         }}
       />

@@ -9,7 +9,7 @@ import ResumeTemplate from "../../template/ResumeTemplate";
 import styles from "../../styles/global";
 
 import useResume from "../../hooks/useResume";
-import { resumePreviewHandler } from "../../handlers/resume/resumePreviewHanlder";
+import { resumePreviewHandler } from "../../handlers/resume/resumePreviewHandler";
 
 const CompletedResumePreview = ({ navigation }) => {
   const route = useRoute();

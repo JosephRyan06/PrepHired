@@ -34,6 +34,9 @@ import SessionCompleted from "../screens/Interview/SessionCompleted";
 import ReviewAnswer from "../screens/Interview/ReviewAnswer";
 
 import UploadedAiGeneratedResume from "../screens/Resume/UploadResume/UploadedAiGeneratedResume";
+import UploadChooseTemplate from "../screens/Resume/UploadResume/UploadChooseTemplate";
+import UploadResumePreview from "../screens/Resume/UploadResume/UploadResumePreview";
+
 import CompletedResumePreview from "../screens/Resume/CompletedResumePreview";
 
 import EditProfile from "../screens/Profile/Account/EditProfile";
@@ -80,6 +83,8 @@ export default function AppRoutes() {
           name="UploadedAiGeneratedResume"
           component={UploadedAiGeneratedResume}
         />
+        <Stack.Screen name="UploadChooseTemplate" component={UploadChooseTemplate} />
+        <Stack.Screen name="UploadResumePreview" component={UploadResumePreview} />
 
         <Stack.Screen name="BasicInfo" component={BasicInfo} />
         <Stack.Screen name="TargetJobPosition" component={TargetJobPosition} />
