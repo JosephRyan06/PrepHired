@@ -16,6 +16,7 @@ export const createMockInterview = async ({
   interviewCategory,
   responseMode,
   numberOfQuestions,
+  timePerQuestion
 }) => {
   const headers = await getAuthHeaders();
 
@@ -27,6 +28,7 @@ export const createMockInterview = async ({
       interviewCategory,
       responseMode,
       numberOfQuestions,
+      timePerQuestion
     }),
   });
 

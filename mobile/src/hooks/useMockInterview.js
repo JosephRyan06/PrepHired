@@ -20,6 +20,7 @@ const useMockInterview = () => {
     interviewCategory,
     responseMode,
     numberOfQuestions,
+    timePerQuestion
   }) => {
     try {
       setLoading(true);
@@ -30,6 +31,7 @@ const useMockInterview = () => {
         interviewCategory,
         responseMode,
         numberOfQuestions,
+        timePerQuestion
       });
 
       return result;

@@ -3,6 +3,7 @@ export const questionAndAnswerHandler = ({
   currentQuestion,
   response,
   timeLeft,
+  timePerQuestion,
 
   setCurrentQuestion,
   setResponse,
@@ -28,6 +29,8 @@ export const questionAndAnswerHandler = ({
   const currentQuestionData = questions[currentQuestion - 1];
 
   const currentQuestionText = currentQuestionData?.question || "";
+
+  const questionTimeLimit = Number(timePerQuestion) || 60;
 
   const handleSaveAndContinue = async () => {
     if (processingRef?.current) {
@@ -70,7 +73,7 @@ export const questionAndAnswerHandler = ({
 
         audioUrl: "",
 
-        timeUsed: Math.max(0, 60 - timeLeft),
+        timeUsed: Math.max(0, questionTimeLimit - timeLeft),
       });
 
       // --------------------------------
@@ -88,15 +91,11 @@ export const questionAndAnswerHandler = ({
       // --------------------------------
 
       if (currentQuestion >= totalQuestions) {
-        // Complete interview only
-        // AFTER saving and analyzing
-        // the final answer.
-        const completedResult = await complete(mockInterview._id);
 
-        // Analyze the complete session
-        // AFTER the interview is completed.
         const sessionAnalysis = await analyzeSession(mockInterview._id);
 
+        const completedResult = await complete(mockInterview._id);
+        
         navigation.navigate("SessionCompleted", {
           mockInterviewId: mockInterview._id,
 
@@ -123,7 +122,7 @@ export const questionAndAnswerHandler = ({
 
       setResponse("");
 
-      setTimeLeft(60);
+      setTimeLeft(questionTimeLimit);
 
       setCurrentQuestion(nextQuestion);
     } catch (error) {
@@ -171,8 +170,6 @@ export const questionAndAnswerHandler = ({
         let savedResult = null;
         let answerAnalysis = null;
 
-        // If an answer exists, save it
-        // before completing the interview.
         if (trimmedAnswer) {
           savedResult = await saveAnswer({
             interviewId: mockInterview._id,
@@ -183,11 +180,9 @@ export const questionAndAnswerHandler = ({
 
             audioUrl: "",
 
-            timeUsed: 60,
+            timeUsed: questionTimeLimit,
           });
 
-          // Analyze the final answer
-          // before completing the interview.
           answerAnalysis = await analyzeAnswer({
             interviewId: mockInterview._id,
 
@@ -227,7 +222,7 @@ export const questionAndAnswerHandler = ({
 
           audioUrl: "",
 
-          timeUsed: 60,
+          timeUsed: questionTimeLimit,
         });
 
         await analyzeAnswer({
@@ -243,7 +238,7 @@ export const questionAndAnswerHandler = ({
 
       setAnswerError("");
 
-      setTimeLeft(60);
+      setTimeLeft(questionTimeLimit);
 
       setCurrentQuestion(nextQuestion);
     } catch (error) {

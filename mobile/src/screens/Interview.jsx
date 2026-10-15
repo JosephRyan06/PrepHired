@@ -42,6 +42,9 @@ const Interview = () => {
 
   const [selectedResponseMode, setSelectedResponseMode] = useState("Text");
 
+   const [selectedTimePerQuestion, setSelectedTimePerQuestions] =
+    useState("60");
+
   const [selectedNumberOfQuestions, setSelectedNumberOfQuestions] =
     useState("5");
 
@@ -54,6 +57,7 @@ const Interview = () => {
 
   const responseModeCategory = ["Text", "Audio"];
 
+  const timePerQuestion = ["60", "90", "120"];
   const numberOfQuestionsCategories = ["5", "8", "12"];
 
   const { handleTargetJobChange, handleStartInterview } = interviewHandler({
@@ -65,6 +69,7 @@ const Interview = () => {
     selectedInterviewCategory,
     selectedResponseMode,
     selectedNumberOfQuestions,
+    selectedTimePerQuestion,
     navigation,
     create,
     token,
@@ -100,10 +105,15 @@ const Interview = () => {
 
         <IconTextInput
           label="TARGET JOB"
+          style={{ height: 55 }}
           icon="person-outline"
           placeholder="e.g. Software Developer"
           value={targetJob}
-          onChangeText={handleTargetJobChange}
+          onChangeText={(text) => {
+            setTargetJob(text);
+            setTargetJobError("");
+          }}
+          keyboardType="default"
           error={targetJobError}
         />
 
@@ -255,6 +265,55 @@ const Interview = () => {
                     }}
                   >
                     {number}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+        </View>
+
+        <View style={{ marginBottom: 24 }}>
+          <Text
+            style={{
+              color: "#F8FAFC",
+              fontSize: 12,
+              fontWeight: "600",
+              marginBottom: 10,
+            }}
+          >
+            TIME PER QUESTION
+          </Text>
+
+          <View
+            style={{
+              flexDirection: "row",
+              gap: 10,
+            }}
+          >
+            {timePerQuestion.map((time) => {
+              const selected = selectedTimePerQuestion === time;
+
+              return (
+                <TouchableOpacity
+                  key={time}
+                  onPress={() => setSelectedTimePerQuestions(time)}
+                  style={{
+                    flex: 1,
+                    paddingVertical: 13,
+                    borderRadius: 10,
+                    alignItems: "center",
+                    backgroundColor: selected ? "#2563EB" : "#25252F",
+                    borderWidth: 1,
+                    borderColor: selected ? "#2563EB" : "#3F3F46",
+                  }}
+                >
+                  <Text
+                    style={{
+                      color: "#F8FAFC",
+                      fontWeight: "700",
+                    }}
+                  >
+                    {time}s
                   </Text>
                 </TouchableOpacity>
               );

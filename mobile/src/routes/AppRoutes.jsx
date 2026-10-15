@@ -56,7 +56,7 @@ export default function AppRoutes() {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="Login"
+        initialRouteName="Register"
         screenOptions={{
           headerShown: false,
           animation: "none",

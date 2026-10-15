@@ -438,6 +438,196 @@ const sendPasswordResetOtp = async (email, otp) => {
   });
 };
 
+const sendVerificationEmail = async (email, token) => {
+  const verifyUrl =
+  `${process.env.BACKEND_URL}/api/mobile/auth/verify-email?token=${encodeURIComponent(token)}`;
+
+
+  await transporter.sendMail({
+    from: `"PrepHired" <${process.env.EMAIL_USER}>`,
+    to: email,
+    subject: "Verify Your Email Address | PrepHired",
+
+    html: `
+      <!DOCTYPE html>
+      <html lang="en">
+        <head>
+          <meta charset="UTF-8" />
+          <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+          <title>Verify Your Email - PrepHired</title>
+        </head>
+
+        <body style="
+          margin: 0;
+          padding: 30px 15px;
+          background-color: #f1f5f9;
+          font-family: Arial, Helvetica, sans-serif;
+        ">
+          <table width="100%" cellpadding="0" cellspacing="0" border="0">
+            <tr>
+              <td align="center">
+                <table width="100%" cellpadding="0" cellspacing="0" border="0"
+                  style="
+                    max-width: 600px;
+                    background-color: #ffffff;
+                    border-radius: 16px;
+                    overflow: hidden;
+                  ">
+
+                  <tr>
+                    <td align="center" style="
+                      background-color: #2563eb;
+                      padding: 30px;
+                    ">
+                      <div style="
+                        color: #ffffff;
+                        font-size: 26px;
+                        font-weight: 700;
+                      ">
+                        PrepHired
+                      </div>
+
+                      <p style="
+                        margin: 8px 0 0;
+                        color: #dbeafe;
+                        font-size: 13px;
+                      ">
+                        Your career journey starts here.
+                      </p>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td align="center" style="padding: 40px 30px;">
+                      <div style="
+                        width: 64px;
+                        height: 64px;
+                        line-height: 64px;
+                        border-radius: 50%;
+                        background-color: #eff6ff;
+                        color: #2563eb;
+                        font-size: 32px;
+                        text-align: center;
+                      ">
+                        &#9993;
+                      </div>
+
+                      <h1 style="
+                        margin: 24px 0 12px;
+                        color: #111827;
+                        font-size: 25px;
+                      ">
+                        Verify Your Email
+                      </h1>
+
+                      <p style="
+                        color: #64748b;
+                        font-size: 15px;
+                        line-height: 24px;
+                      ">
+                        Welcome to PrepHired! Please verify your email
+                        address to activate your account and get started.
+                      </p>
+
+                      <table cellpadding="0" cellspacing="0" border="0"
+                        style="margin-top: 28px;">
+                        <tr>
+                          <td align="center" bgcolor="#2563eb"
+                            style="border-radius: 8px;">
+                            <a href="${verifyUrl}" style="
+                              display: inline-block;
+                              padding: 14px 28px;
+                              color: #ffffff;
+                              font-size: 15px;
+                              font-weight: 700;
+                              text-decoration: none;
+                              border-radius: 8px;
+                            ">
+                              Verify Email Address
+                            </a>
+                          </td>
+                        </tr>
+                      </table>
+
+                      <p style="
+                        margin-top: 24px;
+                        color: #64748b;
+                        font-size: 13px;
+                        line-height: 21px;
+                      ">
+                        This verification link expires in
+                        <strong>10 minutes</strong>.
+                      </p>
+
+                      <p style="
+                        margin-top: 20px;
+                        color: #64748b;
+                        font-size: 13px;
+                        line-height: 21px;
+                      ">
+                        If the button doesn't work, copy and paste this
+                        link into your browser:
+                      </p>
+
+                      <p style="
+                        word-break: break-all;
+                        font-size: 12px;
+                        line-height: 20px;
+                      ">
+                        <a href="${verifyUrl}" style="color: #2563eb;">
+                          ${verifyUrl}
+                        </a>
+                      </p>
+
+                      <p style="
+                        margin-top: 24px;
+                        color: #64748b;
+                        font-size: 13px;
+                        line-height: 21px;
+                      ">
+                        If you didn't create a PrepHired account,
+                        you can safely ignore this email.
+                      </p>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td align="center" style="
+                      padding: 24px;
+                      border-top: 1px solid #e5e7eb;
+                    ">
+                      <p style="
+                        margin: 0;
+                        color: #94a3b8;
+                        font-size: 12px;
+                        line-height: 20px;
+                      ">
+                        This is an automated message from PrepHired.
+                        Please do not reply.
+                      </p>
+
+                      <p style="
+                        margin: 8px 0 0;
+                        color: #cbd5e1;
+                        font-size: 11px;
+                      ">
+                        &copy; ${new Date().getFullYear()} PrepHired.
+                        All rights reserved.
+                      </p>
+                    </td>
+                  </tr>
+
+                </table>
+              </td>
+            </tr>
+          </table>
+        </body>
+      </html>
+    `,
+  });
+};
+
 module.exports = {
   sendPasswordResetOtp,
+  sendVerificationEmail
 };

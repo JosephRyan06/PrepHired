@@ -15,7 +15,7 @@ const createMockInterview = async (req, res) => {
   try {
     const userId = req.user.id;
 
-    const { targetJob, interviewCategory, responseMode, numberOfQuestions } =
+    const { targetJob, interviewCategory, responseMode, numberOfQuestions, timePerQuestion} =
       req.body;
 
     const errors = {};
@@ -73,6 +73,18 @@ const createMockInterview = async (req, res) => {
       errors.numberOfQuestions = "Invalid number of questions";
     }
 
+    const allowedTimePerQuestion = [60, 90, 120, "60", "90", "120"];
+
+    if (
+      timePerQuestion === undefined ||
+      timePerQuestion === null ||
+      timePerQuestion === ""
+    ) {
+      errors.timePerQuestion = "Time per question is required";
+    } else if (!allowedTimePerQuestion.includes(timePerQuestion)) {
+      errors.timePerQuestion = "Invalid time per of questions";
+    }
+
     if (Object.keys(errors).length > 0) {
       return res.status(400).json({
         success: false,
@@ -82,6 +94,7 @@ const createMockInterview = async (req, res) => {
     }
 
     const questionCount = Number(numberOfQuestions);
+    const questionTimeLimit = Number(timePerQuestion);
 
     // -----------------------------
     // GENERATE QUESTIONS
@@ -115,7 +128,7 @@ const createMockInterview = async (req, res) => {
 
       audioUrl: "",
 
-      timeLimit: 60,
+      timeLimit: questionTimeLimit,
 
       timeUsed: 0,
 
@@ -136,6 +149,8 @@ const createMockInterview = async (req, res) => {
       responseMode,
 
       numberOfQuestions: questionCount,
+
+      timePerQuestion: questionTimeLimit,
 
       currentQuestion: 1,
 

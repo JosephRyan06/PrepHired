@@ -259,6 +259,17 @@ const Register = () => {
         </Text>
       ) : null}
 
+
+      <View style={styles.termsCard}>
+        <Text style={styles.termsTitle}>Terms and Conditions</Text>
+          <Text style={styles.termsText}>
+            By registering, you agree to provide accurate information,
+            keep your account secure, and use our services responsibly.
+            Your personal information will be handled according to
+            our Privacy Policy.
+          </Text>
+      </View>
+
       <TouchableOpacity
         onPress={handleRegister}
         style={[styles.button, loading && styles.buttonDisabled]}
@@ -295,7 +306,7 @@ const Register = () => {
         message={message}
         onClose={() => {
           setModalVisible(false);
-          if (message === "Registration successful") {
+          if (message === "Registration successful! Please check your Gmail and tap the verification link before logging in.") {
             navigation.replace("Login");
           }
         }}
@@ -458,5 +469,24 @@ const styles = StyleSheet.create({
 
   requirementMet: {
     color: "#60A5FA",
+  },
+
+  termsCard: {
+    backgroundColor: "#1E1E26",
+    padding: 15,
+    borderRadius: 12,
+    marginTop: 10,
+    marginBottom: 10,
+  },
+  termsTitle: {
+    color: "#60A5FA",
+    fontSize: 15,
+    fontWeight: "bold",
+    marginBottom: 8,
+  },
+  termsText: {
+    color: "#A1A1AA",
+    fontSize: 12,
+    lineHeight: 18,
   },
 });

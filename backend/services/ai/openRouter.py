@@ -1512,8 +1512,8 @@ async def optimize_resume(data: ResumeRequest):
                     "jobTitle": "",
                     "company": "",
                     "location": "",
-                    "periodOfEmployment: "",
-                    "description: "",
+                    "periodOfEmployment": "",
+                    "description": "",
                     "reason": ""
                 }}
             ],
@@ -1540,7 +1540,7 @@ async def optimize_resume(data: ResumeRequest):
                 {{
                     "id": "",
                     "projectName": "",
-                    "projectDescription: "",
+                    "projectDescription": "",
                     "reason": ""
                 }}
             ],

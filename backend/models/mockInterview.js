@@ -32,6 +32,13 @@ const mockInterviewSchema = new mongoose.Schema(
       required: true,
     },
 
+    timePerQuestion: {
+      type: Number,
+      enum: [60, 90, 120],
+      default: 60,
+      required: true,
+    },
+
     currentQuestion: {
       type: Number,
       default: 1,

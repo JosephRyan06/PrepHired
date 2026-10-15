@@ -229,7 +229,9 @@ const useAuth = () => {
 
       const updatedUser = {
         ...currentUser,
-        ...data.user,
+        ...(data.user ?? {}),
+        firstName,
+        lastName,
       };
 
       await AsyncStorage.setItem("user", JSON.stringify(updatedUser));

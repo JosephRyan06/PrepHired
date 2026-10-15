@@ -55,7 +55,7 @@ const registerHandler = ({
       return;
     }
 
-    setMessage("Registration successful");
+    setMessage("Registration successful! Please check your Gmail and tap the verification link before logging in.");
     setModalVisible(true);
   };
 

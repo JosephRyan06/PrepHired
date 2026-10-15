@@ -12,6 +12,7 @@ const {
   changePassword,
   deleteAccount,
   editProfile,
+  verifyEmail
 } = require("../controller/mobileAuthController");
 
 const { authenticateUser } = require("../middleware/mobileAuthMiddleware");
@@ -21,8 +22,8 @@ const {
   forgotPasswordLimiter,
 } = require("../middleware/rateLimiter");
 
-router.post("/register", registerLimiter, register);
-router.post("/login", loginLimiter, login);
+router.post("/register", register);
+router.post("/login", login);
 router.post("/forgot-password", forgotPassword);
 router.post("/verify-otp", verifyOtp);
 router.post("/reset-password", resetPassword);
@@ -30,5 +31,7 @@ router.post("/resend-otp", resendOtp);
 router.post("/change-password", authenticateUser, changePassword);
 router.delete("/delete-account", authenticateUser, deleteAccount);
 router.put("/edit-profile", authenticateUser, editProfile);
+
+router.get("/verify-email", verifyEmail);
 
 module.exports = router;

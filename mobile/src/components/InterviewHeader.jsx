@@ -17,8 +17,9 @@ const InterviewHeader = ({
   showTimer = true,
   timerRunning = true,
   backIcon = "back",
+  timePerQuestion = 60,
 }) => {
-  const [timeLeft, setTimeLeft] = useState(60);
+  const [timeLeft, setTimeLeft] = useState(timePerQuestion);
   const [showExitModal, setShowExitModal] = useState(false);
 
   useEffect(() => {
@@ -26,8 +27,8 @@ const InterviewHeader = ({
       return;
     }
 
-    setTimeLeft(60);
-  }, [questionNumber, showTimer]);
+    setTimeLeft(Number(timePerQuestion) || 60);
+  }, [questionNumber, showTimer, timePerQuestion]);
 
   useEffect(() => {
     if (!showTimer || !timerRunning || timeLeft <= 0) {

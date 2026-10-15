@@ -24,7 +24,7 @@ export default function AppModal({ visible, message = "", onClose }) {
     }
 
     // Registration success
-    if (message === "Registration successful") {
+    if (message === "Registration successful! Please check your Gmail and tap the verification link before logging in.") {
       return {
         icon: "checkmark-circle",
         color: "#2563EB",
@@ -38,6 +38,14 @@ export default function AppModal({ visible, message = "", onClose }) {
         icon: "sad-outline",
         color: "#F97316",
         title: "Account Disabled",
+      };
+    }
+
+    if (message.includes("Please verify your email before logging in.")) {
+      return {
+        icon: "mail-outline",
+        color: "#b95715",
+        title: "Email Verification Required",
       };
     }
 

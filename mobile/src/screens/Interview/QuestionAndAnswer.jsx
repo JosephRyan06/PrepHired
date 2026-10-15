@@ -35,6 +35,7 @@ const QuestionAndAnswer = () => {
     interviewCategory,
     responseMode,
     numberOfQuestions,
+    timePerQuestion
   } = route.params || {};
 
   const { saveAnswer, analyzeAnswer, analyzeSession, complete, loading } =
@@ -42,7 +43,7 @@ const QuestionAndAnswer = () => {
 
   const [currentQuestion, setCurrentQuestion] = useState(1);
   const [response, setResponse] = useState("");
-  const [timeLeft, setTimeLeft] = useState(60);
+  const [timeLeft, setTimeLeft] = useState(Number(timePerQuestion) || 60);
   const [answerError, setAnswerError] = useState("");
   const [isSpeaking, setIsSpeaking] = useState(false);
 
@@ -147,7 +148,7 @@ const QuestionAndAnswer = () => {
 
   useEffect(() => {
     // Reset timer
-    setTimeLeft(60);
+    setTimeLeft(Number(timePerQuestion) || 60);
 
     // Reset answer
     setResponse("");
@@ -284,6 +285,7 @@ const QuestionAndAnswer = () => {
           timerRunning={!isAnswerProcessing && !timerPausedRef.current}
           backIcon="exit"
           onExit={handleEndInterview}
+          timePerQuestion={Number(timePerQuestion) || 60}
         />
         {/* QUESTION PROGRESS */}
 

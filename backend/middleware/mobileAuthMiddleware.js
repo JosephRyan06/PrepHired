@@ -34,6 +34,14 @@ const authenticateUser = async (req, res, next) => {
       });
     }
 
+    if (!user.isEmailVerified) {
+      return res.status(403).json({
+        success: false,
+        message: "Please verify your email before logging in.",
+        requiresEmailVerification: true,
+      });
+    }
+
     // Attach user to request
     req.user = user;
 

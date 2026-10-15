@@ -6,8 +6,9 @@ const User = require("../models/user");
 const Resume = require("../models/resume");
 const MockInterview = require("../models/mockInterview");
 
-const { sendPasswordResetOtp } = require("../services/emailService");
+const { sendPasswordResetOtp, sendVerificationEmail } = require("../services/emailService");
 
+/*
 const register = async (req, res) => {
   try {
     const {
@@ -141,6 +142,204 @@ const register = async (req, res) => {
     });
   }
 };
+*/
+const register = async (req, res) => {
+  try {
+    const {
+      firstName,
+      lastName,
+      email,
+      password,
+      confirmPassword,
+      termsAccepted,
+    } = req.body;
+
+    const errors = {};
+
+    // Required fields
+    if (typeof firstName !== "string" || !firstName.trim()) {
+      errors.firstName = "First name is required";
+    }
+
+    if (typeof lastName !== "string" || !lastName.trim()) {
+      errors.lastName = "Last name is required";
+    }
+
+    if (typeof email !== "string" || !email.trim()) {
+      errors.email = "Email is required";
+    }
+
+    if (typeof password !== "string" || !password) {
+      errors.password = "Password is required";
+    }
+
+    if (!termsAccepted) {
+      errors.termsCondition =
+        "You must agree to the Terms and Conditions";
+    }
+
+    if (typeof confirmPassword !== "string" || !confirmPassword) {
+      errors.confirmPassword = "Please confirm your password";
+    }
+
+    // Normalize names
+    const normalizedFirstName =
+      typeof firstName === "string" ? firstName.trim() : "";
+
+    const normalizedLastName =
+      typeof lastName === "string" ? lastName.trim() : "";
+
+    // Name validation
+    if (normalizedFirstName && /\d/.test(normalizedFirstName)) {
+      errors.firstName = "First name must not contain numbers";
+    }
+
+    if (normalizedLastName && /\d/.test(normalizedLastName)) {
+      errors.lastName = "Last name must not contain numbers";
+    }
+
+    // Email validation
+    const normalizedEmail =
+      typeof email === "string" ? email.trim().toLowerCase() : "";
+
+    if (
+      normalizedEmail &&
+      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)
+    ) {
+      errors.email = "Invalid email format";
+    }
+
+    // Password validation
+    if (typeof password === "string" && password.length > 0) {
+      if (password.length < 8) {
+        errors.password = "Password must be at least 8 characters long";
+      } else if (password.length > 16) {
+        errors.password = "Password must not exceed 16 characters";
+      } else if (/\s/.test(password)) {
+        errors.password = "Password must not contain spaces";
+      } else if (!/[A-Z]/.test(password)) {
+        errors.password =
+          "Password must contain at least one uppercase letter";
+      } else if (!/[0-9]/.test(password)) {
+        errors.password =
+          "Password must contain at least one number";
+      } else if (!/[^A-Za-z0-9\s]/.test(password)) {
+        errors.password =
+          "Password must contain at least one special character";
+      }
+    }
+
+    // Confirm password
+    if (
+      typeof password === "string" &&
+      typeof confirmPassword === "string" &&
+      password.length > 0 &&
+      confirmPassword.length > 0 &&
+      password !== confirmPassword
+    ) {
+      errors.confirmPassword = "Passwords do not match";
+    }
+
+    // Return validation errors
+    if (Object.keys(errors).length > 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Validation failed",
+        errors,
+      });
+    }
+
+    // Check existing email
+    const existingUser = await User.findOne({
+      email: normalizedEmail,
+    });
+
+    if (existingUser) {
+      return res.status(409).json({
+        success: false,
+        message: "Registration failed",
+        errors: {
+          email: "Email already exists",
+        },
+      });
+    }
+
+    // Generate secure email verification token
+    const verificationToken = crypto.randomBytes(32).toString("hex");
+
+    // Store only the token hash
+    const emailVerificationTokenHash = crypto
+      .createHash("sha256")
+      .update(verificationToken)
+      .digest("hex");
+
+    // Token expires in 10 minutes
+    const emailVerificationTokenExpires = new Date(
+      Date.now() + 10 * 60 * 1000
+    );
+
+    // Hash password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Create unverified user
+    const user = await User.create({
+      firstName: normalizedFirstName,
+      lastName: normalizedLastName,
+      fullName: `${normalizedFirstName} ${normalizedLastName}`,
+      email: normalizedEmail,
+      password: hashedPassword,
+      role: "user",
+      isEnabled: true,
+      isEmailVerified: false,
+      termsAccepted,
+      emailVerificationTokenHash,
+      emailVerificationTokenExpires,
+    });
+
+    // Send verification link to Gmail
+    try {
+      await sendVerificationEmail(user.email, verificationToken);
+    } catch (emailError) {
+      console.error("Verification email error:", emailError);
+
+      // Avoid leaving an unusable account if email delivery fails
+      await User.findByIdAndDelete(user._id);
+
+      return res.status(500).json({
+        success: false,
+        message:
+          "Unable to send verification email. Please try registering again.",
+      });
+    }
+
+    // Do not return a JWT or treat the user as logged in
+    return res.status(201).json({
+      success: true,
+      message:
+        "Registration successful. Please check your Gmail and click the verification link before logging in.",
+      requiresEmailVerification: true,
+      email: user.email,
+    });
+  } catch (error) {
+    console.error("Register error:", error);
+
+    // Handle duplicate email race conditions
+    if (error.code === 11000) {
+      return res.status(409).json({
+        success: false,
+        message: "Registration failed",
+        errors: {
+          email: "Email already exists",
+        },
+      });
+    }
+
+    return res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
+  }
+};
 
 const login = async (req, res) => {
   try {
@@ -204,6 +403,17 @@ const login = async (req, res) => {
       });
     }
 
+    if (!user.isEmailVerified) {
+      return res.status(403).json({
+        success: false,
+        message: "Login failed",
+        errors: {
+          general: "Please verify your email before logging in.",
+        },
+        requiresEmailVerification: true,
+      });
+    }
+
     // Compare password
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
@@ -237,6 +447,8 @@ const login = async (req, res) => {
       user: {
         _id: user._id,
         fullName: user.fullName,
+        firstName: user.firstName,
+        lastName: user.lastName,
         email: user.email,
         role: user.role,
         isEnabled: user.isEnabled,
@@ -997,6 +1209,81 @@ const editProfile = async (req, res) => {
   }
 };
 
+const verifyEmail = async (req, res) => {
+  try {
+    const { token } = req.query;
+
+    if (typeof token !== "string" || !token.trim()) {
+      return res.status(400).send(`
+        <h2>Invalid verification link</h2>
+        <p>Please use the verification link from your PrepHired email.</p>
+      `);
+    }
+
+    const tokenHash = crypto
+      .createHash("sha256")
+      .update(token)
+      .digest("hex");
+
+    const user = await User.findOne({
+      emailVerificationTokenHash: tokenHash,
+      emailVerificationTokenExpires: {
+        $gt: new Date(),
+      },
+    });
+
+    if (!user) {
+      return res.status(400).send(`
+        <h2>Verification link expired or invalid</h2>
+        <p>Please request a new verification email or register again.</p>
+      `);
+    }
+
+    user.isEmailVerified = true;
+    user.emailVerificationTokenHash = null;
+    user.emailVerificationTokenExpires = null;
+
+    await user.save();
+
+    return res.status(200).send(`
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+          <title>Email Verified | PrepHired</title>
+        </head>
+        <body style="
+          font-family: Arial, sans-serif;
+          text-align: center;
+          padding: 60px 20px;
+          background: #f1f5f9;
+          color: #111827;
+        ">
+          <div style="
+            max-width: 420px;
+            margin: auto;
+            padding: 30px;
+            background: white;
+            border-radius: 16px;
+          ">
+            <h1 style="color: #2563eb;">Email Verified!</h1>
+            <p>Your PrepHired email has been verified successfully.</p>
+            <p>You can now return to the PrepHired app and log in.</p>
+          </div>
+        </body>
+      </html>
+    `);
+  } catch (error) {
+    console.error("Email verification error:", error);
+
+    return res.status(500).send(`
+      <h2>Something went wrong</h2>
+      <p>Please try again later.</p>
+    `);
+  }
+};
+
+
 module.exports = {
   register,
   login,
@@ -1007,4 +1294,5 @@ module.exports = {
   changePassword,
   deleteAccount,
   editProfile,
+  verifyEmail
 };

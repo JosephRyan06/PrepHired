@@ -7,6 +7,7 @@ export const interviewHandler = ({
   selectedInterviewCategory,
   selectedResponseMode,
   selectedNumberOfQuestions,
+  selectedTimePerQuestion,
   navigation,
   create,
 }) => {
@@ -16,12 +17,15 @@ export const interviewHandler = ({
   };
 
   const handleStartInterview = async () => {
+    setTargetJobError("");
+
     try {
       const result = await create({
         targetJob: targetJob.trim(),
         interviewCategory: selectedInterviewCategory,
         responseMode: selectedResponseMode,
         numberOfQuestions: Number(selectedNumberOfQuestions),
+        timePerQuestion: Number(selectedTimePerQuestion),
       });
 
       if (!result.success) {
@@ -30,24 +34,31 @@ export const interviewHandler = ({
           return;
         }
 
-        setModalMessage(result.message || "Failed to create mock interview");
+        setModalMessage(
+          result.message || "Failed to create mock interview"
+        );
         setModalVisible(true);
-
         return;
       }
 
-      const mockInterviewId = result.mockInterview?.id;
-
       navigation.navigate("QuestionAndAnswer", {
-        mockInterviewId,
+        mockInterviewId: result.mockInterview?.id,
         mockInterview: result.mockInterview,
         targetJob: targetJob.trim(),
         interviewCategory: selectedInterviewCategory,
         responseMode: selectedResponseMode,
         numberOfQuestions: Number(selectedNumberOfQuestions),
+        timePerQuestion: Number(selectedTimePerQuestion),
       });
     } catch (error) {
-      setModalMessage(error?.message || "Failed to create mock interview");
+      if (error.errors?.targetJob) {
+        setTargetJobError(error.errors.targetJob);
+        return;
+      }
+
+      setModalMessage(
+        error.message || "Failed to create mock interview"
+      );
       setModalVisible(true);
     }
   };
