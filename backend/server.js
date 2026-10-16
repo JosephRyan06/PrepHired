@@ -14,6 +14,10 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+app.get("/", (req, res) => {
+  res.json({ success: true, message: "PrepHired server is running" });
+});
+
 app.use("/api/mobile/auth", mobileAuthRoutes);
 app.use("/api/mobile/resume", resumeRoutes);
 app.use("/api/mobile/mockInterview", mockInterviewRoutes);
