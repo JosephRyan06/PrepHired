@@ -4,4 +4,5 @@
 // python -m uvicorn openRouter:app --reload --port 8000
 
 
-// AI_URL - https://prephired-ai.onrender.com/docs
+// AI_URL - https://prephired-ai.onrender.com
+// SERVER_URL - https://prephired-server.onrender.com
