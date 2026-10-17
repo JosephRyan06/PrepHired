@@ -1,16 +1,4 @@
-const nodemailer = require("nodemailer");
-
-
-/*
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASSWORD,
-  },
-});
-*/
+const BREVO_API_URL = "https://api.brevo.com/v3/smtp/email";
 
 const transporter = {
   sendMail: async ({ to, subject, html }) => {
