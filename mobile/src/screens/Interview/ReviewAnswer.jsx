@@ -80,23 +80,148 @@ const ReviewAnswer = () => {
           backIcon="back"
         />
 
-        {/* LOADING */}
+        {/* LOADING SKELETON */}
         {loading ? (
-          <View
-            style={{
-              paddingVertical: 50,
-              alignItems: "center",
-            }}
-          >
-            <Text
-              style={{
-                color: "#71717A",
-                fontSize: 14,
-              }}
-            >
-              Loading answers...
-            </Text>
-          </View>
+          <>
+            {[1, 2, 3, 4, 5, 6].map((item) => (
+              <View
+                key={item}
+                style={{
+                  backgroundColor: "#25252F",
+                  borderRadius: 16,
+                  padding: 18,
+                  marginBottom: 16,
+                }}
+              >
+                {/* SKELETON QUESTION HEADER */}
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    marginBottom: 12,
+                  }}
+                >
+                  <View
+                    style={{
+                      width: 100,
+                      height: 11,
+                      borderRadius: 4,
+                      backgroundColor: "#3A3A46",
+                    }}
+                  />
+
+                  <View
+                    style={{
+                      width: 45,
+                      height: 26,
+                      borderRadius: 8,
+                      backgroundColor: "#34343F",
+                    }}
+                  />
+                </View>
+
+                {/* SKELETON QUESTION */}
+                <View
+                  style={{
+                    width: "90%",
+                    height: 16,
+                    borderRadius: 5,
+                    backgroundColor: "#3A3A46",
+                    marginBottom: 8,
+                  }}
+                />
+
+                <View
+                  style={{
+                    width: "65%",
+                    height: 16,
+                    borderRadius: 5,
+                    backgroundColor: "#34343F",
+                    marginBottom: 16,
+                  }}
+                />
+
+                {/* SKELETON ANSWER */}
+                <View
+                  style={{
+                    backgroundColor: "#18181F",
+                    borderRadius: 12,
+                    padding: 14,
+                    marginBottom: 14,
+                  }}
+                >
+                  <View
+                    style={{
+                      width: 85,
+                      height: 10,
+                      borderRadius: 4,
+                      backgroundColor: "#34343F",
+                      marginBottom: 12,
+                    }}
+                  />
+
+                  {[1, 2, 3].map((line) => (
+                    <View
+                      key={line}
+                      style={{
+                        width: line === 3 ? "55%" : "100%",
+                        height: 10,
+                        borderRadius: 4,
+                        backgroundColor: "#3A3A46",
+                        marginBottom: 8,
+                      }}
+                    />
+                  ))}
+                </View>
+
+                {/* SKELETON AI FEEDBACK */}
+                <View
+                  style={{
+                    marginBottom: 14,
+                  }}
+                >
+                  <View
+                    style={{
+                      width: 100,
+                      height: 11,
+                      borderRadius: 4,
+                      backgroundColor: "#34343F",
+                      marginBottom: 10,
+                    }}
+                  />
+
+                  <View
+                    style={{
+                      width: "100%",
+                      height: 10,
+                      borderRadius: 4,
+                      backgroundColor: "#3A3A46",
+                      marginBottom: 8,
+                    }}
+                  />
+
+                  <View
+                    style={{
+                      width: "75%",
+                      height: 10,
+                      borderRadius: 4,
+                      backgroundColor: "#34343F",
+                    }}
+                  />
+                </View>
+
+                {/* SKELETON VIEW FEEDBACK BUTTON */}
+                <View
+                  style={{
+                    backgroundColor: "#18181F",
+                    borderRadius: 10,
+                    height: 40,
+                  }}
+                />
+              </View>
+            ))}
+          </>
         ) : questions.length === 0 ? (
           <View
             style={{

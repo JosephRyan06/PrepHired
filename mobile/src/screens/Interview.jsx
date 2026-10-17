@@ -172,56 +172,6 @@ const Interview = () => {
           </View>
         </View>
 
-        {/* RESPONSE MODE */}
-        <View style={{ marginBottom: 24 }}>
-          <Text
-            style={{
-              color: "#F8FAFC",
-              fontSize: 12,
-              fontWeight: "600",
-              marginBottom: 10,
-            }}
-          >
-            RESPONSE MODE
-          </Text>
-
-          <View
-            style={{
-              flexDirection: "row",
-              gap: 10,
-            }}
-          >
-            {responseModeCategory.map((mode) => {
-              const selected = selectedResponseMode === mode;
-
-              return (
-                <TouchableOpacity
-                  key={mode}
-                  onPress={() => setSelectedResponseMode(mode)}
-                  style={{
-                    flex: 1,
-                    paddingVertical: 13,
-                    borderRadius: 10,
-                    alignItems: "center",
-                    backgroundColor: selected ? "#2563EB" : "#25252F",
-                    borderWidth: 1,
-                    borderColor: selected ? "#2563EB" : "#3F3F46",
-                  }}
-                >
-                  <Text
-                    style={{
-                      color: "#F8FAFC",
-                      fontWeight: "700",
-                    }}
-                  >
-                    {mode}
-                  </Text>
-                </TouchableOpacity>
-              );
-            })}
-          </View>
-        </View>
-
         {/* NUMBER OF QUESTIONS */}
         <View style={{ marginBottom: 30 }}>
           <Text

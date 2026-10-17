@@ -1246,32 +1246,191 @@ const verifyEmail = async (req, res) => {
     await user.save();
 
     return res.status(200).send(`
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-          <title>Email Verified | PrepHired</title>
-        </head>
-        <body style="
-          font-family: Arial, sans-serif;
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>Email Verified | PrepHired</title>
+
+      <style>
+        * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+        }
+
+        body {
+          font-family: Arial, Helvetica, sans-serif;
+          min-height: 100vh;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 24px;
+          background: linear-gradient(135deg, #eff6ff, #f8fafc);
+          color: #0f172a;
+        }
+
+        .card {
+          width: 100%;
+          max-width: 440px;
+          padding: 44px 32px;
           text-align: center;
-          padding: 60px 20px;
-          background: #f1f5f9;
-          color: #111827;
-        ">
-          <div style="
-            max-width: 420px;
-            margin: auto;
-            padding: 30px;
-            background: white;
-            border-radius: 16px;
-          ">
-            <h1 style="color: #2563eb;">Email Verified!</h1>
-            <p>Your PrepHired email has been verified successfully.</p>
-            <p>You can now return to the PrepHired app and log in.</p>
-          </div>
-        </body>
-      </html>
+          background: #ffffff;
+          border: 1px solid #e2e8f0;
+          border-radius: 24px;
+          box-shadow: 0 20px 60px rgba(15, 23, 42, 0.08);
+          animation: appear 0.5s ease-out;
+        }
+
+        .logo {
+          font-size: 23px;
+          font-weight: 800;
+          letter-spacing: -1px;
+          color: #2563eb;
+          margin-bottom: 36px;
+        }
+
+        .logo span {
+          color: #0f172a;
+        }
+
+        .icon-wrapper {
+          width: 100px;
+          height: 100px;
+          margin: 0 auto 26px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 50%;
+          background: #eff6ff;
+          box-shadow: 0 0 0 10px #f8fafc;
+        }
+
+        .icon-wrapper svg {
+          width: 54px;
+          height: 54px;
+        }
+
+        .status {
+          display: inline-block;
+          padding: 7px 14px;
+          margin-bottom: 18px;
+          border-radius: 50px;
+          background: #dcfce7;
+          color: #15803d;
+          font-size: 12px;
+          font-weight: 700;
+          letter-spacing: 0.7px;
+          text-transform: uppercase;
+        }
+
+        h1 {
+          margin-bottom: 14px;
+          font-size: 30px;
+          line-height: 1.25;
+          letter-spacing: -1px;
+          color: #0f172a;
+        }
+
+        .description {
+          margin-bottom: 28px;
+          color: #64748b;
+          font-size: 15px;
+          line-height: 1.8;
+        }
+
+        .button {
+          display: block;
+          width: 100%;
+          padding: 15px 20px;
+          border-radius: 12px;
+          background: #2563eb;
+          color: #ffffff;
+          text-decoration: none;
+          font-size: 15px;
+          font-weight: 700;
+          box-shadow: 0 5px 14px rgba(37, 99, 235, 0.22);
+          transition: background 0.2s, transform 0.2s;
+        }
+
+        .button:hover {
+          background: #1d4ed8;
+          transform: translateY(-2px);
+        }
+
+        .footer {
+          margin-top: 28px;
+          color: #94a3b8;
+          font-size: 12px;
+        }
+
+        @keyframes appear {
+          from {
+            opacity: 0;
+            transform: translateY(12px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        @media (max-width: 480px) {
+          .card {
+            padding: 36px 24px;
+          }
+
+          h1 {
+            font-size: 26px;
+          }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          *, *::before, *::after {
+            animation: none !important;
+            transition: none !important;
+          }
+        }
+      </style>
+    </head>
+
+    <body>
+      <main class="card">
+        <div class="logo">Prep<span>Hired</span></div>
+
+        <div class="icon-wrapper" aria-hidden="true">
+          <svg viewBox="0 0 64 64" fill="none"
+              xmlns="http://www.w3.org/2000/svg">
+            <rect x="7" y="14" width="50" height="36"
+                  rx="7" stroke="#2563EB" stroke-width="3.5"/>
+            <path d="M10 19L32 36L54 19"
+                  stroke="#2563EB" stroke-width="3.5"
+                  stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="47" cy="46" r="13"
+                    fill="#16A34A" stroke="white" stroke-width="3"/>
+            <path d="M41 46L45 50L53 42"
+                  stroke="white" stroke-width="3"
+                  stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+
+        <div class="status">✓ Verification Successful</div>
+
+        <h1>Email Verified!</h1>
+
+        <p class="description">
+          Great news! Your PrepHired email address has been
+          successfully verified. You're all set to continue
+          your journey toward your next career opportunity.
+        </p>
+
+        <p class="footer">
+          &copy; 2026 PrepHired. All rights reserved.
+        </p>
+      </main>
+    </body>
+    </html>
     `);
   } catch (error) {
     console.error("Email verification error:", error);
