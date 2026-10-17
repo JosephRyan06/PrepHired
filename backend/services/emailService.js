@@ -1,5 +1,5 @@
 const nodemailer = require("nodemailer");
-const { Resend } = require("resend");
+
 
 /*
 const transporter = nodemailer.createTransport({
@@ -12,25 +12,36 @@ const transporter = nodemailer.createTransport({
 });
 */
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 const transporter = {
-  sendMail: async ({ from, to, subject, html }) => {
-    const { data, error } = await resend.emails.send({
-      from: process.env.EMAIL_FROM || from,
-      to,
-      subject,
-      html,
+  sendMail: async ({ to, subject, html }) => {
+    const response = await fetch(BREVO_API_URL, {
+      method: "POST",
+      headers: {
+        "api-key": process.env.BREVO_API_KEY,
+        "Content-Type": "application/json",
+        accept: "application/json",
+      },
+      body: JSON.stringify({
+        sender: {
+          name: "PrepHired",
+          email: process.env.EMAIL_USER,
+        },
+        to: [{ email: to }],
+        subject,
+        htmlContent: html,
+      }),
     });
 
-    if (error) {
-      console.error("Resend email error:", error);
-      throw new Error(error.message || "Failed to send email");
+    if (!response.ok) {
+      const errorBody = await response.text();
+      console.error("Brevo email error:", response.status, errorBody);
+      throw new Error("Failed to send email");
     }
 
-    return data;
+    return response.json();
   },
 };
+
 
 const sendPasswordResetOtp = async (email, otp) => {
   await transporter.sendMail({
