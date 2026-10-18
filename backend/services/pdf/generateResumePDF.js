@@ -36,7 +36,8 @@ const generateResumePDF = async (resume) => {
     const html = generateResumeHTML(resume);
 
     await page.setContent(html, {
-      waitUntil: "networkidle0",
+      waitUntil: "load",
+      timeout: 60000,
     });
 
     /*
