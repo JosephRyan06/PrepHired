@@ -1876,77 +1876,6 @@ const optimizeResume = async (req, res) => {
       resume.aiOptimization.workExperiences = optimization.workExperiences;
     }
 
-    /*
-    if (Array.isArray(optimization.educations)) {
-      optimization.educations.forEach((optimizedEducation) => {
-        const education = resume.educations.id(optimizedEducation.id);
-
-        if (!education) {
-          return;
-        }
-
-        // AI optimized school
-        if (optimizedEducation.school?.optimized !== undefined) {
-          education.school = optimizedEducation.school.optimized;
-        }
-
-        // AI optimized degree/field
-        if (optimizedEducation.degreeField?.optimized !== undefined) {
-          education.degreeField = optimizedEducation.degreeField.optimized;
-        }
-
-        const originalDescription = education.description?.trim() || "";
-
-        if (originalDescription) {
-          if (optimizedEducation.optimized !== undefined) {
-            education.description = optimizedEducation.optimized;
-          }
-        } else {
-          // User did not provide an education description.
-          // Never allow AI to add one.
-          education.description = "";
-        }
-      });
-    }
-    */
-    /*
-    if (Array.isArray(optimization.educations)) {
-      optimization.educations.forEach((optimizedEducation) => {
-        const education = resume.educations.id(optimizedEducation.id);
-
-        if (!education) {
-          return;
-        }
-
-        // AI optimized school
-        if (optimizedEducation.school !== undefined) {
-          education.school = optimizedEducation.school;
-        }
-
-        // AI optimized degree/field
-        if (optimizedEducation.degreeField !== undefined) {
-          education.degreeField = optimizedEducation.degreeField;
-        }
-
-        // AI optimized location
-        if (optimizedEducation.location !== undefined) {
-          education.location = optimizedEducation.location;
-        }
-
-        // DO NOT CHANGE schoolYear.
-        // It always stays as entered by the user.
-
-        // Only optimize description if original description exists.
-        const originalDescription = education.description?.trim() || "";
-
-        if (originalDescription && optimizedEducation.optimized !== undefined) {
-          education.description = optimizedEducation.optimized;
-        } else if (!originalDescription) {
-          education.description = "";
-        }
-      });
-    }
-    */
     if (Array.isArray(optimization.educations)) {
       optimization.educations.forEach((optimizedEducation) => {
         const education = resume.educations.id(optimizedEducation.id);
@@ -1997,18 +1926,6 @@ const optimizeResume = async (req, res) => {
     if (optimization.skills?.optimized !== undefined) {
       resume.skills = optimization.skills.optimized;
     }
-
-    /*
-    if (Array.isArray(optimization.projects)) {
-      optimization.projects.forEach((optimizedProject) => {
-        const project = resume.projects.id(optimizedProject.id);
-
-        if (project && optimizedProject.optimized !== undefined) {
-          project.projectDescription = optimizedProject.optimized;
-        }
-      });
-    }
-    */
 
     if (Array.isArray(optimization.projects)) {
       optimization.projects.forEach((optimizedProject) => {
