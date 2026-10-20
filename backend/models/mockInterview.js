@@ -198,13 +198,6 @@ const mockInterviewSchema = new mongoose.Schema(
         default: 0,
       },
 
-      confidence: {
-        type: Number,
-        min: 0,
-        max: 100,
-        default: 0,
-      },
-
       relevance: {
         type: Number,
         min: 0,

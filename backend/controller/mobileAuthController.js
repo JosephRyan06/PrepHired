@@ -316,7 +316,7 @@ const register = async (req, res) => {
     return res.status(201).json({
       success: true,
       message:
-        "Registration successful. Please check your Gmail and click the verification link before logging in.",
+        "Please check your Gmail and click the verification link before logging in.",
       requiresEmailVerification: true,
       email: user.email,
     });

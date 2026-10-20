@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, Modal, TouchableOpacity, ScrollView } from "react-native";
+import { View, Text, Modal, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform, } from "react-native";
 import { useRoute } from "@react-navigation/native";
 import ResumeHeader from "../../components/ResumeHeader";
 import IconTextInput from "../../components/IconTextInput";
@@ -118,6 +118,10 @@ const Education = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+      <KeyboardAvoidingView
+                style={styles.keyboardContainer}
+                behavior={Platform.OS === "ios" ? "padding" : "height"}
+                keyboardVerticalOffset={0}>
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
@@ -179,8 +183,8 @@ const Education = ({ navigation }) => {
 
         <Text
           style={{
-            color: "#A1A1AA",
-            fontSize: 14,
+            color: "#F8FAFC",
+            fontSize: 12,
             fontWeight: "600",
             marginStart: 5,
             marginTop: 20,
@@ -437,6 +441,8 @@ const Education = ({ navigation }) => {
         icon="arrow-forward-outline"
         iconPosition="right"
       />
+
+      </KeyboardAvoidingView>
 
       <Modal
         visible={schoolYearPicker.visible}

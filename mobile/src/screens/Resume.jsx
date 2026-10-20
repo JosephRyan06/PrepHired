@@ -165,7 +165,7 @@ const Resume = () => {
         <Button
           style={{ marginTop: 15 }}
           title="Start from Scratch"
-          onPress={() => navigation.navigate("BasicInfo")}
+          onPress={() => navigation.navigate("ResumeTimeline")}
         />
 
         <Text

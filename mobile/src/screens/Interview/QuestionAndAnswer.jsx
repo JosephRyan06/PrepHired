@@ -551,6 +551,8 @@ import {
   TextInput,
   TouchableOpacity,
   ScrollView,
+  KeyboardAvoidingView,
+  Platform
 } from "react-native";
 
 import { useNavigation, useRoute } from "@react-navigation/native";
@@ -820,6 +822,11 @@ const QuestionAndAnswer = () => {
 
   return (
     <View style={styles.container}>
+
+      <KeyboardAvoidingView
+                style={styles.keyboardContainer}
+                behavior={Platform.OS === "ios" ? "padding" : "height"}
+                keyboardVerticalOffset={0}>
       <ScrollView
         contentContainerStyle={[
           styles.scrollContent,
@@ -831,8 +838,6 @@ const QuestionAndAnswer = () => {
       >
         {/* HEADER */}
 
-        {/* CHANGED: header now displays timeLeft from this screen.
-            Removed questionNumber, timerRunning, timePerQuestion (no longer used) */}
         <InterviewHeader
           navigation={navigation}
           interviewLabel="Question & Answer"
@@ -1091,6 +1096,7 @@ const QuestionAndAnswer = () => {
         }}
         disabled={loading || processingRef.current}
       />
+      </KeyboardAvoidingView>
 
       <AppModal
         visible={modalVisible}

@@ -5,6 +5,8 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import { useRoute } from "@react-navigation/native";
 import ResumeHeader from "../../components/ResumeHeader";
@@ -71,6 +73,10 @@ const TargetJobPosition = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+      <KeyboardAvoidingView
+          style={styles.keyboardContainer}
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          keyboardVerticalOffset={0}>
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
@@ -205,6 +211,8 @@ const TargetJobPosition = ({ navigation }) => {
         icon="arrow-forward-outline"
         iconPosition="right"
       />
+
+      </KeyboardAvoidingView>
     </View>
   );
 };

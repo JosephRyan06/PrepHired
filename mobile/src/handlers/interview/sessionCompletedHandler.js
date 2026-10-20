@@ -39,6 +39,18 @@ export const sessionCompletedHandler = ({
     });
   };
 
+  const handleCompletedReviewAnswers = () => {
+    navigation.navigate("CompletedReviewAnswer", {
+      mockInterviewId,
+    });
+  };
+
+  const handleHomeCompletedReviewAnswers = () => {
+    navigation.navigate("HomeCompletedReviewAnswer", {
+      mockInterviewId,
+    });
+  };
+
   const handleDone = () => {
     navigation.navigate("Home");
   };
@@ -46,6 +58,8 @@ export const sessionCompletedHandler = ({
   return {
     loadInterview,
     handleReviewAnswers,
+    handleCompletedReviewAnswers,
+    handleHomeCompletedReviewAnswers,
     handleDone,
   };
 };

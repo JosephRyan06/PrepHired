@@ -191,7 +191,6 @@ const SessionCompleted = () => {
                 "COMMUNICATION",
                 "TECHNICAL KNOWLEDGE",
                 "PROBLEM SOLVING",
-                "CONFIDENCE",
                 "RELEVANCE",
               ];
 

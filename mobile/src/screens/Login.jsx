@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from "react";
 import {
+  Image,
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
   ActivityIndicator,
+  KeyboardAvoidingView,
+  ScrollView,
+  Platform,
 } from "react-native";
 
 import { useNavigation } from "@react-navigation/native";
@@ -43,106 +47,129 @@ const Login = () => {
   });
 
   return (
-    <View style={styles.loginContainer}>
-      <View style={styles.logoContainer}>
-        <View style={styles.logo}>
-          <Ionicons name="notifications-outline" size={60} color="#2563EB" />
+    <KeyboardAvoidingView
+      style={{ flex: 1, backgroundColor: "white" }}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={0}
+    >
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+      >
+        <View style={styles.loginContainer}>
+          <View style={styles.logoContainer}>
+            <View style={styles.logo}>
+              <Image
+                source={require('../../assets/PrepHiredLoginLogo.jpg')}
+                style={styles.logoImage}
+              />
+            </View>
+          </View>
+
+          <View style={styles.titleContainer}>
+            <Text style={styles.title}>Login</Text>
+            <Text style={styles.subTitle}>
+              Welcome back! Please enter your details.
+            </Text>
+          </View>
+
+          <IconTextInput
+            label="EMAIL"
+            style={{ height: 55 }}
+            icon="mail-outline"
+            placeholder="Enter your email"
+            value={email}
+            onChangeText={(text) => {
+              setEmail(text);
+              setEmailError("");
+            }}
+            keyboardType="email-address"
+            error={emailError}
+          />
+
+          {emailError ? (
+            <Text style={{ color: "#B91C1C", marginTop: 0, fontSize: 12 }}>
+              {emailError}
+            </Text>
+          ) : null}
+
+          <IconTextInput
+            label="PASSWORD"
+            style={{ height: 55 }}
+            icon="lock-closed-outline"
+            placeholder="Enter your password"
+            value={password}
+            onChangeText={(text) => {
+              setPassword(text);
+              setPasswordError("");
+            }}
+            secureTextEntry={true}
+            error={passwordError}
+          />
+
+          {passwordError ? (
+            <Text style={{ color: "#B91C1C", marginTop: 0, fontSize: 12 }}>
+              {passwordError}
+            </Text>
+          ) : null}
+
+          <TouchableOpacity
+            onPress={() => navigation.navigate("ForgotPassword")}
+          >
+            <Text style={styles.forgotPassword}>Forgot Password</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={handleLogin}
+            style={[styles.button, loading && styles.buttonDisabled]}
+            disabled={loading}
+          >
+            {loading ? (
+              <ActivityIndicator size="small" color="#FFFFFF" />
+            ) : (
+              <Text style={styles.buttonText}>Login</Text>
+            )}
+          </TouchableOpacity>
+
+          <View style={styles.divider}>
+            <View style={styles.line} />
+            <Text style={styles.text}>OR</Text>
+            <View style={styles.line} />
+          </View>
+
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "center",
+              marginTop: 12,
+            }}
+          >
+            <Text style={{ color: "#A1A1AA" }}>
+              Don't have an account?{" "}
+            </Text>
+            <TouchableOpacity
+              onPress={() => navigation.navigate("Register")}
+            >
+              <Text style={styles.createAccountText}>
+                Create an Account
+              </Text>
+            </TouchableOpacity>
+          </View>
+
+          <AppModal
+            visible={modalVisible}
+            message={message}
+            onClose={() => {
+              setModalVisible(false);
+              if (message === "Login successful") {
+                navigation.replace("Home");
+              }
+            }}
+          />
         </View>
-      </View>
-
-      <View style={styles.titleContainer}>
-        <Text style={styles.title}>Login</Text>
-        <Text style={styles.subTitle}>
-          Welcome back! Please enter your details.
-        </Text>
-      </View>
-
-      <IconTextInput
-        label="EMAIL"
-        style={{ height: 55 }}
-        icon="mail-outline"
-        placeholder="Enter your email"
-        value={email}
-        onChangeText={(text) => {
-          setEmail(text);
-          setEmailError("");
-        }}
-        keyboardType="email-address"
-        error={emailError}
-      />
-
-      {emailError ? (
-        <Text style={{ color: "#B91C1C", marginTop: 0, fontSize: 12 }}>
-          {emailError}
-        </Text>
-      ) : null}
-
-      <IconTextInput
-        label="PASSWORD"
-        style={{ height: 55 }}
-        icon="lock-closed-outline"
-        placeholder="Enter your password"
-        value={password}
-        onChangeText={(text) => {
-          setPassword(text);
-          setPasswordError("");
-        }}
-        secureTextEntry={true}
-        error={passwordError}
-      />
-
-      {passwordError ? (
-        <Text style={{ color: "#B91C1C", marginTop: 0, fontSize: 12 }}>
-          {passwordError}
-        </Text>
-      ) : null}
-
-      <TouchableOpacity onPress={() => navigation.navigate("ForgotPassword")}>
-        <Text style={styles.forgotPassword}>Forgot Password</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity
-        onPress={handleLogin}
-        style={[styles.button, loading && styles.buttonDisabled]}
-        disabled={loading}
-      >
-        {loading ? (
-          <ActivityIndicator size="small" color="#FFFFFF" />
-        ) : (
-          <Text style={styles.buttonText}>Login</Text>
-        )}
-      </TouchableOpacity>
-
-      <View style={styles.divider}>
-        <View style={styles.line} />
-        <Text style={styles.text}>OR</Text>
-        <View style={styles.line} />
-      </View>
-
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "center",
-          marginTop: 12,
-        }}
-      >
-        <Text style={{ color: "#A1A1AA" }}>Don't have an account? </Text>
-        <TouchableOpacity onPress={() => navigation.navigate("Register")}>
-          <Text style={styles.createAccountText}>Create an Account</Text>
-        </TouchableOpacity>
-      </View>
-
-      <AppModal
-        visible={modalVisible}
-        message={message}
-        onClose={() => {
-          setModalVisible(false);
-          if (message === "Login successful") {
-            navigation.replace("Home");
-          }
-        }}
-      />
-    </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -155,34 +182,46 @@ const styles = StyleSheet.create({
   //sub text 71717A
   // button 2563EB
 
+  scrollContent: {
+    flexGrow: 1,
+    justifyContent: "center",
+    paddingTop: 37
+  },
+
   loginContainer: {
-    flex: 1,
+    flexGrow: 1,
     backgroundColor: "#15151B",
     justifyContent: "center",
-    paddingStart: 25,
-    paddingEnd: 25,
-    marginTop: 37,
+    paddingHorizontal: 25,
+    paddingTop: 20,
+    paddingBottom: 20,
   },
 
   logoContainer: {
     alignItems: "center",
-    marginBottom: 10,
-    marginStart: 50,
-    marginEnd: 50,
-    paddingTop: 40,
-    paddingBottom: 40,
+    justifyContent: "center",
+    padding: 20,
     backgroundColor: "#25252F",
     borderRadius: 25,
-    borderColor: "#2563EB",
-    borderWidth: 2,
   },
 
-  logo: {},
+  logo: {
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  logoImage: {
+    width: 300,
+    height: 150,
+    resizeMode: "contain",
+  },
 
   titleContainer: {
     marginTop: 15,
     marginBottom: 15,
   },
+
   title: {
     fontWeight: "bold",
     fontSize: 28,
@@ -194,21 +233,6 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: "#71717A",
   },
-
-  /*
-    button: {
-        flexDirection: 'row',
-        height: 55,
-        backgroundColor: '#172554',
-        borderRadius: 20,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginTop: 10,
-        gap: 8,
-        paddingHorizontal: 30,
-        paddingVertical: 10
-    },
-    */
 
   forgotPassword: {
     textAlign: "right",
@@ -222,16 +246,11 @@ const styles = StyleSheet.create({
 
   button: {
     height: 55,
-
     backgroundColor: "#2563EB",
-
     borderRadius: 14,
-
     justifyContent: "center",
     alignItems: "center",
-
     marginTop: 5,
-
     shadowColor: "#2563EB",
     shadowOffset: {
       width: 0,

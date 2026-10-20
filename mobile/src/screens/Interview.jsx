@@ -149,7 +149,7 @@ const Interview = () => {
                   key={category}
                   onPress={() => setSelectedInterviewCategory(category)}
                   style={{
-                    paddingHorizontal: 13,
+                    paddingHorizontal: 10,
                     paddingVertical: 11,
                     borderRadius: 10,
                     backgroundColor: selected ? "#2563EB" : "#25252F",

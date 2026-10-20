@@ -82,6 +82,96 @@ const generateProfessionalSummary = async (resume) => {
   }
 };
 
+
+const generateResumeAnalysis = async (resume) => {
+  const response = await fetch(`${PYTHON_AI_URL}/analyze-resume`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      basicInfo: resume.basicInfo || {},
+
+      targetJob: resume.targetJob || {},
+
+      professionalSummary: resume.professionalSummary || "",
+
+      workExperiences: resume.workExperiences || [],
+
+      educations: resume.educations || [],
+
+      skills: resume.skills || "",
+
+      projects: resume.projects || [],
+
+      certificates: resume.certificates || "",
+    }),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    const error = new Error(
+      data?.detail?.message || data?.message || "Failed to analyze resume",
+    );
+
+    error.status = response.status;
+    error.retryAfter = data?.detail?.retryAfter || null;
+
+    throw error;
+  }
+
+  console.log("AI Analysis Response:", JSON.stringify(data, null, 2));
+
+  return data.analysis;
+};
+
+const optimizeResume = async (resume) => {
+  const response = await fetch(`${PYTHON_AI_URL}/optimize-resume`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      basicInfo: resume.basicInfo || {},
+
+      targetJob: resume.targetJob || {},
+
+      professionalSummary: resume.professionalSummary || "",
+
+      workExperiences: resume.workExperiences || [],
+
+      educations: resume.educations || [],
+
+      skills: resume.skills || "",
+
+      projects: resume.projects || [],
+
+      certificates: resume.certificates || "",
+
+      aiAnalysis: resume.aiAnalysis || {},
+    }),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    const error = new Error(
+      data?.detail?.message || data?.message || "Failed to optimize resume",
+    );
+
+    error.status = response.status;
+    error.retryAfter = data?.detail?.retryAfter || null;
+
+    throw error;
+  }
+
+  console.log("AI Optimization Response:", JSON.stringify(data, null, 2));
+
+  return data.optimization;
+};
+
+
 /*
 const generateResumeAnalysis = async (resume) => {
   const response = await fetch(`${PYTHON_AI_URL}/analyze-resume`, {
@@ -108,7 +198,21 @@ const generateResumeAnalysis = async (resume) => {
     }),
   });
 
-  const data = await response.json();
+  const rawText = await response.text();
+
+  let data;
+
+  try {
+    data = JSON.parse(rawText);
+  } catch (parseError) {
+    const error = new Error(
+      `AI service returned non-JSON response (status ${response.status}): ${rawText.slice(0, 200)}`,
+    );
+
+    error.status = response.status;
+
+    throw error;
+  }
 
   if (!response.ok) {
     const error = new Error(
@@ -153,7 +257,21 @@ const optimizeResume = async (resume) => {
     }),
   });
 
-  const data = await response.json();
+  const rawText = await response.text();
+
+  let data;
+
+  try {
+    data = JSON.parse(rawText);
+  } catch (parseError) {
+    const error = new Error(
+      `AI service returned non-JSON response (status ${response.status}): ${rawText.slice(0, 200)}`,
+    );
+
+    error.status = response.status;
+
+    throw error;
+  }
 
   if (!response.ok) {
     const error = new Error(
@@ -171,123 +289,6 @@ const optimizeResume = async (resume) => {
   return data.optimization;
 };
 */
-
-const generateResumeAnalysis = async (resume) => {
-  const response = await fetch(`${PYTHON_AI_URL}/analyze-resume`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      basicInfo: resume.basicInfo || {},
-
-      targetJob: resume.targetJob || {},
-
-      professionalSummary: resume.professionalSummary || "",
-
-      workExperiences: resume.workExperiences || [],
-
-      educations: resume.educations || [],
-
-      skills: resume.skills || "",
-
-      projects: resume.projects || [],
-
-      certificates: resume.certificates || "",
-    }),
-  });
-
-  const rawText = await response.text();
-
-  let data;
-
-  try {
-    data = JSON.parse(rawText);
-  } catch (parseError) {
-    const error = new Error(
-      `AI service returned non-JSON response (status ${response.status}): ${rawText.slice(0, 200)}`,
-    );
-
-    error.status = response.status;
-
-    throw error;
-  }
-
-  if (!response.ok) {
-    const error = new Error(
-      data?.detail?.message || data?.message || "Failed to analyze resume",
-    );
-
-    error.status = response.status;
-    error.retryAfter = data?.detail?.retryAfter || null;
-
-    throw error;
-  }
-
-  console.log("AI Analysis Response:", JSON.stringify(data, null, 2));
-
-  return data.analysis;
-};
-
-const optimizeResume = async (resume) => {
-  const response = await fetch(`${PYTHON_AI_URL}/optimize-resume`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      basicInfo: resume.basicInfo || {},
-
-      targetJob: resume.targetJob || {},
-
-      professionalSummary: resume.professionalSummary || "",
-
-      workExperiences: resume.workExperiences || [],
-
-      educations: resume.educations || [],
-
-      skills: resume.skills || "",
-
-      projects: resume.projects || [],
-
-      certificates: resume.certificates || "",
-
-      aiAnalysis: resume.aiAnalysis || {},
-    }),
-  });
-
-  const rawText = await response.text();
-
-  let data;
-
-  try {
-    data = JSON.parse(rawText);
-  } catch (parseError) {
-    const error = new Error(
-      `AI service returned non-JSON response (status ${response.status}): ${rawText.slice(0, 200)}`,
-    );
-
-    error.status = response.status;
-
-    throw error;
-  }
-
-  if (!response.ok) {
-    const error = new Error(
-      data?.detail?.message || data?.message || "Failed to optimize resume",
-    );
-
-    error.status = response.status;
-    error.retryAfter = data?.detail?.retryAfter || null;
-
-    throw error;
-  }
-
-  console.log("AI Optimization Response:", JSON.stringify(data, null, 2));
-
-  return data.optimization;
-};
-
 //Mock Interview
 const generateInterviewQuestions = async ({
   targetJob,

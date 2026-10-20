@@ -2,11 +2,14 @@ import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
+
+import WelcomeScreen from "../screens/WelcomeScreen";
 import LoginScreen from "../screens/Login";
 import RegisterScreen from "../screens/Register";
 import ForgotPasswordScreen from "../screens/ForgotPassword";
 import VerifyOtpScreen from "../screens/VerifyOtp";
 import ResetPasswordScreen from "../screens/ResetPassword";
+import RegisterTermsPrivacy from "../screens/RegisterTermsPrivacy";
 
 import HomeScreen from "../screens/Home";
 import ResumeScreen from "../screens/Resume";
@@ -14,6 +17,7 @@ import InterviewScreen from "../screens/Interview";
 import ProgressScreen from "../screens/Progress";
 import ProfileScreen from "../screens/Profile";
 
+import ResumeTimeline from "../screens/Resume/ResumeTimeline";
 import BasicInfo from "../screens/Resume/BasicInfo";
 import TargetJobPosition from "../screens/Resume/TargetJobPosition";
 import WorkExperience from "../screens/Resume/WorkExperience";
@@ -26,6 +30,9 @@ import ResumePreview from "../screens/Resume/ResumePreview";
 import HomeCompletedResumePreview from "../screens/Home/HomeCompletedResumePreview";
 import HomeInterviewHistory from "../screens/Home/HomeInterviewHistory";
 import HomeMyResumes from "../screens/Home/HomeMyResumes";
+import HomeCompletedReviewAnswer from "../screens/Home/HomeCompletedReviewAnswer";
+import HomeCompletedAnswerTextFeedback from "../screens/Home/HomeCompletedAnswerTexFeedback";
+import HomeSessionCompleted from "../screens/Home/HomeSessionCompleted";
 
 import QuestionAndAnswer from "../screens/Interview/QuestionAndAnswer";
 import AnswerAudioFeedback from "../screens/Interview/AnswerAudioFeedback";
@@ -44,8 +51,11 @@ import ChangePassword from "../screens/Profile/Account/ChangePassword";
 import DeleteAccount from "../screens/Profile/Account/DeleteAccount";
 
 import InterviewHistory from "../screens/Profile/Preferences/InteviewHistory";
+import CompletedAnswerTextFeedback from "../screens/Profile/Preferences/CompletedAnswerTextFeeback";
+import CompletedReviewAnswer from "../screens/Profile/Preferences/CompletedReviewAnswer";
 import MyResumes from "../screens/Profile/Preferences/MyResumes";
 import CompletedResumePreviewProfile from "../screens/Profile/Preferences/CompletedResumePreviewProfile";
+import PreferencesSessionCompleted from "../screens/Profile/Preferences/PreferencesSessionCompleted";
 
 import HelpFAQs from "../screens/Profile/Support/HelpsFAQs";
 import TermsPrivacy from "../screens/Profile/Support/TermsPrivacy";
@@ -56,18 +66,20 @@ export default function AppRoutes() {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="Login"
+        initialRouteName="Welcome"
         screenOptions={{
           headerShown: false,
           animation: "none",
           gestureEnabled: false,
         }}
       >
+        <Stack.Screen name="Welcome" component={WelcomeScreen} />
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Register" component={RegisterScreen} />
         <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
         <Stack.Screen name="VerifyOtp" component={VerifyOtpScreen} />
         <Stack.Screen name="ResetPassword" component={ResetPasswordScreen} />
+        <Stack.Screen name="RegisterTermsPrivacy" component={RegisterTermsPrivacy} />
 
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="Resume" component={ResumeScreen} />
@@ -92,6 +104,7 @@ export default function AppRoutes() {
           component={UploadResumePreview}
         />
 
+        <Stack.Screen name="ResumeTimeline" component={ResumeTimeline} />
         <Stack.Screen name="BasicInfo" component={BasicInfo} />
         <Stack.Screen name="TargetJobPosition" component={TargetJobPosition} />
         <Stack.Screen name="WorkExperience" component={WorkExperience} />
@@ -109,6 +122,19 @@ export default function AppRoutes() {
         <Stack.Screen
           name="HomeInterviewHistory"
           component={HomeInterviewHistory}
+        />
+
+        <Stack.Screen
+          name="HomeCompletedAnswerTextFeedback"
+          component={HomeCompletedAnswerTextFeedback}
+        />
+        <Stack.Screen
+          name="HomeCompletedReviewAnswer"
+          component={HomeCompletedReviewAnswer}
+        />
+        <Stack.Screen
+          name="HomeSessionCompleted"
+          component={HomeSessionCompleted}
         />
 
         <Stack.Screen name="QuestionAndAnswer" component={QuestionAndAnswer} />
@@ -133,6 +159,9 @@ export default function AppRoutes() {
           component={CompletedResumePreviewProfile}
         />
         <Stack.Screen name="InterviewHistory" component={InterviewHistory} />
+        <Stack.Screen name="CompletedReviewAnswer" component={CompletedReviewAnswer} />
+        <Stack.Screen name="CompletedAnswerTextFeedback" component={CompletedAnswerTextFeedback} />
+        <Stack.Screen name="PreferencesSessionCompleted" component={PreferencesSessionCompleted} />
         <Stack.Screen name="HelpFAQs" component={HelpFAQs} />
         <Stack.Screen name="TermsPrivacy" component={TermsPrivacy} />
       </Stack.Navigator>

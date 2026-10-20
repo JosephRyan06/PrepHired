@@ -6,6 +6,8 @@ import {
   Pressable,
   ScrollView,
   Modal,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import { useRoute } from "@react-navigation/native";
 import Checkbox from "expo-checkbox";
@@ -364,6 +366,10 @@ const WorkExperience = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+      <KeyboardAvoidingView
+                style={styles.keyboardContainer}
+                behavior={Platform.OS === "ios" ? "padding" : "height"}
+                keyboardVerticalOffset={0}>
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
@@ -491,8 +497,8 @@ const WorkExperience = ({ navigation }) => {
 
         <Text
           style={{
-            color: "#A1A1AA",
-            fontSize: 14,
+            color: "#F8FAFC",
+            fontSize: 12,
             fontWeight: "600",
             marginStart: 5,
             marginTop: 20,
@@ -786,6 +792,8 @@ const WorkExperience = ({ navigation }) => {
         icon="arrow-forward-outline"
         iconPosition="right"
       />
+
+      </KeyboardAvoidingView>
 
       <Modal
         visible={datePicker.visible}

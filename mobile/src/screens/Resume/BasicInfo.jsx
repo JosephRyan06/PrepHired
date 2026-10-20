@@ -5,6 +5,8 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import ResumeHeader from "../../components/ResumeHeader";
@@ -76,7 +78,13 @@ const BasicInfo = ({ navigation }) => {
   }, []);
 
   return (
+
+    
     <View style={styles.container}>
+      <KeyboardAvoidingView
+          style={styles.keyboardContainer}
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          keyboardVerticalOffset={0}>
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
@@ -234,6 +242,8 @@ const BasicInfo = ({ navigation }) => {
           <Text style={styles.textError}>{portfolioLinkError}</Text>
         ) : null}
       </ScrollView>
+     
+      
       <Button
         style={{ marginBottom: 65 }}
         title="Next"
@@ -241,7 +251,8 @@ const BasicInfo = ({ navigation }) => {
         loading={loading}
         icon="arrow-forward-outline"
         iconPosition="right"
-      />
+      /> 
+      </KeyboardAvoidingView>
     </View>
   );
 };

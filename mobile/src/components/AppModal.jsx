@@ -24,7 +24,7 @@ export default function AppModal({ visible, message = "", onClose }) {
     }
 
     // Registration success
-    if (message === "Registration successful! Please check your Gmail and tap the verification link before logging in.") {
+    if (message === "Please check your Gmail and tap the verification link before logging in.") {
       return {
         icon: "checkmark-circle",
         color: "#2563EB",

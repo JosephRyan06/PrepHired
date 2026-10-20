@@ -5,7 +5,9 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
+  KeyboardAvoidingView,
   ActivityIndicator,
+  Platform,
 } from "react-native";
 
 import Checkbox from "expo-checkbox";
@@ -90,6 +92,11 @@ const Register = () => {
   ];
 
   return (
+     <KeyboardAvoidingView
+      style={styles.keyboardContainer}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={0}
+    >
     <ScrollView
       style={styles.registerContainer}
       contentContainerStyle={styles.registerContent}
@@ -261,14 +268,31 @@ const Register = () => {
 
 
       <View style={styles.termsCard}>
-        <Text style={styles.termsTitle}>Terms and Conditions</Text>
-          <Text style={styles.termsText}>
-            By registering, you agree to provide accurate information,
-            keep your account secure, and use our services responsibly.
-            Your personal information will be handled according to
-            our Privacy Policy.
-          </Text>
-      </View>
+      <Text style={styles.termsTitle}>Terms and Conditions</Text>
+
+      <Text style={styles.termsText}>
+        By registering, you agree to provide accurate information,
+        keep your account secure, and use our services responsibly.
+        Your personal information will be handled according to
+        our Privacy Policy.
+      </Text>
+
+      <TouchableOpacity
+        onPress={() => navigation.navigate("RegisterTermsPrivacy")}
+      >
+        <Text
+          style={{
+            color: "#60A5FA",
+            textDecorationLine: "underline",
+            marginTop: 10,
+            fontSize: 12,
+            fontWeight: "600"
+          }}
+        >
+          Read Terms and Privacy Policy
+        </Text>
+      </TouchableOpacity>
+    </View>
 
       <TouchableOpacity
         onPress={handleRegister}
@@ -306,18 +330,25 @@ const Register = () => {
         message={message}
         onClose={() => {
           setModalVisible(false);
-          if (message === "Registration successful! Please check your Gmail and tap the verification link before logging in.") {
+          if (message === "Please check your Gmail and tap the verification link before logging in.") {
             navigation.replace("Login");
           }
         }}
       />
     </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 
 export default Register;
 
 const styles = StyleSheet.create({
+
+  keyboardContainer: {
+    flex: 1,
+    backgroundColor: "white",
+  },
+
   registerContainer: {
     flex: 1,
     backgroundColor: "#15151B",

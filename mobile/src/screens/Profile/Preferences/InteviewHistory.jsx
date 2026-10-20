@@ -63,6 +63,14 @@ const InterviewHistory = () => {
     return "#EF4444";
   };
 
+  const handleOpenInterview = (interview) => {
+    if (!interview?._id) return;
+
+    navigation.navigate("PreferencesSessionCompleted", {
+      mockInterviewId: interview._id,
+    });
+  };
+
   return (
     <View style={styles.container}>
       <ScrollView
@@ -286,6 +294,7 @@ const InterviewHistory = () => {
                     borderWidth: 1,
                     borderColor: "#3F3F4A",
                   }}
+                  onPress={() => handleOpenInterview(interview)}
                 >
                   {/* HEADER */}
                   <View

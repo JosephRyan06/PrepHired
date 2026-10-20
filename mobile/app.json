@@ -4,7 +4,7 @@
     "slug": "mobile",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/PrepHiredLogo.jpg",
     "userInterfaceStyle": "light",
     "ios": {
       "supportsTablet": true
@@ -20,7 +20,7 @@
       "package": "com.anonymous.mobile"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/PrepHiredLogo.jpg"
     },
     "plugins": [
       "expo-sharing",

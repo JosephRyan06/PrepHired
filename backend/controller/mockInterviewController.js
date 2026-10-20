@@ -7,10 +7,6 @@ const {
   validateTargetJob,
 } = require("../services/ai/aiService");
 
-// ============================================================
-// CREATE MOCK INTERVIEW
-// ============================================================
-
 const createMockInterview = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -581,17 +577,6 @@ const analyzeAnswer = async (req, res) => {
   }
 };
 
-// ============================================================
-// ANALYZE COMPLETE SESSION
-//
-// IMPORTANT:
-// This endpoint is NOT called by
-// completeMockInterview.
-//
-// It is a separate operation that can
-// be called later when the results page
-// needs overall analysis.
-// ============================================================
 
 const analyzeSession = async (req, res) => {
   try {
@@ -680,8 +665,6 @@ const analyzeSession = async (req, res) => {
       technicalKnowledge: normalizeScore(skillBreakdown.technicalKnowledge),
 
       problemSolving: normalizeScore(skillBreakdown.problemSolving),
-
-      confidence: normalizeScore(skillBreakdown.confidence),
 
       relevance: normalizeScore(skillBreakdown.relevance),
     };

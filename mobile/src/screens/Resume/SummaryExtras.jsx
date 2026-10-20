@@ -7,6 +7,8 @@ import {
   Modal,
   Animated,
   Easing,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 
 import { useRoute } from "@react-navigation/native";
@@ -112,6 +114,10 @@ const SummaryExtras = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+      <KeyboardAvoidingView
+                style={styles.keyboardContainer}
+                behavior={Platform.OS === "ios" ? "padding" : "height"}
+                keyboardVerticalOffset={0}>
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
@@ -245,7 +251,7 @@ const SummaryExtras = ({ navigation }) => {
 
         <Text
           style={{
-            color: "#A1A1AA",
+            color: "#F8FAFC",
             fontSize: 12,
             fontWeight: "600",
             marginBottom: 10,
@@ -452,6 +458,8 @@ const SummaryExtras = ({ navigation }) => {
         loading={generatingResume}
         disabled={generatingResume || generatingSummary}
       />
+
+      </KeyboardAvoidingView>
 
       <AppModal
         visible={modalVisible}

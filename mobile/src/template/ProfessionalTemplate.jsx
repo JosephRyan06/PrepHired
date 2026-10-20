@@ -38,23 +38,28 @@ const ProfessionalTemplate = ({ resume, preview = false }) => {
   // DESCRIPTION     = AI OPTIMIZED
   // ================================
 
-  const workExperiences =
-    resume?.workExperiences?.map((experience) => {
-      const optimizedExperience = aiOptimization?.workExperiences?.find(
-        (item) => String(item.id) === String(experience._id),
-      );
+  
+const workExperiences =
+  aiOptimization?.workExperiences?.length > 0
+    ? aiOptimization.workExperiences.map((experience) => ({
+        id: experience.id || "",
+        jobTitle: experience.jobTitle || "",
+        company: experience.company || "",
+        location: experience.location || "",
+        periodOfEmployment: experience.periodOfEmployment || "",
+        currentlyWorking: experience.currentlyWorking || false,
+        description: experience.description || "",
+      }))
+    : resume?.workExperiences?.map((experience) => ({
+        id: experience._id || "",
+        jobTitle: experience.jobTitle || "",
+        company: experience.company || "",
+        location: experience.location || "",
+        periodOfEmployment: experience.periodOfEmployment || "",
+        currentlyWorking: experience.currentlyWorking || false,
+        description: experience.description || "",
+      })) || [];
 
-      return {
-        ...experience,
-
-        // AI OPTIMIZED LOCATION
-        location: optimizedExperience?.location || experience.location || "",
-
-        // AI OPTIMIZED DESCRIPTION
-        description:
-          optimizedExperience?.optimized || experience.description || "",
-      };
-    }) || [];
 
   // ================================
   // EDUCATION

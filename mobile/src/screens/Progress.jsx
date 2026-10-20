@@ -103,11 +103,6 @@ const Progress = () => {
       icon: "bulb-outline",
     },
     {
-      label: "Confidence",
-      value: skills.confidence || 0,
-      icon: "trending-up-outline",
-    },
-    {
       label: "Relevance",
       value: skills.relevance || 0,
       icon: "checkmark-circle-outline",
