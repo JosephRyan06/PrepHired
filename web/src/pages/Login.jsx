@@ -1,30 +1,16 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { loginThirdUser } from "../../../thirduser/pages/api";
-import PrepHiredLogo from "../../../mobile/assets/PrepHiredLoginLogo.jpg";
 
 const Login = () => {
-  const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
-    setLoading(true);
-    try {
-      const data = await loginThirdUser(email, password);
-      localStorage.setItem("thirduser.token", data.token);
-      localStorage.setItem("thirduser.user", JSON.stringify(data.user));
-      navigate(data.user.role === "admin" ? "/admin" : "/counselor");
-    } catch (requestError) {
-      setError(requestError.message || "Unable to sign in. Check your connection and try again.");
-    } finally {
-      setLoading(false);
-    }
+
+    console.log("Admin login submitted");
   };
 
   return (
@@ -76,6 +62,12 @@ const Login = () => {
             </div>
 
             <form onSubmit={handleSubmit}>
+              {error && (
+                <div className="form-error" role="alert">
+                  {error}
+                </div>
+              )}
+
               {/* EMAIL */}
               <div className="form-group">
                 <label htmlFor="email">Email</label>
@@ -84,8 +76,6 @@ const Login = () => {
                   id="email"
                   type="email"
                   placeholder="Enter your email"
-                  value={email}
-                  onChange={(event) => setEmail(event.target.value)}
                   required
                 />
               </div>
@@ -101,8 +91,6 @@ const Login = () => {
                     id="password"
                     type={showPassword ? "text" : "password"}
                     placeholder="Enter your password"
-                    value={password}
-                    onChange={(event) => setPassword(event.target.value)}
                     required
                   />
 
@@ -114,7 +102,6 @@ const Login = () => {
                   </button>
                 </div>
               </div>
-              {error && <p className="login-error" role="alert">{error}</p>}
               <div className="forgotPassword">
                 <a className="forgotPasswordText" href="/forgot-password">
                   Forgot password?
@@ -122,8 +109,8 @@ const Login = () => {
               </div>
 
               {/* LOGIN */}
-              <button type="submit" className="login-button" disabled={loading}>
-                {loading ? "Signing in..." : "Login"}
+              <button type="submit" className="login-button">
+                Login
               </button>
             </form>
           </div>

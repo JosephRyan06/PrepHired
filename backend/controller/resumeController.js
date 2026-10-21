@@ -174,17 +174,9 @@ const importResume = async (req, res) => {
 
     const errors = {};
 
-    // =========================
-    // AUTHENTICATION
-    // =========================
-
     if (!userId) {
       errors.userId = "User authentication is required";
     }
-
-    // =========================
-    // FILE
-    // =========================
 
     if (!req.file) {
       errors.resume = "Resume file is required";
@@ -210,10 +202,6 @@ const importResume = async (req, res) => {
 
     console.log("Field:", file.fieldname);
 
-    // =========================
-    // FILE BUFFER
-    // =========================
-
     if (!file.buffer || file.buffer.length === 0) {
       return res.status(400).json({
         success: false,
@@ -224,23 +212,11 @@ const importResume = async (req, res) => {
       });
     }
 
-    // =========================
-    // EXTENSION
-    // =========================
-
     const extension = path.extname(file.originalname || "").toLowerCase();
 
     console.log("Extension:", extension);
 
-    // =========================
-    // EXTRACT TEXT
-    // =========================
-
     let extractedText = "";
-
-    // =========================
-    // PDF
-    // =========================
 
     if (extension === ".pdf") {
       console.log("Processing PDF...");
@@ -262,9 +238,6 @@ const importResume = async (req, res) => {
       }
     }
 
-    // =========================
-    // DOCX
-    // =========================
     else if (extension === ".docx") {
       console.log("Processing DOCX...");
 
@@ -277,9 +250,6 @@ const importResume = async (req, res) => {
       console.log("DOCX text extracted successfully");
     }
 
-    // =========================
-    // DOC
-    // =========================
     else if (extension === ".doc") {
       return res.status(400).json({
         success: false,
@@ -289,9 +259,6 @@ const importResume = async (req, res) => {
       });
     }
 
-    // =========================
-    // INVALID FILE TYPE
-    // =========================
     else {
       return res.status(400).json({
         success: false,
@@ -301,10 +268,6 @@ const importResume = async (req, res) => {
         },
       });
     }
-
-    // =========================
-    // CLEAN TEXT
-    // =========================
 
     extractedText = extractedText.trim();
 
@@ -322,15 +285,7 @@ const importResume = async (req, res) => {
       });
     }
 
-    // =========================================================
-    // VALIDATE EXTRACTED TEXT BEFORE AI PARSING
-    // =========================================================
-
     console.log("========== VALIDATING EXTRACTED TEXT ==========");
-
-    // =========================
-    // GET USER
-    // =========================
 
     const user = await User.findById(userId);
 
@@ -343,10 +298,6 @@ const importResume = async (req, res) => {
         },
       });
     }
-
-    // =========================
-    // GET USER FULL NAME
-    // =========================
 
     const userFullName =
       user.fullName ||
@@ -362,10 +313,6 @@ const importResume = async (req, res) => {
       });
     }
 
-    // =========================================================
-    // NORMALIZE TEXT
-    // =========================================================
-
     const normalizeText = (text = "") => {
       return text
         .toLowerCase()
@@ -380,19 +327,11 @@ const importResume = async (req, res) => {
 
     const normalizedUserName = normalizeText(userFullName);
 
-    // =========================================================
-    // CHECK USER NAME IN EXTRACTED RESUME TEXT
-    // =========================================================
-
     const userNameParts = normalizedUserName.split(" ");
 
     const hasUserName =
       userNameParts.length >= 2 &&
       userNameParts.every((part) => normalizedExtractedText.includes(part));
-
-    // =========================================================
-    // NAME DOES NOT MATCH
-    // =========================================================
 
     if (!hasUserName) {
       console.log("========== RESUME VALIDATION FAILED ==========");
@@ -407,19 +346,11 @@ const importResume = async (req, res) => {
       });
     }
 
-    // =========================================================
-    // NAME VALIDATION PASSED
-    // =========================================================
-
     console.log("========== EXTRACTED TEXT VALIDATION PASSED ==========");
 
     console.log("User Name:", userFullName);
 
     console.log("Name Found In Resume:", true);
-
-    // =========================================================
-    // AI PARSE
-    // =========================================================
 
     console.log("========== AI PARSING ==========");
 
@@ -487,6 +418,14 @@ const importResume = async (req, res) => {
     console.log("========== IMPORTED RESUME CREATED ==========");
 
     console.log("Resume ID:", resume._id);
+
+    /*
+    const targetJobTitle = resume.targetJob?.jobTitle?.trim();
+
+    if (targetJobTitle) {
+      await syncApplicantProfile(userId, targetJobTitle);
+    }
+    */
 
     // =========================================================
     // AI ANALYSIS - ORIGINAL IMPORTED RESUME
@@ -1018,6 +957,13 @@ const saveTargetJob = async (req, res) => {
         errors: {},
       });
     }
+
+    /*
+    await syncApplicantProfile(
+      req.user.id,
+      resume.targetJob.jobTitle
+    );
+    */
 
     return res.status(200).json({
       success: true,

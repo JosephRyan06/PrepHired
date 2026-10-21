@@ -1,18 +1,18 @@
+
 import React from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+
+import RequireAuth from "../auth/RequireAuth";
+import AdminLayout from "../components/AdminLayout";
 
 import Login from "../pages/Login";
-import AdminPage from "../../../thirduser/pages/AdminPage";
-import CounselorPage from "../../../thirduser/pages/CounselorPage";
 
 const AppRoutes = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Login />} />
+        <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/admin" element={<AdminPage />} />
-        <Route path="/counselor" element={<CounselorPage />} />
       </Routes>
     </BrowserRouter>
   );

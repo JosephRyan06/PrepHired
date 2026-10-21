@@ -2004,9 +2004,6 @@ confidenceScore:
 How confidently the answer communicates its ideas based
 only on the provided response.
 
-naturalScore:
-How natural, clear, and conversational the answer sounds.
-
 IMPORTANT:
 Scores must be numbers from 0 to 100.
 
@@ -2018,7 +2015,6 @@ Use exactly this structure:
     "score": 0,
     "contentScore": 0,
     "confidenceScore": 0,
-    "naturalScore": 0,
 
     "feedback": "Overall feedback about the answer.",
 

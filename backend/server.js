@@ -4,11 +4,12 @@ const express = require("express");
 const cors = require("cors");
 
 const connectDB = require("./config/db");
+
+const adminRoutes = require("./routes/adminRoutes");
 const mobileAuthRoutes = require("./routes/mobileAuthRoutes");
 const resumeRoutes = require("./routes/resumeRoutes");
 const mockInterviewRoutes = require("./routes/mockInterviewRoutes");
 const progressRoutes = require("./routes/progressRoutes");
-const thirdUserRoutes = require("../thirduser/backend/routes");
 
 const app = express();
 
@@ -19,11 +20,11 @@ app.get("/", (req, res) => {
   res.json({ success: true, message: "PrepHired server is running" });
 });
 
+app.use("/api/admin", adminRoutes);
 app.use("/api/mobile/auth", mobileAuthRoutes);
 app.use("/api/mobile/resume", resumeRoutes);
 app.use("/api/mobile/mockInterview", mockInterviewRoutes);
 app.use("/api/mobile/progress", progressRoutes);
-app.use("/api/thirduser", thirdUserRoutes);
 
 const PORT = process.env.PORT || 5000;
 

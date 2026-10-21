@@ -137,13 +137,16 @@ const Home = () => {
   const recentActivities = [];
 
   if (latestResume) {
+    const targetJobTitle =
+      latestResume?.targetJob?.jobTitle?.trim() ||
+      latestResume?.workExperiences?.[0]?.jobTitle?.trim() ||
+      "No target job specified";
+
     recentActivities.push({
       id: `resume-${latestResume._id || latestResume.id}`,
       icon: "document-text-outline",
       title: "Resume completed",
-      subtitle: latestResume?.targetJob?.jobTitle
-        ? `Target role: ${latestResume.targetJob.jobTitle}`
-        : "Your resume is ready",
+      subtitle: `Target job: ${targetJobTitle}`,
       score: atsScore > 0 ? `ATS Score: ${atsScore}%` : "Resume completed",
     });
   }

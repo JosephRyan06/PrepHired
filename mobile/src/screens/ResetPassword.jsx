@@ -6,6 +6,8 @@ import {
   TouchableOpacity,
   ScrollView,
   TextInput,
+  Platform,
+  KeyboardAvoidingView
 } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import IconTextInput from "../components/IconTextInput";
@@ -73,6 +75,12 @@ const ResetPassword = () => {
   ];
 
   return (
+
+    <KeyboardAvoidingView
+          style={styles.keyboardContainer}
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          keyboardVerticalOffset={0}
+        >
     <ScrollView
       style={styles.container}
       contentContainerStyle={styles.content}
@@ -205,12 +213,20 @@ const ResetPassword = () => {
         }}
       />
     </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 
 export default ResetPassword;
 
 const styles = StyleSheet.create({
+
+  keyboardContainer: {
+    flex: 1,
+    backgroundColor: "white",
+  },
+
+
   container: {
     flex: 1,
     backgroundColor: "#15151B",

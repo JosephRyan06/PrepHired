@@ -111,13 +111,6 @@ const mockInterviewSchema = new mongoose.Schema(
           default: 0,
         },
 
-        naturalScore: {
-          type: Number,
-          min: 0,
-          max: 100,
-          default: 0,
-        },
-
         feedback: {
           type: String,
           default: "",

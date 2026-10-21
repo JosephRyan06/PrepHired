@@ -65,7 +65,7 @@ const Login = () => {
           <View style={styles.logoContainer}>
             <View style={styles.logo}>
               <Image
-                source={require('../../assets/PrepHiredLoginLogo.jpg')}
+                source={require('../../assets/LoginLogoV1.png')}
                 style={styles.logoImage}
               />
             </View>
@@ -223,9 +223,7 @@ const styles = StyleSheet.create({
   logoContainer: {
     alignItems: "center",
     justifyContent: "center",
-    padding: 20,
-    backgroundColor: "#25252F",
-    borderRadius: 25,
+    backgroundColor: "#15151B",
   },
 
   logo: {
@@ -235,8 +233,8 @@ const styles = StyleSheet.create({
   },
 
   logoImage: {
-    width: 300,
-    height: 150,
+    width: "100%",
+    height: 200,
     resizeMode: "contain",
   },
 
