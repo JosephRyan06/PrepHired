@@ -3,7 +3,7 @@ import { API_URL } from "../config/api";
 
 const request = async (path, method = "GET", body) => {
   const token = await AsyncStorage.getItem("token");
-  const response = await fetch(`${API_URL}/thirduser/student/${path}`, {
+  const response = await fetch(`${API_URL}/mobile/counseling${path}`, {
     method,
     headers: {
       "Content-Type": "application/json",
@@ -16,8 +16,8 @@ const request = async (path, method = "GET", body) => {
   return data;
 };
 
-export const getStudentCounseling = () => request("counseling");
+export const getStudentCounseling = () => request("");
 export const requestCounselingAppointment = (appointment) =>
-  request("appointments", "POST", appointment);
+  request("/appointments", "POST", appointment);
 export const completeCounselingRecommendation = (recommendationId) =>
-  request(`recommendations/${recommendationId}`, "PUT", { status: "completed" });
+  request(`/recommendations/${recommendationId}`, "PUT", { status: "completed" });

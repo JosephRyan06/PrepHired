@@ -1,12 +1,15 @@
-const { bcrypt, jsonwebtoken: jwt, mongoose } = require("../../backend/thirduserDependencies");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const mongoose = require("mongoose");
 
-const User = require("../../backend/models/user");
-const Resume = require("../../backend/models/resume");
-const MockInterview = require("../../backend/models/mockInterview");
-const progressService = require("../../backend/services/progressService");
-const CounselorNote = require("./models/CounselorNote");
-const ProgressRecommendation = require("./models/ProgressRecommendation");
-const CounselingAppointment = require("./models/CounselingAppointment");
+const User = require("../models/user");
+const Resume = require("../models/resume");
+const MockInterview = require("../models/mockInterview");
+const CounselorNote = require("../models/CounselorNote");
+const ProgressRecommendation = require("../models/ProgressRecommendation");
+const CounselingAppointment = require("../models/CounselingAppointment");
+const progressService = require("../services/progressService");
+const { logActivity } = require("../services/auditService");
 
 const safeUser = (user) => ({
   _id: user._id,
@@ -19,33 +22,60 @@ const safeUser = (user) => ({
 const fail = (res, status, message) =>
   res.status(status).json({ success: false, message });
 
-const adminLogin = async (req, res) => {
+// Counselor authentication is separate from the upstream admin login/session.
+const counselorLogin = async (req, res) => {
   try {
     const email = String(req.body.email || "").trim().toLowerCase();
     const password = req.body.password;
     const user = await User.findOne({ email });
 
-    if (!user || !["admin", "counselor"].includes(user.role)) {
-      return fail(res, 401, "Email or password is incorrect");
+    if (!user || user.role !== "counselor") {
+      logActivity(req, {
+        action: "counselor.login_failed",
+        email,
+        status: "failure",
+        description: "Failed counselor login",
+      });
+      return fail(res, 401, "Invalid counselor credentials");
     }
-    if (!user.isEnabled) return fail(res, 403, "Your account has been disabled");
+    if (!user.isEnabled || !user.isEmailVerified) {
+      logActivity(req, {
+        action: "counselor.login_failed",
+        user,
+        status: "failure",
+        description: "Counselor login blocked by account status",
+      });
+      return fail(res, 403, "Your counselor account is disabled or not verified");
+    }
     if (!(await bcrypt.compare(String(password || ""), user.password))) {
-      return fail(res, 401, "Email or password is incorrect");
+      logActivity(req, {
+        action: "counselor.login_failed",
+        user,
+        status: "failure",
+        description: "Failed counselor login",
+      });
+      return fail(res, 401, "Invalid counselor credentials");
     }
 
     const token = jwt.sign(
       { userId: user._id, role: user.role },
       process.env.JWT_SECRET,
-      { expiresIn: "1d" },
+      { expiresIn: "12h" },
     );
-    return res.json({ success: true, token, user: { ...safeUser(user), role: user.role } });
+    logActivity(req, {
+      action: "counselor.login",
+      user,
+      description: "Logged in to the counselor workspace",
+    });
+    return res.json({ success: true, token, counselor: { ...safeUser(user), role: user.role } });
   } catch (error) {
-    console.error("Third-user login error:", error.message);
+    console.error("Counselor login error:", error.message);
     return fail(res, 500, "Unable to sign in");
   }
 };
 
-const listAdminUsers = async (req, res) => {
+// Admin-only account provisioning is mounted inside the upstream admin router.
+const listCounselorsAndStudents = async (req, res) => {
   try {
     const [counselors, students] = await Promise.all([
       User.find({ role: "counselor" }).select("firstName lastName fullName email assignedStudentIds isEnabled"),
@@ -133,7 +163,7 @@ const assertAssignedStudent = async (counselorId, studentId) => {
     assignedId.equals(studentId),
   );
   if (!isAssigned) return null;
-  return User.findOne({ _id: studentId, role: "user" }).select(
+  return User.findOne({ _id: studentId, role: "user", isEnabled: true }).select(
     "firstName lastName fullName email",
   );
 };
@@ -336,8 +366,17 @@ const requestAppointment = async (req, res) => {
 
 const updateStudentRecommendation = async (req, res) => {
   if (req.body.status !== "completed") return fail(res, 400, "Invalid task status");
+  const assignedCounselors = await User.find({
+    role: "counselor",
+    isEnabled: true,
+    assignedStudentIds: req.user._id,
+  }).select("_id");
   const recommendation = await ProgressRecommendation.findOneAndUpdate(
-    { _id: req.params.recommendationId, studentId: req.user._id },
+    {
+      _id: req.params.recommendationId,
+      studentId: req.user._id,
+      counselorId: { $in: assignedCounselors.map((counselor) => counselor._id) },
+    },
     { status: "completed" },
     { new: true },
   );
@@ -346,8 +385,8 @@ const updateStudentRecommendation = async (req, res) => {
 };
 
 module.exports = {
-  adminLogin,
-  listAdminUsers,
+  counselorLogin,
+  listCounselorsAndStudents,
   createCounselor,
   assignStudents,
   getDashboard,

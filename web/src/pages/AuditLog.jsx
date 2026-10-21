@@ -162,6 +162,7 @@ const AuditLog = () => {
             <option value="resume">Resumes</option>
             <option value="interview">Mock interviews</option>
             <option value="admin">Admin actions</option>
+            <option value="counselor">Counselor activity</option>
           </select>
 
           <select
@@ -256,6 +257,7 @@ const AuditLog = () => {
                         <span className="muted block">
                           {log.userEmail || "-"}
                           {log.actorRole === "admin" ? " (admin)" : ""}
+                          {log.actorRole === "counselor" ? " (counselor)" : ""}
                         </span>
                       </td>
 

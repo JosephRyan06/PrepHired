@@ -673,7 +673,7 @@ const getAuditLogs = async (req, res) => {
         AuditLog.countDocuments({ createdAt: { $gte: since } }),
         AuditLog.countDocuments({
           createdAt: { $gte: since },
-          action: { $in: ["auth.login_failed", "admin.login_failed"] },
+          action: { $in: ["auth.login_failed", "admin.login_failed", "counselor.login_failed"] },
         }),
         AuditLog.distinct("userId", {
           createdAt: { $gte: since },

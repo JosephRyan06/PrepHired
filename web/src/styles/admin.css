@@ -242,6 +242,102 @@
   font-size: 14px;
 }
 
+/* Counselor accounts are provisioned inside the upstream admin console. */
+.counselor-admin-card {
+  margin-bottom: 18px;
+}
+
+.counselor-create-form {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  align-items: end;
+}
+
+.counselor-create-form label {
+  display: grid;
+  gap: 7px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.counselor-create-form input {
+  width: 100%;
+  height: 40px;
+  padding: 0 11px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.counselor-password-field {
+  grid-column: span 2;
+}
+
+.counselor-password-field small {
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 400;
+}
+
+.counselor-assignment-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 14px;
+}
+
+.counselor-assignment {
+  display: grid;
+  gap: 14px;
+  padding: 15px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg);
+}
+
+.counselor-assignment-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.counselor-assignment-head strong,
+.counselor-assignment-head .muted {
+  display: block;
+}
+
+.counselor-student-list {
+  display: grid;
+  gap: 4px;
+  max-height: 240px;
+  overflow: auto;
+}
+
+.counselor-student-list label {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  padding: 8px 4px;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.counselor-student-list input {
+  margin: 2px 0 0;
+  accent-color: var(--blue);
+}
+
+.counselor-student-list small {
+  display: block;
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 10px;
+}
+
 .page-state {
   display: flex;
   flex-direction: column;
@@ -985,11 +1081,12 @@
 
 @media (max-width: 900px) {
   .admin-shell {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .sidebar {
     position: static;
+    min-width: 0;
 
     height: auto;
 
@@ -1008,6 +1105,7 @@
     order: 3;
 
     width: 100%;
+    min-width: 0;
 
     flex-direction: row;
 
@@ -1037,6 +1135,16 @@
 
   .chart-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .counselor-create-form {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .counselor-password-field {
+    grid-column: auto;
   }
 }
 

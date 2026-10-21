@@ -107,6 +107,16 @@ export const adminApi = {
   setUserStatus: (id, isEnabled) =>
     request(`/users/${id}/status`, { method: "PATCH", body: { isEnabled } }),
 
+  // Counselor provisioning stays within the authenticated upstream admin session.
+  counselors: () => request("/counselors"),
+  createCounselor: (counselor) =>
+    request("/counselors", { method: "POST", body: counselor }),
+  assignCounselorStudents: (counselorId, studentIds) =>
+    request(`/counselors/${counselorId}/assignments`, {
+      method: "PUT",
+      body: { studentIds },
+    }),
+
   resumes: (params) => request(`/resumes${toQuery(params)}`),
   interviews: (params) => request(`/interviews${toQuery(params)}`),
 

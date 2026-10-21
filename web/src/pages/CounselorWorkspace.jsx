@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getSession, request, signOut } from "./api";
-import PrepHiredLogo from "../../mobile/assets/PrepHiredLoginLogo.jpg";
-import "./thirduser.css";
+import { counselorApi, clearCounselorSession, getCounselorSession } from "../api/counselorApi";
+import useAsync from "../hooks/useAsync";
+import PrepHiredLogo from "../../../mobile/assets/PrepHiredLoginLogo.jpg";
+import "../styles/counselor.css";
 
 const formatDate = (value, options = { month: "short", day: "numeric", year: "numeric" }) =>
   value ? new Date(value).toLocaleDateString(undefined, options) : "Not recorded";
@@ -13,35 +14,35 @@ const formatDateTime = (value) => value
 
 const CounselorPage = () => {
   const navigate = useNavigate();
-  const { token, user } = getSession();
-  const [dashboard, setDashboard] = useState({ students: [], appointments: [], needsAttention: 0, averageReadiness: 0 });
-  const [appointments, setAppointments] = useState([]);
+  const { token, counselor: user } = getCounselorSession();
   const [report, setReport] = useState(null);
   const [selectedId, setSelectedId] = useState("");
-  const [loading, setLoading] = useState(true);
   const [reportLoading, setReportLoading] = useState(false);
   const [note, setNote] = useState("");
   const [task, setTask] = useState({ title: "", details: "", category: "resume" });
   const [notice, setNotice] = useState("");
   const [error, setError] = useState("");
 
-  const loadDashboard = async () => {
-    const [result, sessionResult] = await Promise.all([
-      request("/thirduser/counselor/dashboard", token),
-      request("/thirduser/counselor/appointments", token),
+  const {
+    data: dashboardData,
+    loading,
+    error: dashboardError,
+    reload: reloadDashboard,
+  } = useAsync(async () => {
+    const [dashboard, sessionResult] = await Promise.all([
+      counselorApi.dashboard(),
+      counselorApi.appointments(),
     ]);
-    setDashboard(result);
-    setAppointments(sessionResult.appointments);
-    if (selectedId && result.students.some((student) => student._id === selectedId)) {
-      await loadStudent(selectedId);
-    }
-  };
+    return { dashboard, appointments: sessionResult.appointments };
+  });
+  const dashboard = dashboardData?.dashboard || { students: [], needsAttention: 0, averageReadiness: 0 };
+  const appointments = dashboardData?.appointments || [];
 
   const loadStudent = async (studentId) => {
     setSelectedId(studentId);
     setReportLoading(true);
     try {
-      setReport(await request(`/thirduser/counselor/students/${studentId}`, token));
+      setReport(await counselorApi.student(studentId));
     } catch (requestError) {
       setError(requestError.message);
     } finally {
@@ -49,23 +50,12 @@ const CounselorPage = () => {
     }
   };
 
-  useEffect(() => {
-    if (!token || !user) return navigate("/login", { replace: true });
-    if (user.role !== "counselor") return navigate("/admin", { replace: true });
-    loadDashboard()
-      .catch((loadError) => setError(loadError.message))
-      .finally(() => setLoading(false));
-  }, []);
-
   const submitNote = async (event) => {
     event.preventDefault();
     if (!selectedId || !note.trim()) return;
     setError("");
     try {
-      await request(`/thirduser/counselor/students/${selectedId}/notes`, token, {
-        method: "POST",
-        body: JSON.stringify({ content: note }),
-      });
+      await counselorApi.addNote(selectedId, note);
       setNote("");
       setNotice("Private counseling note saved.");
       await loadStudent(selectedId);
@@ -79,10 +69,7 @@ const CounselorPage = () => {
     if (!selectedId || !task.title.trim()) return;
     setError("");
     try {
-      await request(`/thirduser/counselor/students/${selectedId}/recommendations`, token, {
-        method: "POST",
-        body: JSON.stringify(task),
-      });
+      await counselorApi.addRecommendation(selectedId, task);
       setTask({ title: "", details: "", category: "resume" });
       setNotice("Progress task added to the student's plan.");
       await loadStudent(selectedId);
@@ -93,10 +80,7 @@ const CounselorPage = () => {
 
   const updateTask = async (recommendationId, status) => {
     try {
-      await request(`/thirduser/counselor/recommendations/${recommendationId}`, token, {
-        method: "PUT",
-        body: JSON.stringify({ status }),
-      });
+      await counselorApi.updateRecommendation(recommendationId, status);
       await loadStudent(selectedId);
     } catch (requestError) {
       setError(requestError.message);
@@ -106,18 +90,20 @@ const CounselorPage = () => {
   const updateAppointment = async (appointmentId, status) => {
     setError("");
     try {
-      await request(`/thirduser/counselor/appointments/${appointmentId}`, token, {
-        method: "PUT",
-        body: JSON.stringify({ status }),
-      });
+      await counselorApi.updateAppointment(appointmentId, status);
       setNotice(`Appointment ${status}.`);
-      await loadDashboard();
+      reloadDashboard();
     } catch (requestError) {
       setError(requestError.message);
     }
   };
 
   if (!token || user?.role !== "counselor") return null;
+
+  const handleSignOut = () => {
+    clearCounselorSession();
+    navigate("/counselor/login", { replace: true });
+  };
 
   const latestResume = report?.resumes?.[0];
   const latestInterview = report?.interviews?.[0];
@@ -126,7 +112,7 @@ const CounselorPage = () => {
   return (
     <main className="thirduser-shell counselor-shell">
       <aside className="thirduser-rail">
-        <a className="thirduser-brand" href="/counselor" aria-label="PrepHired counselor">
+        <a className="thirduser-brand" href="/counselor/dashboard" aria-label="PrepHired counselor">
           <img src={PrepHiredLogo} alt="" />
           <span>PrepHired<small>CAREER SERVICES</small></span>
         </a>
@@ -143,9 +129,9 @@ const CounselorPage = () => {
       <section className="thirduser-main">
         <header className="workspace-topbar" id="overview">
           <div><span className="eyebrow">COUNSELOR WORKSPACE</span><h1>Your students, in focus.</h1></div>
-          <button className="button button-quiet" onClick={() => signOut(navigate)}>Sign out</button>
+          <button className="button button-quiet" onClick={handleSignOut}>Sign out</button>
         </header>
-        {error && <div className="status-message status-error" role="alert">{error}</div>}
+        {(error || dashboardError) && <div className="status-message status-error" role="alert">{error || dashboardError}</div>}
         {notice && <div className="status-message status-success" role="status">{notice}</div>}
 
         <section className="metric-strip" aria-label="Student overview">

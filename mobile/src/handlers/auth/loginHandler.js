@@ -7,8 +7,6 @@ const loginHandler = ({
   password,
   setEmailError,
   setPasswordError,
-  accountType,
-  setAuthenticatedRole,
 }) => {
   const handleLogin = async () => {
     // Clear previous errors
@@ -16,7 +14,7 @@ const loginHandler = ({
     setEmailError("");
     setPasswordError("");
 
-    const result = await login(email.trim(), password, accountType);
+    const result = await login(email.trim(), password);
 
     if (!result.success) {
       const errors = result.errors || {};
@@ -34,7 +32,6 @@ const loginHandler = ({
     }
 
     // Login successful
-    setAuthenticatedRole(result.user?.role || "user");
     setMessage("Login successful");
     setModalVisible(true);
   };

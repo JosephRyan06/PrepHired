@@ -17,7 +17,7 @@ const auditLogSchema = new mongoose.Schema(
 
     actorRole: {
       type: String,
-      enum: ["user", "admin"],
+      enum: ["user", "admin", "counselor"],
       default: "user",
     },
 

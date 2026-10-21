@@ -22,6 +22,9 @@ const ACTIONS = {
   "admin.user_disabled": { label: "Account disabled", tone: "warn" },
   "admin.user_enabled": { label: "Account enabled", tone: "good" },
   "admin.audit_exported": { label: "Audit log exported", tone: "muted" },
+
+  "counselor.login": { label: "Counselor login", tone: "good" },
+  "counselor.login_failed": { label: "Counselor failed login", tone: "bad" },
 };
 
 export const describeAction = (action) =>

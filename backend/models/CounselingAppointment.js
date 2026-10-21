@@ -1,4 +1,4 @@
-const { mongoose } = require("../../../backend/thirduserDependencies");
+const mongoose = require("mongoose");
 
 const counselingAppointmentSchema = new mongoose.Schema(
   {

@@ -10,6 +10,7 @@ import "../styles/admin.css";
 const NAV_ITEMS = [
   { to: "/dashboard", label: "Dashboard", icon: "dashboard" },
   { to: "/users", label: "Users", icon: "users" },
+  { to: "/counselors", label: "Counselors", icon: "users" },
   { to: "/resumes", label: "Resumes", icon: "resume" },
   { to: "/interviews", label: "Mock interviews", icon: "interview" },
   { to: "/audit-log", label: "Audit log", icon: "audit" },

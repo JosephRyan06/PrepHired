@@ -17,7 +17,6 @@ import InterviewScreen from "../screens/Interview";
 import ProgressScreen from "../screens/Progress";
 import ProfileScreen from "../screens/Profile";
 import CounselingScreen from "../screens/Counseling";
-import CounselorHomeScreen from "../screens/CounselorHome";
 
 import ResumeTimeline from "../screens/Resume/ResumeTimeline";
 import BasicInfo from "../screens/Resume/BasicInfo";
@@ -89,7 +88,6 @@ export default function AppRoutes() {
         <Stack.Screen name="Interview" component={InterviewScreen} />
         <Stack.Screen name="Profile" component={ProfileScreen} />
         <Stack.Screen name="Counseling" component={CounselingScreen} />
-        <Stack.Screen name="CounselorHome" component={CounselorHomeScreen} />
 
         <Stack.Screen
           name="CompletedResumePreview"

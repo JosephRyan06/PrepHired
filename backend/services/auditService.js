@@ -5,7 +5,7 @@ const AuditLog = require("../models/auditLog");
 // Dates in the audit log filters and the CSV export use this timezone
 const TIMEZONE = process.env.ADMIN_TIMEZONE || "Asia/Manila";
 
-const CATEGORIES = ["auth", "resume", "interview", "admin"];
+const CATEGORIES = ["auth", "resume", "interview", "admin", "counselor"];
 
 /* ------------------------------ logging ------------------------------ */
 
@@ -48,9 +48,10 @@ const logActivity = (req, options = {}) => {
       userId: actor?._id || undefined,
       userName: actor?.fullName || undefined,
       userEmail: userEmail || undefined,
-      actorRole:
-        action.startsWith("admin.") || actor?.role === "admin"
-          ? "admin"
+      actorRole: action.startsWith("admin.") || actor?.role === "admin"
+        ? "admin"
+        : action.startsWith("counselor.") || actor?.role === "counselor"
+          ? "counselor"
           : "user",
       action,
       category: action.split(".")[0],

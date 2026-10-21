@@ -160,7 +160,10 @@ export default function AppModal({ visible, message = "", onClose }) {
       };
     }
 
-    if (message.includes("Admin accounts cannot log in here")) {
+    if (
+      message.includes("Admin accounts cannot log in here") ||
+      message.includes("This account cannot log in to the student app")
+    ) {
       return {
         icon: "sad-outline",
         color: "#EF4444",
