@@ -12,7 +12,6 @@ const mockInterviewRoutes = require("./routes/mockInterviewRoutes");
 const progressRoutes = require("./routes/progressRoutes");
 const applicantProfileRoutes = require("./routes/applicantProfileRoutes");
 
-
 const app = express();
 
 app.use(cors());
@@ -21,7 +20,6 @@ app.use(express.json());
 app.get("/", (req, res) => {
   res.json({ success: true, message: "PrepHired server is running" });
 });
-
 
 app.use("/api/admin", adminRoutes);
 app.use("/api/mobile/auth", mobileAuthRoutes);

@@ -1,12 +1,38 @@
 import React, { useState } from "react";
+import { Navigate, useNavigate } from "react-router-dom";
+
+import { adminApi, getToken, setSession } from "../api/adminApi";
 
 const Login = () => {
-  const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  // Already logged in? Skip the form.
+  if (getToken()) {
+    return <Navigate to="/dashboard" replace />;
+  }
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    console.log("Admin login submitted");
+    setError("");
+    setLoading(true);
+
+    try {
+      const data = await adminApi.login(email.trim(), password);
+
+      setSession(data.token, data.admin);
+      navigate("/dashboard", { replace: true });
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -58,6 +84,12 @@ const Login = () => {
             </div>
 
             <form onSubmit={handleSubmit}>
+              {error && (
+                <div className="form-error" role="alert">
+                  {error}
+                </div>
+              )}
+
               {/* EMAIL */}
               <div className="form-group">
                 <label htmlFor="email">Email</label>
@@ -66,6 +98,9 @@ const Login = () => {
                   id="email"
                   type="email"
                   placeholder="Enter your email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  autoComplete="username"
                   required
                 />
               </div>
@@ -81,6 +116,9 @@ const Login = () => {
                     id="password"
                     type={showPassword ? "text" : "password"}
                     placeholder="Enter your password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    autoComplete="current-password"
                     required
                   />
 
@@ -92,15 +130,14 @@ const Login = () => {
                   </button>
                 </div>
               </div>
-              <div className="forgotPassword">
-                <a className="forgotPasswordText" href="/forgot-password">
-                  Forgot password?
-                </a>
-              </div>
 
               {/* LOGIN */}
-              <button type="submit" className="login-button">
-                Login
+              <button
+                type="submit"
+                className="login-button"
+                disabled={loading}
+              >
+                {loading ? "Signing in..." : "Login"}
               </button>
             </form>
           </div>

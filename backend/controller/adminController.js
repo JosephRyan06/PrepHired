@@ -103,6 +103,13 @@ const adminLogin = async (req, res) => {
 
     const user = await User.findOne({ email });
 
+    console.log("Login debug:", {
+      email,
+      userFound: Boolean(user),
+      role: user?.role,
+      isEnabled: user?.isEnabled,
+    });
+
     // Same message for "no account", "not an admin" and "wrong password"
     const invalid = () => {
       logActivity(req, {
@@ -135,6 +142,7 @@ const adminLogin = async (req, res) => {
         message: "This administrator account is disabled",
       });
     }
+
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
