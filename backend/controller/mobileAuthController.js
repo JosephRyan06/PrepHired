@@ -393,12 +393,12 @@ const login = async (req, res) => {
       });
     }
 
-    if (user.role === "admin") {
+    if (user.role !== "user") {
       return res.status(403).json({
         success: false,
         message: "Login failed",
         errors: {
-          general: "Admin accounts cannot log in here",
+          general: "This account cannot log in to the student app",
         },
       });
     }

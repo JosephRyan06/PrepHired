@@ -8,6 +8,7 @@ const mobileAuthRoutes = require("./routes/mobileAuthRoutes");
 const resumeRoutes = require("./routes/resumeRoutes");
 const mockInterviewRoutes = require("./routes/mockInterviewRoutes");
 const progressRoutes = require("./routes/progressRoutes");
+const thirdUserRoutes = require("../thirduser/backend/routes");
 
 const app = express();
 
@@ -22,6 +23,7 @@ app.use("/api/mobile/auth", mobileAuthRoutes);
 app.use("/api/mobile/resume", resumeRoutes);
 app.use("/api/mobile/mockInterview", mockInterviewRoutes);
 app.use("/api/mobile/progress", progressRoutes);
+app.use("/api/thirduser", thirdUserRoutes);
 
 const PORT = process.env.PORT || 5000;
 

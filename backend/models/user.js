@@ -35,8 +35,18 @@ const userSchema = new mongoose.Schema(
 
     role: {
       type: String,
-      enum: ["user", "admin"],
+      enum: ["user", "admin", "counselor"],
       default: "user",
+    },
+
+    assignedStudentIds: {
+      type: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "User",
+        },
+      ],
+      default: [],
     },
 
     isEnabled: {

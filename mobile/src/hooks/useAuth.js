@@ -1,6 +1,7 @@
 import { useState } from "react";
 import {
   loginUser,
+  loginCounselor,
   registerUser,
   forgotPassword as forgotPasswordApi,
   verifyOtp as verifyOtpApi,
@@ -16,11 +17,21 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 const useAuth = () => {
   const [loading, setLoading] = useState(false);
 
-  const login = async (email, password) => {
+  const login = async (email, password, accountType = "student") => {
     setLoading(true);
 
     try {
-      const data = await loginUser(email, password);
+      const data = accountType === "counselor"
+        ? await loginCounselor(email, password)
+        : await loginUser(email, password);
+
+      if (accountType === "counselor" && data.user?.role !== "counselor") {
+        return {
+          success: false,
+          message: "Administrator accounts can only sign in on the web.",
+          errors: { general: "Administrator accounts can only sign in on the web." },
+        };
+      }
 
       // Save JWT token
       await AsyncStorage.setItem("token", data.token);

@@ -27,6 +27,12 @@ const authenticateUser = async (req, res, next) => {
       });
     }
 
+    if (user.role !== "user") {
+      return res.status(403).json({
+        message: "Student access required",
+      });
+    }
+
     // Check if account is disabled
     if (!user.isEnabled) {
       return res.status(403).json({
@@ -64,6 +70,49 @@ const authenticateUser = async (req, res, next) => {
     return res.status(500).json({
       message: "Server error",
     });
+  }
+};
+
+const authenticateCounselor = async (req, res, next) => {
+  try {
+    const authHeader = req.headers.authorization;
+
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return res.status(401).json({ message: "Access token is required" });
+    }
+
+    const token = authHeader.split(" ")[1];
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findById(decoded.userId).select("-password");
+
+    if (!user) {
+      return res.status(401).json({ message: "User not found" });
+    }
+
+    if (!user.isEnabled) {
+      return res.status(403).json({ message: "Your account has been disabled" });
+    }
+
+    if (user.role !== "counselor") {
+      return res.status(403).json({ message: "Counselor access required" });
+    }
+
+    if (!user.isEmailVerified) {
+      return res.status(403).json({
+        message: "Please verify your email before logging in.",
+        requiresEmailVerification: true,
+      });
+    }
+
+    req.user = user;
+    return next();
+  } catch (error) {
+    if (error.name === "TokenExpiredError" || error.name === "JsonWebTokenError") {
+      return res.status(401).json({ message: "Invalid or expired token" });
+    }
+
+    console.error("Counselor authentication error:", error.message);
+    return res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -136,4 +185,5 @@ const authenticateAdmin = async (req, res, next) => {
 module.exports = {
   authenticateUser,
   authenticateAdmin,
+  authenticateCounselor,
 };

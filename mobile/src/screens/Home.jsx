@@ -360,6 +360,21 @@ const Home = () => {
           </TouchableOpacity>
         </View>
 
+        <TouchableOpacity
+          style={homeStyles.counselingAction}
+          onPress={() => navigation.navigate("Counseling")}
+          activeOpacity={0.8}
+        >
+          <View style={homeStyles.counselingIcon}>
+            <Ionicons name="chatbubbles-outline" color="#F8FAFC" size={22} />
+          </View>
+          <View style={homeStyles.counselingCopy}>
+            <Text style={homeStyles.counselingTitle}>Career counseling</Text>
+            <Text style={homeStyles.counselingText}>Review your plan or request a session</Text>
+          </View>
+          <Ionicons name="chevron-forward" color="#A1A1AA" size={19} />
+        </TouchableOpacity>
+
         <Text
           style={{
             color: "#F8FAFC",
@@ -459,6 +474,34 @@ const Home = () => {
 };
 
 const homeStyles = StyleSheet.create({
+  counselingAction: {
+    minHeight: 68,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    marginTop: 13,
+    paddingHorizontal: 14,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: "#343946",
+    backgroundColor: "#202630",
+  },
+
+  counselingIcon: {
+    width: 39,
+    height: 39,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 10,
+    backgroundColor: "#273A52",
+  },
+
+  counselingCopy: { flex: 1 },
+
+  counselingTitle: { color: "#F8FAFC", fontSize: 13, fontWeight: "700" },
+
+  counselingText: { color: "#9295A2", fontSize: 11, marginTop: 4 },
+
   activityContainer: {
     backgroundColor: "#25252F",
     borderRadius: 14,

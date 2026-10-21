@@ -25,6 +25,27 @@ export const loginUser = async (email, password) => {
   return data;
 };
 
+export const loginCounselor = async (email, password) => {
+  const response = await fetch(`${API_URL}/thirduser/auth/login`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ email, password }),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw {
+      message: data.message,
+      errors: data.errors || {},
+    };
+  }
+
+  return data;
+};
+
 export const registerUser = async (userData) => {
   const response = await fetch(`${API_URL}/mobile/auth/register`, {
     method: "POST",

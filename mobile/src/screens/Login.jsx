@@ -28,6 +28,8 @@ const Login = () => {
 
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
+  const [accountType, setAccountType] = useState("student");
+  const [authenticatedRole, setAuthenticatedRole] = useState("user");
 
   const [message, setMessage] = useState("");
 
@@ -44,6 +46,8 @@ const Login = () => {
     password,
     setEmailError,
     setPasswordError,
+    accountType,
+    setAuthenticatedRole,
   });
 
   return (
@@ -72,6 +76,25 @@ const Login = () => {
             <Text style={styles.subTitle}>
               Welcome back! Please enter your details.
             </Text>
+          </View>
+
+          <View style={styles.accountType} accessibilityRole="tablist">
+            <TouchableOpacity
+              accessibilityRole="tab"
+              accessibilityState={{ selected: accountType === "student" }}
+              onPress={() => setAccountType("student")}
+              style={[styles.accountTypeOption, accountType === "student" && styles.accountTypeSelected]}
+            >
+              <Text style={[styles.accountTypeText, accountType === "student" && styles.accountTypeTextSelected]}>Student</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              accessibilityRole="tab"
+              accessibilityState={{ selected: accountType === "counselor" }}
+              onPress={() => setAccountType("counselor")}
+              style={[styles.accountTypeOption, accountType === "counselor" && styles.accountTypeSelected]}
+            >
+              <Text style={[styles.accountTypeText, accountType === "counselor" && styles.accountTypeTextSelected]}>Counselor</Text>
+            </TouchableOpacity>
           </View>
 
           <IconTextInput
@@ -138,7 +161,7 @@ const Login = () => {
             <View style={styles.line} />
           </View>
 
-          <View
+          {accountType === "student" && <View
             style={{
               flexDirection: "row",
               justifyContent: "center",
@@ -155,7 +178,7 @@ const Login = () => {
                 Create an Account
               </Text>
             </TouchableOpacity>
-          </View>
+          </View>}
 
           <AppModal
             visible={modalVisible}
@@ -163,7 +186,7 @@ const Login = () => {
             onClose={() => {
               setModalVisible(false);
               if (message === "Login successful") {
-                navigation.replace("Home");
+                navigation.replace(authenticatedRole === "counselor" ? "CounselorHome" : "Home");
               }
             }}
           />
@@ -220,6 +243,36 @@ const styles = StyleSheet.create({
   titleContainer: {
     marginTop: 15,
     marginBottom: 15,
+  },
+
+  accountType: {
+    flexDirection: "row",
+    padding: 4,
+    marginBottom: 17,
+    borderRadius: 10,
+    backgroundColor: "#25252F",
+  },
+
+  accountTypeOption: {
+    flex: 1,
+    minHeight: 40,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 7,
+  },
+
+  accountTypeSelected: {
+    backgroundColor: "#3B82F6",
+  },
+
+  accountTypeText: {
+    color: "#A1A1AA",
+    fontSize: 13,
+    fontWeight: "600",
+  },
+
+  accountTypeTextSelected: {
+    color: "#FFFFFF",
   },
 
   title: {

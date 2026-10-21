@@ -6,7 +6,7 @@ dns.setServers(["8.8.8.8", "1.1.1.1"]);
 const connectDB = async () => {
   try {
     const records = await dns.promises.resolveSrv(
-      "_mongodb._tcp.cluster0.u3pm10z.mongodb.net",
+      "_mongodb._tcp.cluster0.uxj9y7w.mongodb.net",
     );
 
     const conn = await mongoose.connect(process.env.MONGODB_URI1);
