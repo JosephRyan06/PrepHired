@@ -1,16 +1,19 @@
 
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useEffect, useState } from "react";
 import {
   View,
   Text,
   TextInput,
   ScrollView,
   TouchableOpacity,
+  Linking
 } from "react-native";
 
 import { Ionicons } from "@expo/vector-icons";
 import InterviewHeader from "../../../components/InterviewHeader";
 import styles from "../../../styles/global";
+
+import getUserHandler from "../../../handlers/user/getUserHandler";
 
 const RESUME_FAQ_DATA = [
   {
@@ -422,6 +425,20 @@ const HelpFAQs = ({ navigation }) => {
   const [activeTab, setActiveTab] = useState("resume");
   const [search, setSearch] = useState("");
   const [expanded, setExpanded] = useState(null);
+  const [user ,setUser] = useState(null);
+
+  useEffect(() => {
+    const loadUser = async () => {
+      try {
+        const userData = await getUserHandler();
+        setUser(userData);
+      } catch (error) {
+        console.error("Failed to load user:", error);
+      }
+    };
+
+    loadUser();
+  }, []);
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
@@ -726,7 +743,48 @@ const HelpFAQs = ({ navigation }) => {
               justifyContent: "center",
               marginTop: 8,
             }}
-          >
+            onPress={async () => {
+              const supportEmail = "hiredprep@gmail.com";
+              const registeredEmail = user?.email || "";
+
+              const subject = encodeURIComponent("Contact Support");
+              const body = encodeURIComponent(
+                [
+                  "Hello HiredPrep Support Team,",
+                  "",
+                  "I hope you are doing well.",
+                  "",
+                  "I need assistance with the PrepHired application.",
+                  "",
+                  "Registered Email:",
+                  user?.email || "Not available",
+                  "",
+                  "Issue or Concern:",
+                  "[Please describe your concern here.]",
+                  "",
+                  "Thank you for your time and assistance. I look forward to your response.",
+                  "",
+                  "Best regards,",
+                  "PrepHired User",
+                ].join("\n")
+              );
+
+              const gmailUrl =
+                `googlegmail://co?to=${supportEmail}&subject=${subject}&body=${body}`;
+
+              try {
+                await Linking.openURL(gmailUrl);
+              } catch {
+                try {
+                  await Linking.openURL(
+                    `mailto:${supportEmail}?subject=${subject}&body=${body}`
+                  );
+                } catch {
+
+                }
+              }
+            }}
+            >
             <Text
               style={{
                 color: "#FFFFFF",

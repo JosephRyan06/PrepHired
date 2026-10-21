@@ -80,19 +80,10 @@ const AnswerTextFeedback = () => {
     navigation,
   });
 
-  // --------------------------------
-  // SAFE DATA
-  // --------------------------------
-
   const feedback =
     typeof analysis?.feedback === "string"
       ? analysis.feedback
       : "No additional feedback was provided.";
-
-  const tone =
-    typeof analysis?.toneAndModulation === "string"
-      ? analysis.toneAndModulation
-      : "No tone and modulation feedback was provided.";
 
   const strengths = Array.isArray(analysis?.strengths)
     ? analysis.strengths.filter((item) => typeof item === "string")

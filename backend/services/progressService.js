@@ -13,10 +13,21 @@ const getProgress = async (userId) => {
     createdAt: -1,
   });
 
-  // Latest completed resume
-  const latestResume = resumes[0] || null;
+  // ==========================================
+  // RESUME AVERAGE (ALL COMPLETED RESUMES)
+  // ==========================================
 
-  const resumeAtsScore = latestResume?.aiAnalysis?.atsScore || 0;
+  const resumeScores = resumes
+    .map((resume) => Number(resume.aiAnalysis?.atsScore || 0))
+    .filter((score) => score > 0);
+
+  const resumeAtsScore =
+    resumeScores.length > 0
+      ? Math.round(
+          resumeScores.reduce((total, score) => total + score, 0) /
+            resumeScores.length,
+        )
+      : 0;
 
   // ==========================================
   // GET COMPLETED INTERVIEWS
@@ -83,13 +94,13 @@ const getProgress = async (userId) => {
 
   let employmentReadiness = 0;
 
-  if (latestResume && interviews.length > 0) {
+  if (resumeScores.length > 0 && interviewScores.length > 0) {
     employmentReadiness = Math.round(
       resumeAtsScore * 0.5 + interviewAverage * 0.5,
     );
-  } else if (latestResume) {
+  } else if (resumeScores.length > 0) {
     employmentReadiness = Math.round(resumeAtsScore * 0.5);
-  } else if (interviews.length > 0) {
+  } else if (interviewScores.length > 0) {
     employmentReadiness = Math.round(interviewAverage * 0.5);
   }
 

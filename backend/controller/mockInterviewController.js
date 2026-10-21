@@ -16,9 +16,6 @@ const createMockInterview = async (req, res) => {
 
     const errors = {};
 
-    // -----------------------------
-    // VALIDATION
-    // -----------------------------
 
     if (!userId) {
       errors.userId = "User authentication is required";
@@ -156,6 +153,10 @@ const createMockInterview = async (req, res) => {
 
       startedAt: new Date(),
     });
+
+    /*
+    await syncApplicantProfile(userId, targetJob);
+    */
 
     return res.status(201).json({
       success: true,
@@ -498,15 +499,13 @@ const analyzeAnswer = async (req, res) => {
 
     question.confidenceScore = normalizeScore(analysis.confidenceScore);
 
-    question.naturalScore = normalizeScore(analysis.naturalScore);
-
+    question.score = Math.round(
+      question.contentScore * 0.6 +
+      question.confidenceScore * 0.4
+    );
+    
     question.feedback =
       typeof analysis.feedback === "string" ? analysis.feedback : "";
-
-    question.toneAndModulation =
-      typeof analysis.toneAndModulation === "string"
-        ? analysis.toneAndModulation
-        : "";
 
     question.wordChoiceSuggestions = Array.isArray(
       analysis.wordChoiceSuggestions,
@@ -549,11 +548,7 @@ const analyzeAnswer = async (req, res) => {
 
         confidenceScore: question.confidenceScore,
 
-        naturalScore: question.naturalScore,
-
         feedback: question.feedback,
-
-        toneAndModulation: question.toneAndModulation,
 
         wordChoiceSuggestions: question.wordChoiceSuggestions,
 
